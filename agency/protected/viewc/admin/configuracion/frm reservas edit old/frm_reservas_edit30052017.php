@@ -1,0 +1,7353 @@
+<?php
+if (isset($this->data['reserve']) && isset($_SESSION['login'])) {
+    $valida = false;
+    $reserva = $data['reserve'];
+    $subto = $data['subto'];
+    $rastro = $data['rastro'];
+    $pagado = $data['pagado'];
+//    print($pagado);
+    $pagado_sinCargo = ($pagado / 1.04);
+
+    //cargo al pago con credit card
+    $CargoCC = $pagado - $pagado_sinCargo;
+
+    //print($CargoCC);
+    $btnpay = $reserva->Btnpay;
+    //print($btnpay);
+//    $pago =  $data['pago'];
+//    print($pago);
+    $cliente = $data['cliente'];
+    $cliente_apto = $data['cliente_apto'];
+    $pickup1 = $data['pickup1'];
+    $pickup2 = $data['pickup2'];
+    $drop1 = $data['drop1'];
+    $drop2 = $data['drop2'];
+    $extencion1 = $data['extencion1'];
+    $extencion2 = $data['extencion2'];
+    $extencion4 = $data['extencion4'];
+    $extencion3 = $data['extencion3'];
+    $agencia = $data['agencia'];
+    $disponible = $this->data['disponible'];
+    $agen_account = $data['agen_account'];
+    $reserva_a = $data['reserver_a'];
+    $userA = $data['userA'];
+    $area = $data['areas'];
+    $extenFrom1 = $data['extenFrom1'];
+    $extenTo1 = $data['extenTo1'];
+    $extenFrom2 = $data['extenFrom2'];
+    $extenTo2 = $data['extenTo2'];
+    $to_areas = $data['to_areas'];
+    $to_areas2 = $data['to_areas2'];
+    $dato_pago = $reserva->pago;
+    $var = explode('-', $dato_pago);
+    $typo_pago = strtoupper($var[0]);
+    if (isset($var[1])) {
+        $typo_saldo = $var[1];
+        $rest_comision = 0;
+    } else {
+        $typo_saldo = 'FULL';
+        $rest_comision = isset($reserva_a->agency_fee) ? $reserva_a->agency_fee : 0;
+    }
+
+
+//    if ($e["id_tours"] != -1) {
+//        $id = $e['id_tours'];
+//        if ($e["type_tour"] == "MULTI") {
+//            $ruta = "admin/tours/edit/";
+//            $url2 = "";
+//        } else {
+//            $ruta = "admin/onedaytour/edit/";
+//            $url2 = "";
+//        }
+//    } else {
+//        $id = $e['id'];
+//        $ruta = "admin/reservas/edit/";
+//        $url2 = "/" . $url;
+//    }
+
+
+    $url1 = $data['rootUrl'] . $ruta . $reserva->id;
+
+
+
+
+//    if($agencia->type_rate == 0){
+//        $precioExt = $extencion1->precio + $extencion2->precio + $extencion3->precio + $extencion4->precio ;
+//    }else{
+//        $precioExt = $extencion1->precio_neto + $extencion2->precio_neto + $extencion3->precio_neto + $extencion4->precio_neto ;
+//    }
+//    $transporadult = $reserva->precioA/$reserva->pax;
+//    if ($reserva->pax2 != 0){
+//        $transporechil = $reserva->precioN/$reserva->pax2;
+//    }else{
+//        $transporechil = 0;
+//    }
+//    $subtoadult = $reserva->precioA + ($precioExt * $reserva->pax);
+//    $subtochild = $reserva->precioN + ($precioExt*$reserva->pax2);
+    $precio_extension_adultos = ($reserva->precio_exten1_a + $reserva->precio_exten2_a + $reserva->precio_exten3_a + $reserva->precio_exten4_a);
+    $precio_trips_adultos = $reserva->precio_trip1_a + $reserva->precio_trip2_a;
+    $subtoadult = ($precio_trips_adultos * $reserva->pax) + ($precio_extension_adultos * $reserva->pax);
+
+    $precio_extension_children = ($reserva->precio_exten1_c + $reserva->precio_exten2_c + $reserva->precio_exten3_c + $reserva->precio_exten4_c);
+    $precio_trips_children = $reserva->precio_trip1_c + $reserva->precio_trip2_c;
+    $subtochild = ( $precio_trips_children * $reserva->pax2) + ($precio_extension_children * $reserva->pax2);
+
+    $transporadult = $precio_trips_adultos;
+    if ($reserva->pax2 != 0) {
+        $transporechil = $precio_trips_children;
+    } else {
+        $transporechil = 0;
+    }
+    $precioExt = $precio_extension_adultos;
+
+    $totaltotal = ($subtoadult) + ($subtochild) + $reserva->extra_charge - $rest_comision - $val_procentaje - $reserva->descuento_valor;
+
+    //actualizacion de nuevas variables para capturar datos almacenados en la tabla reservas de la base de datos
+    //$total2 = $reserva->totaltotal;
+    $total2 = $reserva->total2;
+//    print($total2);
+//    print('       ');
+    $paid_driver = $reserva->paid_driver;
+//    print($paid_driver);
+//    print('       ');
+    $pred_paid_amount = $reserva->pred_paid_amount;
+//    print($pred_paid_amount);
+//    print('       ');
+    $total_paid = $reserva->total_paid;
+
+    $totaltotalfull = $reserva->totaltotal;
+
+    //$pagado = $reserva->total_paid;
+    //print($total_paid);
+//    print('       ');
+    $passenger_balance_due = $reserva->passenger_balance_due;
+//    print($passenger_balance_due);
+//    print('       ');
+    $agency_balance_due = $reserva->agency_balance_due;
+
+    $total_charge = $reserva->total_charge;
+//    print($$totaltotalfull);
+    //print($paid_driver);
+//actualizado sin typo pago
+//    if ($typo_pago == strtoupper('CREDIT CARD WITH FEE')) {
+//        if ($reserva->id < 17670) {
+//            $fee = $totaltotal * 0.03;
+//        } else {
+//            $fee = $totaltotal * 0.04;
+//        }
+//    } else {
+//        $fee = 0;
+//    }
+
+    $sql123 = "SELECT SUM(FLOOR(pagado)) AS PAGPRED FROM reservas_pago WHERE id_reserva=$reserva->id AND pago = 'PRED-PAID'";
+    $rs13 = Doo::db()->query($sql123);
+    $pagosprep = $rs13->fetchAll();
+
+//                    print($pagosprep);
+    foreach ($pagosprep as $ppr) {
+//                        print($ppr['PAGPRED']);
+    }
+    $pago_prepaid = ($ppr['PAGPRED']) * 0.04;
+    //print($pago_prepaid);
+
+
+    $descuento = $reserva->descuento_procentaje;
+
+    $val_procentaje = 0;
+    if ($descuento > 0) {
+        $val_procentaje = ($totaltotal * $descuento) / 100;
+    }
+    //actualizacion
+    $fee = 0;
+    //$totaltotal = $totaltotal + $fee;
+    //actualizacion
+    //$totaltotal = $total2 + $fee;
+
+    $totaltotal = $totaltotal + $fee;
+
+
+    //print_r($totaltotal);
+    //conf Other Amount
+    if ($reserva->otheramount != 0) {
+        $saldoxPagar = $reserva->otheramount - $pagado;
+    } else {
+        $saldoxPagar = $totaltotal - $pagado;
+
+        // $saldoxPagar = $totaltotal - $total_charge;
+        //$saldoxPagar = $totaltotal;
+        //print($saldoxPagar);
+    }
+
+    if ($reserva->pred_paid_amount != 0) {
+        $saldoPago = $reserva->pred_paid_amount - $totaltotal;
+        //print($saldoPago);
+    }
+
+    $adaptacion = "";
+    if ($extencion1->id != 0) {
+        $adaptacion .= "$('#pickup1').attr('disabled','true');";
+        $adaptacion .= "$('#pickup1').attr('value','');";
+        $adaptacion .= "$('#id_p1').attr('value','');";
+        $precio = ($agencia->type_rate == 0) ? $extencion1->precio : $extencion1->precio_neto;
+        $_SESSION['price']['exten1'] = $precio;
+    }
+    if ($extencion2->id != 0) {
+
+        $adaptacion .= "$('#dropoff1').attr('disabled','true');";
+        $adaptacion .= "$('#dropoff1').attr('value','');";
+        $adaptacion .= "$('#id_dropoff1').attr('value','');";
+        $precio = ($agencia->type_rate == 0) ? $extencion2->precio : $extencion2->precio_neto;
+        $_SESSION['price']['exten2'] = $precio;
+    }
+    if ($extencion3->id != 0) {
+        $adaptacion .= "$('#pickup2').attr('disabled','true');";
+        $adaptacion .= "$('#pickup2').attr('value','');";
+        $adaptacion .= "$('#id_p2').attr('value','');";
+        $precio = ($agencia->type_rate == 0) ? $extencion3->precio : $extencion3->precio_neto;
+        $_SESSION['price']['exten3'] = $precio;
+    }
+    if ($extencion4->id != 0) {
+        $adaptacion .= "$('#dropoff2').attr('disabled','true');";
+        $adaptacion .= "$('#dropoff2').attr('value','');";
+        $adaptacion .= "$('#id_dropoff2').attr('value','');";
+        $precio = ($agencia->type_rate == 0) ? $extencion4->precio : $extencion4->precio_neto;
+        $_SESSION['price']['exten4'] = $precio;
+    }
+} else {
+    echo 'Acceso denegado';
+    exit();
+}
+$login = $_SESSION['login'];
+?>
+
+
+
+<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="<?php echo $data['rootUrl']; ?>global/css/autocompletar/css/style.css" />
+<link rel="stylesheet" type="text/css" href="<?php echo $data['rootUrl']; ?>global/css/jquery.notice2.css"/>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
+<link rel="stylesheet" type="text/css" href="<?php echo $data['rootUrl']; ?>global/css/modal.css"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $data['rootUrl']; ?>global/themes/blitzer/jquery-ui-1.9.0.custom.css" />
+<link rel="stylesheet" type="text/css" href="<?php echo $data['rootUrl']; ?>global/themes/blitzer/jquery-ui-1.9.0.custom.min.css" />
+
+<script type="text/javascript" src="<?php echo $data['rootUrl']; ?>global/js/jquery.notice.js"></script>
+<script type="text/javascript" src="<?php echo $data['rootUrl']; ?>global/js/jquery.ausu-autosuggest.js"></script>
+<script type="text/javascript" src="<?php echo $data['rootUrl']; ?>global/js/Concurrent.Thread.js"></script>
+
+<script type="text/javascript" src="<?php echo $data['rootUrl']; ?>global/js/form.js"></script>
+
+<script type="text/javascript" src="<?php echo $data['rootUrl']; ?>global/js/jquery-ui-1.8.18.custom.min.js"></script>
+<script type="text/javascript" src="<?php echo $data['rootUrl']; ?>global/ui/jquery.ui.dialog.js"></script>
+<script type="text/javascript" src="<?php echo $data['rootUrl']; ?>global/js/modernizr.js"></script>
+<script type="text/javascript" src="<?php echo $data['rootUrl']; ?>/global/js/booking.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>-->
+
+<!-- Estilos y importaciones de javascript-->
+<link rel="stylesheet" type="text/css" href="<?php echo $data['rootUrl']; ?>global/css/panel.css" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="<?php echo $data['rootUrl']; ?>global/css/autocompletar/css/style.css" />
+<link rel="stylesheet" type="text/css" href="<?php echo $data['rootUrl']; ?>global/css/jquery.notice2.css"/>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
+<link rel="stylesheet" type="text/css" href="<?php echo $data['rootUrl']; ?>global/css/modal.css"/>
+
+<link rel="stylesheet" type="text/css" href="<?php echo $data['rootUrl']; ?>global/css/blitzer/jquery-ui-1.8.16.custom.css" />
+<link rel="stylesheet" type="text/css" href="<?php echo $data['rootUrl']; ?>global/themes/blitzer/jquery-ui-1.9.0.custom.css" />
+<link rel="stylesheet" href="<?php echo $data['rootUrl']; ?>global/themes/blitzer/jquery-ui-1.9.0.custom.min.css">
+<script type="text/javascript" src="<?php echo $data['rootUrl']; ?>global/ui/jquery.ui.dialog.js"></script>
+<script type="text/javascript" src="<?php echo $data['rootUrl']; ?>global/js/jquery.timeentry.js">
+    < script type = "text/javascript" src = "<?php echo $data['rootUrl']; ?>global/js/booking.js" ></script>
+
+<script type="text/javascript" src="<?php echo $data['rootUrl']; ?>global/js/menubar/js/menu.js"></script>
+<script type="text/javascript" src="<?php echo $data['rootUrl']; ?>global/js/jquery.notice.js"></script>
+<script type="text/javascript" src="<?php echo $data['rootUrl']; ?>global/js/jquery.ausu-autosuggest.js"></script>
+<script type="text/javascript" src="<?php echo $data['rootUrl']; ?>global/js/Concurrent.Thread.js"></script>
+
+<script type="text/javascript" src="<?php echo $data['rootUrl']; ?>global/js/form.js"></script>
+
+<!--dialog--------------------->
+<!--<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>-->
+
+<!--jquery para el calendario-->
+
+<script type="text/javascript" src="<?php echo $data['rootUrl']; ?>global/js/jquery-ui-1.8.18.custom.min.js"></script>
+<script type="text/javascript" src="<?php echo $data['rootUrl']; ?>/global/js/booking.js"></script>
+<!--<script type="text/javascript" src="<?php echo $data['rootUrl']; ?>global/js/jquery.timeentry.js"></script>-->
+<!--<script type="text/javascript" src="<?php echo $data['rootUrl']; ?>global/ui/jquery.ui.dialog.js"></script>-->
+<script type="text/javascript" src="<?php echo $data['rootUrl']; ?>global/js/modernizr.js"></script>
+
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<style type="text/css" media="screen">
+    #search{
+        cursor:pointer;
+    }
+    #reservation{
+        width:300px !important;
+    }
+    #offer {
+        position: absolute;
+        margin-left: 10px;
+        margin-top: 5px;
+    }
+    #content_page_tours {
+        border: 1px solid #CCC;
+        margin-top: 0px;
+        margin-right: auto;
+        margin-bottom: 20px;
+        margin-left: auto;
+        padding: 8px;
+        width: 98.4%;
+        float: left;
+        clear: both;
+        border-radius: 20px;
+
+    }
+
+    #selector {
+        -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+        -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+        box-shadow:inset 0px 1px 0px 0px #ffffff;
+        background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
+        background:-moz-linear-gradient( center top, #ededed 5%, #dfdfdf 100% );
+        filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#dfdfdf');
+        background-color:#ededed;
+        -moz-border-radius:6px;
+        -webkit-border-radius:6px;
+        border-radius:6px;
+        border:1px solid #dcdcdc;
+        display:inline-block;
+        color:#777777;
+        font-family:arial;
+        font-size:11px;
+        font-weight:bold;
+        padding:6px;
+        text-decoration:none;
+        text-shadow:1px 1px 0px #ffffff;
+    }
+    .selector:hover {
+        background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #dfdfdf), color-stop(1, #ededed) );
+        background:-moz-linear-gradient( center top, #dfdfdf 5%, #ededed 100% );
+        filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dfdfdf', endColorstr='#ededed');
+        background-color:#dfdfdf;
+        cursor:pointer;
+    }
+    .selector:active {
+        position:relative;
+        top:1px;
+    }
+    #selectos{
+        padding:0;
+        margin:0;
+    }
+    input[type="radio"]{
+        height: 15px;
+        width: 15px;
+    }
+
+    .background {
+        background: rgba(212,228,239,1);
+        background: -moz-linear-gradient(-45deg, rgba(212,228,239,1) 0%, rgba(134,174,204,1) 100%);
+        background: -webkit-gradient(left top, right bottom, color-stop(0%, rgba(212,228,239,1)), color-stop(100%, rgba(134,174,204,1)));
+        background: -webkit-linear-gradient(-45deg, rgba(212,228,239,1) 0%, rgba(134,174,204,1) 100%);
+        background: -o-linear-gradient(-45deg, rgba(212,228,239,1) 0%, rgba(134,174,204,1) 100%);
+        background: -ms-linear-gradient(-45deg, rgba(212,228,239,1) 0%, rgba(134,174,204,1) 100%);
+        background: linear-gradient(135deg, rgba(212,228,239,1) 0%, rgba(134,174,204,1) 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d4e4ef', endColorstr='#86aecc', GradientType=1 );
+
+    }
+    .rojo{
+        /* IE10+ */ 
+        background-image: -ms-linear-gradient(bottom left, #260505 0%, #AC1B29 75.5%, #FFC7C7 100%);
+
+        /* Mozilla Firefox */ 
+        background-image: -moz-linear-gradient(bottom left, #260505 0%, #AC1B29 75.5%, #FFC7C7 100%);
+
+        /* Opera */ 
+        background-image: -o-linear-gradient(bottom left, #260505 0%, #AC1B29 75.5%, #FFC7C7 100%);
+
+        /* Webkit (Safari/Chrome 10) */ 
+        background-image: -webkit-gradient(linear, left bottom, right top, color-stop(0, #260505), color-stop(75.5, #AC1B29), color-stop(100, #FFC7C7));
+
+        /* Webkit (Chrome 11+) */ 
+        background-image: -webkit-linear-gradient(bottom left, #260505 0%, #AC1B29 75.5%, #FFC7C7 100%);
+
+        /* W3C Markup */ 
+        background-image: linear-gradient(to top right, #260505 0%, #AC1B29 75.5%, #FFC7C7 100%); 
+    }
+    .cerati{
+        /* IE10+ */ 
+        background-image: -ms-linear-gradient(bottom left, #1E4D82 0%, #33449C 51%, #1B1478 75.5%, #E1E0FF 100%);
+
+        /* Mozilla Firefox */ 
+        background-image: -moz-linear-gradient(bottom left, #1E4D82 0%, #33449C 51%, #1B1478 75.5%, #E1E0FF 100%);
+
+        /* Opera */ 
+        background-image: -o-linear-gradient(bottom left, #1E4D82 0%, #33449C 51%, #1B1478 75.5%, #E1E0FF 100%);
+
+        /* Webkit (Safari/Chrome 10) */ 
+        background-image: -webkit-gradient(linear, left bottom, right top, color-stop(0, #1E4D82), color-stop(51, #33449C), color-stop(75.5, #1B1478), color-stop(100, #E1E0FF));
+
+        /* Webkit (Chrome 11+) */ 
+        background-image: -webkit-linear-gradient(bottom left, #1E4D82 0%, #33449C 51%, #1B1478 75.5%, #E1E0FF 100%);
+
+        /* W3C Markup */ 
+        background-image: linear-gradient(to top right, #1E4D82 0%, #33449C 51%, #1B1478 75.5%, #E1E0FF 100%);
+    }
+
+    .super{
+        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#c5deea+0,8abbd7+29,0751b2+78 */
+        background: rgb(197,222,234); /* Old browsers */
+        background: -moz-linear-gradient(top,  rgba(197,222,234,1) 0%, rgba(138,187,215,1) 29%, rgba(7,81,178,1) 78%); /* FF3.6-15 */
+        background: -webkit-linear-gradient(top,  rgba(197,222,234,1) 0%,rgba(138,187,215,1) 29%,rgba(7,81,178,1) 78%); /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient(to bottom,  rgba(197,222,234,1) 0%,rgba(138,187,215,1) 29%,rgba(7,81,178,1) 78%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c5deea', endColorstr='#0751b2',GradientType=0 ); /* IE6-9 */
+
+    }
+
+    .black{
+        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#7d7e7d+0,0e0e0e+100;Black+3D */
+        background: rgb(125,126,125); /* Old browsers */
+        background: -moz-radial-gradient(center, ellipse cover,  rgba(125,126,125,1) 0%, rgba(14,14,14,1) 100%); /* FF3.6-15 */
+        background: -webkit-radial-gradient(center, ellipse cover,  rgba(125,126,125,1) 0%,rgba(14,14,14,1) 100%); /* Chrome10-25,Safari5.1-6 */
+        background: radial-gradient(ellipse at center,  rgba(125,126,125,1) 0%,rgba(14,14,14,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7d7e7d', endColorstr='#0e0e0e',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+
+    }
+
+    .gris{
+        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#000000+0,000000+100&0.65+0,0+100;Neutral+Density */
+        background: -moz-linear-gradient(-45deg,  rgba(0,0,0,0.65) 0%, rgba(0,0,0,0) 100%); /* FF3.6-15 */
+        background: -webkit-linear-gradient(-45deg,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 100%); /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient(135deg,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a6000000', endColorstr='#00000000',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+
+    }
+    .azul{
+        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#1e5799+20,2989d8+50,1e5799+80&0+0,0.8+15,1+19,1+81,0.8+85,0+100;Blue+Two+Sided+Transparent */
+        background: -moz-linear-gradient(top,  rgba(30,87,153,0) 0%, rgba(30,87,153,0.8) 15%, rgba(30,87,153,1) 19%, rgba(30,87,153,1) 20%, rgba(41,137,216,1) 50%, rgba(30,87,153,1) 80%, rgba(30,87,153,1) 81%, rgba(30,87,153,0.8) 85%, rgba(30,87,153,0) 100%); /* FF3.6-15 */
+        background: -webkit-linear-gradient(top,  rgba(30,87,153,0) 0%,rgba(30,87,153,0.8) 15%,rgba(30,87,153,1) 19%,rgba(30,87,153,1) 20%,rgba(41,137,216,1) 50%,rgba(30,87,153,1) 80%,rgba(30,87,153,1) 81%,rgba(30,87,153,0.8) 85%,rgba(30,87,153,0) 100%); /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient(to bottom,  rgba(30,87,153,0) 0%,rgba(30,87,153,0.8) 15%,rgba(30,87,153,1) 19%,rgba(30,87,153,1) 20%,rgba(41,137,216,1) 50%,rgba(30,87,153,1) 80%,rgba(30,87,153,1) 81%,rgba(30,87,153,0.8) 85%,rgba(30,87,153,0) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#001e5799', endColorstr='#001e5799',GradientType=0 ); /* IE6-9 */
+
+    }
+
+    .verde{
+        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#d8e0de+0,aebfbc+22,99afab+33,8ea6a2+50,829d98+67,4e5c5a+82,0e0e0e+100;Grey+3D */
+        background: rgb(216,224,222); /* Old browsers */
+        background: -moz-linear-gradient(top,  rgba(216,224,222,1) 0%, rgba(174,191,188,1) 22%, rgba(153,175,171,1) 33%, rgba(142,166,162,1) 50%, rgba(130,157,152,1) 67%, rgba(78,92,90,1) 82%, rgba(14,14,14,1) 100%); /* FF3.6-15 */
+        background: -webkit-linear-gradient(top,  rgba(216,224,222,1) 0%,rgba(174,191,188,1) 22%,rgba(153,175,171,1) 33%,rgba(142,166,162,1) 50%,rgba(130,157,152,1) 67%,rgba(78,92,90,1) 82%,rgba(14,14,14,1) 100%); /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient(to bottom,  rgba(216,224,222,1) 0%,rgba(174,191,188,1) 22%,rgba(153,175,171,1) 33%,rgba(142,166,162,1) 50%,rgba(130,157,152,1) 67%,rgba(78,92,90,1) 82%,rgba(14,14,14,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d8e0de', endColorstr='#0e0e0e',GradientType=0 ); /* IE6-9 */
+
+    }
+
+    .gris2{
+        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#f5f6f6+0,dbdce2+21,b8bac6+49,dddfe3+80,f5f6f6+100;Grey+Pipe */
+        background: rgb(245,246,246); /* Old browsers */
+        background: -moz-linear-gradient(top,  rgba(245,246,246,1) 0%, rgba(219,220,226,1) 21%, rgba(184,186,198,1) 49%, rgba(221,223,227,1) 80%, rgba(245,246,246,1) 100%); /* FF3.6-15 */
+        background: -webkit-linear-gradient(top,  rgba(245,246,246,1) 0%,rgba(219,220,226,1) 21%,rgba(184,186,198,1) 49%,rgba(221,223,227,1) 80%,rgba(245,246,246,1) 100%); /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient(to bottom,  rgba(245,246,246,1) 0%,rgba(219,220,226,1) 21%,rgba(184,186,198,1) 49%,rgba(221,223,227,1) 80%,rgba(245,246,246,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f5f6f6', endColorstr='#f5f6f6',GradientType=0 ); /* IE6-9 */
+
+    }
+
+    .brown{
+        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#f3e2c7+0,c19e67+50,b68d4c+51,e9d4b3+100;L+Brown+3D */
+        background: rgb(243,226,199); /* Old browsers */
+        background: -moz-linear-gradient(top,  rgba(243,226,199,1) 0%, rgba(193,158,103,1) 50%, rgba(182,141,76,1) 51%, rgba(233,212,179,1) 100%); /* FF3.6-15 */
+        background: -webkit-linear-gradient(top,  rgba(243,226,199,1) 0%,rgba(193,158,103,1) 50%,rgba(182,141,76,1) 51%,rgba(233,212,179,1) 100%); /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient(to bottom,  rgba(243,226,199,1) 0%,rgba(193,158,103,1) 50%,rgba(182,141,76,1) 51%,rgba(233,212,179,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f3e2c7', endColorstr='#e9d4b3',GradientType=0 ); /* IE6-9 */
+
+    }
+
+    .sky{
+        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#7db9e8+66,1e5799+100&0.39+58,1+92 */
+        background: -moz-linear-gradient(top,  rgba(125,185,232,0.39) 58%, rgba(125,185,232,0.53) 66%, rgba(52,110,172,1) 92%, rgba(30,87,153,1) 100%); /* FF3.6-15 */
+        background: -webkit-linear-gradient(top,  rgba(125,185,232,0.39) 58%,rgba(125,185,232,0.53) 66%,rgba(52,110,172,1) 92%,rgba(30,87,153,1) 100%); /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient(to bottom,  rgba(125,185,232,0.39) 58%,rgba(125,185,232,0.53) 66%,rgba(52,110,172,1) 92%,rgba(30,87,153,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#637db9e8', endColorstr='#1e5799',GradientType=0 ); /* IE6-9 */
+
+    }
+
+    .orangered{
+        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#e5361b+20,ed9017+95 */
+        background: rgb(229,54,27); /* Old browsers */
+        background: -moz-linear-gradient(top,  rgba(229,54,27,1) 20%, rgba(237,144,23,1) 95%); /* FF3.6-15 */
+        background: -webkit-linear-gradient(top,  rgba(229,54,27,1) 20%,rgba(237,144,23,1) 95%); /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient(to bottom,  rgba(229,54,27,1) 20%,rgba(237,144,23,1) 95%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e5361b', endColorstr='#ed9017',GradientType=0 ); /* IE6-9 */
+
+    }
+
+    .redop{
+        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#cd615b+44,cd615b+44,cd615b+60,cd615b+72,cd615b+72,cd615b+75,cd615b+75,cd615b+96,cd615b+96&1+0,0.39+78 */
+        background: -moz-linear-gradient(top,  rgba(205,97,91,1) 0%, rgba(205,97,91,0.66) 44%, rgba(205,97,91,0.53) 60%, rgba(205,97,91,0.44) 72%, rgba(205,97,91,0.42) 75%, rgba(205,97,91,0.39) 78%, rgba(205,97,91,0.39) 96%); /* FF3.6-15 */
+        background: -webkit-linear-gradient(top,  rgba(205,97,91,1) 0%,rgba(205,97,91,0.66) 44%,rgba(205,97,91,0.53) 60%,rgba(205,97,91,0.44) 72%,rgba(205,97,91,0.42) 75%,rgba(205,97,91,0.39) 78%,rgba(205,97,91,0.39) 96%); /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient(to bottom,  rgba(205,97,91,1) 0%,rgba(205,97,91,0.66) 44%,rgba(205,97,91,0.53) 60%,rgba(205,97,91,0.44) 72%,rgba(205,97,91,0.42) 75%,rgba(205,97,91,0.39) 78%,rgba(205,97,91,0.39) 96%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cd615b', endColorstr='#63cd615b',GradientType=0 ); /* IE6-9 */
+
+    }
+
+    .oliva{
+        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#fcfff5+0,e0f0cc+40,abdb91+100 */
+        background: rgb(252,255,245); /* Old browsers */
+        background: -moz-linear-gradient(top,  rgba(252,255,245,1) 0%, rgba(224,240,204,1) 40%, rgba(171,219,145,1) 100%); /* FF3.6-15 */
+        background: -webkit-linear-gradient(top,  rgba(252,255,245,1) 0%,rgba(224,240,204,1) 40%,rgba(171,219,145,1) 100%); /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient(to bottom,  rgba(252,255,245,1) 0%,rgba(224,240,204,1) 40%,rgba(171,219,145,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfff5', endColorstr='#abdb91',GradientType=0 ); /* IE6-9 */
+
+    }
+
+    .oliva2{
+        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#dbe3e5+0,6993a1+81 */
+        background: rgb(219,227,229); /* Old browsers */
+        background: -moz-linear-gradient(top,  rgba(219,227,229,1) 0%, rgba(105,147,161,1) 81%); /* FF3.6-15 */
+        background: -webkit-linear-gradient(top,  rgba(219,227,229,1) 0%,rgba(105,147,161,1) 81%); /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient(to bottom,  rgba(219,227,229,1) 0%,rgba(105,147,161,1) 81%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dbe3e5', endColorstr='#6993a1',GradientType=0 ); /* IE6-9 */
+
+    }
+
+    .oliveti{
+        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#f2f6f8+0,d8e1e7+50,b5c6d0+82,e0eff9+100 */
+        background: rgb(242,246,248); /* Old browsers */
+        background: -moz-linear-gradient(top,  rgba(242,246,248,1) 0%, rgba(216,225,231,1) 50%, rgba(181,198,208,1) 82%, rgba(224,239,249,1) 100%); /* FF3.6-15 */
+        background: -webkit-linear-gradient(top,  rgba(242,246,248,1) 0%,rgba(216,225,231,1) 50%,rgba(181,198,208,1) 82%,rgba(224,239,249,1) 100%); /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient(to bottom,  rgba(242,246,248,1) 0%,rgba(216,225,231,1) 50%,rgba(181,198,208,1) 82%,rgba(224,239,249,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2f6f8', endColorstr='#e0eff9',GradientType=0 ); /* IE6-9 */
+
+    }
+
+    .brown2{
+        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#f6dfb8+47,f6dfb8+76,e1ac51+94 */
+        background: rgb(246,223,184); /* Old browsers */
+        background: -moz-linear-gradient(top,  rgba(246,223,184,1) 47%, rgba(246,223,184,1) 76%, rgba(225,172,81,1) 94%); /* FF3.6-15 */
+        background: -webkit-linear-gradient(top,  rgba(246,223,184,1) 47%,rgba(246,223,184,1) 76%,rgba(225,172,81,1) 94%); /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient(to bottom,  rgba(246,223,184,1) 47%,rgba(246,223,184,1) 76%,rgba(225,172,81,1) 94%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f6dfb8', endColorstr='#e1ac51',GradientType=0 ); /* IE6-9 */
+
+    }
+
+    .brown3{
+        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#f6cbb8+47,f6cbb8+86,e17c51+94 */
+        background: rgb(246,203,184); /* Old browsers */
+        background: -moz-radial-gradient(center, ellipse cover,  rgba(246,203,184,1) 47%, rgba(246,203,184,1) 86%, rgba(225,124,81,1) 94%); /* FF3.6-15 */
+        background: -webkit-radial-gradient(center, ellipse cover,  rgba(246,203,184,1) 47%,rgba(246,203,184,1) 86%,rgba(225,124,81,1) 94%); /* Chrome10-25,Safari5.1-6 */
+        background: radial-gradient(ellipse at center,  rgba(246,203,184,1) 47%,rgba(246,203,184,1) 86%,rgba(225,124,81,1) 94%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f6cbb8', endColorstr='#e17c51',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+
+    }
+
+    .brown4{
+        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#f9e0cb+49,f9e0cb+49,f9e0cb+65,f9e0cb+69,f9e0cb+70,f9e0cb+74,e9b081+86,e9b081+86 */
+        background: rgb(249,224,203); /* Old browsers */
+        background: -moz-radial-gradient(center, ellipse cover,  rgba(249,224,203,1) 49%, rgba(249,224,203,1) 49%, rgba(249,224,203,1) 65%, rgba(249,224,203,1) 69%, rgba(249,224,203,1) 70%, rgba(249,224,203,1) 74%, rgba(233,176,129,1) 86%, rgba(233,176,129,1) 86%); /* FF3.6-15 */
+        background: -webkit-radial-gradient(center, ellipse cover,  rgba(249,224,203,1) 49%,rgba(249,224,203,1) 49%,rgba(249,224,203,1) 65%,rgba(249,224,203,1) 69%,rgba(249,224,203,1) 70%,rgba(249,224,203,1) 74%,rgba(233,176,129,1) 86%,rgba(233,176,129,1) 86%); /* Chrome10-25,Safari5.1-6 */
+        background: radial-gradient(ellipse at center,  rgba(249,224,203,1) 49%,rgba(249,224,203,1) 49%,rgba(249,224,203,1) 65%,rgba(249,224,203,1) 69%,rgba(249,224,203,1) 70%,rgba(249,224,203,1) 74%,rgba(233,176,129,1) 86%,rgba(233,176,129,1) 86%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f9e0cb', endColorstr='#e9b081',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+
+    }
+
+    .verdefosf1{
+        background: rgba(230,227,225,0.45);
+        background: -moz-linear-gradient(top, rgba(230,227,225,0.45) 0%, rgba(189,226,201,0.45) 25%, rgba(86,222,141,0.96) 87%, rgba(86,185,173,1) 92%, rgba(87,126,224,1) 100%);
+        background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(230,227,225,0.45)), color-stop(25%, rgba(189,226,201,0.45)), color-stop(87%, rgba(86,222,141,0.96)), color-stop(92%, rgba(86,185,173,1)), color-stop(100%, rgba(87,126,224,1)));
+        background: -webkit-linear-gradient(top, rgba(230,227,225,0.45) 0%, rgba(189,226,201,0.45) 25%, rgba(86,222,141,0.96) 87%, rgba(86,185,173,1) 92%, rgba(87,126,224,1) 100%);
+        background: -o-linear-gradient(top, rgba(230,227,225,0.45) 0%, rgba(189,226,201,0.45) 25%, rgba(86,222,141,0.96) 87%, rgba(86,185,173,1) 92%, rgba(87,126,224,1) 100%);
+        background: -ms-linear-gradient(top, rgba(230,227,225,0.45) 0%, rgba(189,226,201,0.45) 25%, rgba(86,222,141,0.96) 87%, rgba(86,185,173,1) 92%, rgba(87,126,224,1) 100%);
+        background: linear-gradient(to bottom, rgba(230,227,225,0.45) 0%, rgba(189,226,201,0.45) 25%, rgba(86,222,141,0.96) 87%, rgba(86,185,173,1) 92%, rgba(87,126,224,1) 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e6e3e1', endColorstr='#577ee0', GradientType=0 );
+    }
+
+    .verdefosf{
+        background: rgba(230,227,225,0.45);
+        background: -moz-linear-gradient(top, rgba(230,227,225,0.45) 0%, rgba(189,226,222,0.45) 25%, rgba(142,224,219,1) 53%, rgba(86,222,215,1) 87%, rgba(87,126,224,1) 100%);
+        background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(230,227,225,0.45)), color-stop(25%, rgba(189,226,222,0.45)), color-stop(53%, rgba(142,224,219,1)), color-stop(87%, rgba(86,222,215,1)), color-stop(100%, rgba(87,126,224,1)));
+        background: -webkit-linear-gradient(top, rgba(230,227,225,0.45) 0%, rgba(189,226,222,0.45) 25%, rgba(142,224,219,1) 53%, rgba(86,222,215,1) 87%, rgba(87,126,224,1) 100%);
+        background: -o-linear-gradient(top, rgba(230,227,225,0.45) 0%, rgba(189,226,222,0.45) 25%, rgba(142,224,219,1) 53%, rgba(86,222,215,1) 87%, rgba(87,126,224,1) 100%);
+        background: -ms-linear-gradient(top, rgba(230,227,225,0.45) 0%, rgba(189,226,222,0.45) 25%, rgba(142,224,219,1) 53%, rgba(86,222,215,1) 87%, rgba(87,126,224,1) 100%);
+        background: linear-gradient(to bottom, rgba(230,227,225,0.45) 0%, rgba(189,226,222,0.45) 25%, rgba(142,224,219,1) 53%, rgba(86,222,215,1) 87%, rgba(87,126,224,1) 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e6e3e1', endColorstr='#577ee0', GradientType=0 );
+    }
+
+    .vinotinto{
+        background: rgba(173,0,17,1);
+        background: -moz-linear-gradient(top, rgba(173,0,17,1) 0%, rgba(228,196,198,0.97) 44%, rgba(0,0,61,0.93) 100%);
+        background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(173,0,17,1)), color-stop(44%, rgba(228,196,198,0.97)), color-stop(100%, rgba(0,0,61,0.93)));
+        background: -webkit-linear-gradient(top, rgba(173,0,17,1) 0%, rgba(228,196,198,0.97) 44%, rgba(0,0,61,0.93) 100%);
+        background: -o-linear-gradient(top, rgba(173,0,17,1) 0%, rgba(228,196,198,0.97) 44%, rgba(0,0,61,0.93) 100%);
+        background: -ms-linear-gradient(top, rgba(173,0,17,1) 0%, rgba(228,196,198,0.97) 44%, rgba(0,0,61,0.93) 100%);
+        background: linear-gradient(to bottom, rgba(173,0,17,1) 0%, rgba(228,196,198,0.97) 44%, rgba(0,0,61,0.93) 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ad0011', endColorstr='#00003d', GradientType=0 );
+    }
+
+    .booking2{
+        background: rgba(212,214,230,0.28);
+        background: -moz-linear-gradient(top, rgba(212,214,230,0.28) 81%, rgba(212,214,230,0.6) 89%, rgba(210,255,82,1) 99%);
+        background: -webkit-gradient(left top, left bottom, color-stop(81%, rgba(212,214,230,0.28)), color-stop(89%, rgba(212,214,230,0.6)), color-stop(99%, rgba(210,255,82,1)));
+        background: -webkit-linear-gradient(top, rgba(212,214,230,0.28) 81%, rgba(212,214,230,0.6) 89%, rgba(210,255,82,1) 99%);
+        background: -o-linear-gradient(top, rgba(212,214,230,0.28) 81%, rgba(212,214,230,0.6) 89%, rgba(210,255,82,1) 99%);
+        background: -ms-linear-gradient(top, rgba(212,214,230,0.28) 81%, rgba(212,214,230,0.6) 89%, rgba(210,255,82,1) 99%);
+        background: linear-gradient(to bottom, rgba(212,214,230,0.28) 81%, rgba(212,214,230,0.6) 89%, rgba(210,255,82,1) 99%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d4d6e6', endColorstr='#d2ff52', GradientType=0 );
+    }
+
+    .verde2018{
+        background: rgba(100,241,39,1);
+        background: -moz-radial-gradient(center, ellipse cover, rgba(100,241,39,1) 0%, rgba(74,176,69,1) 29%, rgba(74,176,69,1) 85%);
+        background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, rgba(100,241,39,1)), color-stop(29%, rgba(74,176,69,1)), color-stop(85%, rgba(74,176,69,1)));
+        background: -webkit-radial-gradient(center, ellipse cover, rgba(100,241,39,1) 0%, rgba(74,176,69,1) 29%, rgba(74,176,69,1) 85%);
+        background: -o-radial-gradient(center, ellipse cover, rgba(100,241,39,1) 0%, rgba(74,176,69,1) 29%, rgba(74,176,69,1) 85%);
+        background: -ms-radial-gradient(center, ellipse cover, rgba(100,241,39,1) 0%, rgba(74,176,69,1) 29%, rgba(74,176,69,1) 85%);
+        background: radial-gradient(ellipse at center, rgba(100,241,39,1) 0%, rgba(74,176,69,1) 29%, rgba(74,176,69,1) 85%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#64f127', endColorstr='#4ab045', GradientType=1 );
+    }
+
+    .verde2017{
+        background: rgba(14,216,54,1);
+        background: -moz-linear-gradient(top, rgba(14,216,54,1) 0%, rgba(51,151,90,1) 62%, rgba(56,143,95,0.9) 70%, rgba(56,143,95,0.53) 100%);
+        background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(14,216,54,1)), color-stop(62%, rgba(51,151,90,1)), color-stop(70%, rgba(56,143,95,0.9)), color-stop(100%, rgba(56,143,95,0.53)));
+        background: -webkit-linear-gradient(top, rgba(14,216,54,1) 0%, rgba(51,151,90,1) 62%, rgba(56,143,95,0.9) 70%, rgba(56,143,95,0.53) 100%);
+        background: -o-linear-gradient(top, rgba(14,216,54,1) 0%, rgba(51,151,90,1) 62%, rgba(56,143,95,0.9) 70%, rgba(56,143,95,0.53) 100%);
+        background: -ms-linear-gradient(top, rgba(14,216,54,1) 0%, rgba(51,151,90,1) 62%, rgba(56,143,95,0.9) 70%, rgba(56,143,95,0.53) 100%);
+        background: linear-gradient(to bottom, rgba(14,216,54,1) 0%, rgba(51,151,90,1) 62%, rgba(56,143,95,0.9) 70%, rgba(56,143,95,0.53) 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0ed836', endColorstr='#388f5f', GradientType=0 );
+    }
+
+    .rojo2017{
+        background: rgba(196,107,84,1);
+        background: -moz-linear-gradient(top, rgba(196,107,84,1) 0%, rgba(196,107,84,0.9) 18%, rgba(248,114,84,0.79) 39%, rgba(255,47,5,0.72) 51%, rgba(250,54,15,0.64) 67%, rgba(239,59,31,0.47) 99%, rgba(239,59,31,0.46) 100%);
+        background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(196,107,84,1)), color-stop(18%, rgba(196,107,84,0.9)), color-stop(39%, rgba(248,114,84,0.79)), color-stop(51%, rgba(255,47,5,0.72)), color-stop(67%, rgba(250,54,15,0.64)), color-stop(99%, rgba(239,59,31,0.47)), color-stop(100%, rgba(239,59,31,0.46)));
+        background: -webkit-linear-gradient(top, rgba(196,107,84,1) 0%, rgba(196,107,84,0.9) 18%, rgba(248,114,84,0.79) 39%, rgba(255,47,5,0.72) 51%, rgba(250,54,15,0.64) 67%, rgba(239,59,31,0.47) 99%, rgba(239,59,31,0.46) 100%);
+        background: -o-linear-gradient(top, rgba(196,107,84,1) 0%, rgba(196,107,84,0.9) 18%, rgba(248,114,84,0.79) 39%, rgba(255,47,5,0.72) 51%, rgba(250,54,15,0.64) 67%, rgba(239,59,31,0.47) 99%, rgba(239,59,31,0.46) 100%);
+        background: -ms-linear-gradient(top, rgba(196,107,84,1) 0%, rgba(196,107,84,0.9) 18%, rgba(248,114,84,0.79) 39%, rgba(255,47,5,0.72) 51%, rgba(250,54,15,0.64) 67%, rgba(239,59,31,0.47) 99%, rgba(239,59,31,0.46) 100%);
+        background: linear-gradient(to bottom, rgba(196,107,84,1) 0%, rgba(196,107,84,0.9) 18%, rgba(248,114,84,0.79) 39%, rgba(255,47,5,0.72) 51%, rgba(250,54,15,0.64) 67%, rgba(239,59,31,0.47) 99%, rgba(239,59,31,0.46) 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c46b54', endColorstr='#ef3b1f', GradientType=0 );
+    }
+
+    .azul2017{
+        background: rgba(0,120,212,1);
+        background: -moz-linear-gradient(top, rgba(0,120,212,1) 18%, rgba(0,154,250,1) 32%, rgba(0,154,250,1) 34%, rgba(0,154,250,0.5) 65%);
+        background: -webkit-gradient(left top, left bottom, color-stop(18%, rgba(0,120,212,1)), color-stop(32%, rgba(0,154,250,1)), color-stop(34%, rgba(0,154,250,1)), color-stop(65%, rgba(0,154,250,0.5)));
+        background: -webkit-linear-gradient(top, rgba(0,120,212,1) 18%, rgba(0,154,250,1) 32%, rgba(0,154,250,1) 34%, rgba(0,154,250,0.5) 65%);
+        background: -o-linear-gradient(top, rgba(0,120,212,1) 18%, rgba(0,154,250,1) 32%, rgba(0,154,250,1) 34%, rgba(0,154,250,0.5) 65%);
+        background: -ms-linear-gradient(top, rgba(0,120,212,1) 18%, rgba(0,154,250,1) 32%, rgba(0,154,250,1) 34%, rgba(0,154,250,0.5) 65%);
+        background: linear-gradient(to bottom, rgba(0,120,212,1) 18%, rgba(0,154,250,1) 32%, rgba(0,154,250,1) 34%, rgba(0,154,250,0.5) 65%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0078d4', endColorstr='#009afa', GradientType=0 );
+    }
+
+    .redopc{
+        background: rgba(167,6,41,1);
+        background: -moz-linear-gradient(top, rgba(167,6,41,1) 0%, rgba(167,6,41,0.54) 32%, rgba(167,6,41,0.54) 40%, rgba(138,5,34,0.54) 44%, rgba(105,2,24,0.54) 53%);
+        background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(167,6,41,1)), color-stop(32%, rgba(167,6,41,0.54)), color-stop(40%, rgba(167,6,41,0.54)), color-stop(44%, rgba(138,5,34,0.54)), color-stop(53%, rgba(105,2,24,0.54)));
+        background: -webkit-linear-gradient(top, rgba(167,6,41,1) 0%, rgba(167,6,41,0.54) 32%, rgba(167,6,41,0.54) 40%, rgba(138,5,34,0.54) 44%, rgba(105,2,24,0.54) 53%);
+        background: -o-linear-gradient(top, rgba(167,6,41,1) 0%, rgba(167,6,41,0.54) 32%, rgba(167,6,41,0.54) 40%, rgba(138,5,34,0.54) 44%, rgba(105,2,24,0.54) 53%);
+        background: -ms-linear-gradient(top, rgba(167,6,41,1) 0%, rgba(167,6,41,0.54) 32%, rgba(167,6,41,0.54) 40%, rgba(138,5,34,0.54) 44%, rgba(105,2,24,0.54) 53%);
+        background: linear-gradient(to bottom, rgba(167,6,41,1) 0%, rgba(167,6,41,0.54) 32%, rgba(167,6,41,0.54) 40%, rgba(138,5,34,0.54) 44%, rgba(105,2,24,0.54) 53%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a70629', endColorstr='#690218', GradientType=0 );
+    }
+
+    .grad {
+        background: red; /* For browsers that do not support gradients */
+        background: -webkit-linear-gradient(-90deg, red, yellow); /* For Safari 5.1 to 6.0 */
+        background: -o-linear-gradient(-90deg, red, yellow); /* For Opera 11.1 to 12.0 */
+        background: -moz-linear-gradient(-90deg, red, yellow); /* For Firefox 3.6 to 15 */
+        background: linear-gradient(-90deg, red, yellow); /* Standard syntax */
+    }
+
+    .angry{
+        background: -moz-linear-gradient(270deg, #008080 0%, #FFFFFF 25%, #32898C 50%, #FFFFFF 75%, #005757 100%); /* ff3.6+ */
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #008080), color-stop(25%, #FFFFFF), color-stop(50%, #32898C), color-stop(75%, #FFFFFF), color-stop(100%, #005757)); /* safari4+,chrome */
+        background: -webkit-linear-gradient(270deg, #008080 0%, #FFFFFF 25%, #32898C 50%, #FFFFFF 75%, #005757 100%); /* safari5.1+,chrome10+ */
+        background: -o-linear-gradient(270deg, #008080 0%, #FFFFFF 25%, #32898C 50%, #FFFFFF 75%, #005757 100%); /* opera 11.10+ */
+        background: -ms-linear-gradient(270deg, #008080 0%, #FFFFFF 25%, #32898C 50%, #FFFFFF 75%, #005757 100%); /* ie10+ */
+        background: linear-gradient(180deg, #008080 0%, #FFFFFF 25%, #32898C 50%, #FFFFFF 75%, #005757 100%); /* w3c */
+    }
+
+    .angry2{
+        background: -moz-radial-gradient(center, ellipse cover, #0B4A8A 0%, #010C17 83%, #000000 100%); /* ff3.6+ */
+        background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, #0B4A8A), color-stop(83%, #010C17), color-stop(100%, #000000)); /* safari4+,chrome */
+        background: -webkit-radial-gradient(center, ellipse cover, #0B4A8A 0%, #010C17 83%, #000000 100%); /* safari5.1+,chrome10+ */
+        background: -o-radial-gradient(center, ellipse cover, #0B4A8A 0%, #010C17 83%, #000000 100%); /* opera 11.10+ */
+        background: -ms-radial-gradient(center, ellipse cover, #0B4A8A 0%, #010C17 83%, #000000 100%); /* ie10+ */
+        background: radial-gradient(ellipse at center, #0B4A8A 0%, #010C17 83%, #000000 100%); /* w3c */
+    }
+
+    .angryrad{
+        background: -moz-radial-gradient(center, ellipse cover, #003333 0%, #05C1FF 50%, #003333 100%); /* ff3.6+ */
+        background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, #003333), color-stop(50%, #05C1FF), color-stop(100%, #003333)); /* safari4+,chrome */
+        background: -webkit-radial-gradient(center, ellipse cover, #003333 0%, #05C1FF 50%, #003333 100%); /* safari5.1+,chrome10+ */
+        background: -o-radial-gradient(center, ellipse cover, #003333 0%, #05C1FF 50%, #003333 100%); /* opera 11.10+ */
+        background: -ms-radial-gradient(center, ellipse cover, #003333 0%, #05C1FF 50%, #003333 100%); /* ie10+ */
+        background: radial-gradient(ellipse at center, #003333 0%, #05C1FF 50%, #003333 100%); /* w3c */
+    }
+
+    .payment{
+        background: -moz-linear-gradient(0deg, #0C0680 0%, #FFFFFF 33%, #0c0680 50%, #FFFFFF 65%, #0C0680 100%); /* ff3.6+ */
+        background: -webkit-gradient(linear, left top, right top, color-stop(0%, #0C0680), color-stop(33%, #FFFFFF), color-stop(50%, #0c0680), color-stop(65%, #FFFFFF), color-stop(100%, #0C0680)); /* safari4+,chrome */
+        background: -webkit-linear-gradient(0deg, #0C0680 0%, #FFFFFF 33%, #0c0680 50%, #FFFFFF 65%, #0C0680 100%); /* safari5.1+,chrome10+ */
+        background: -o-linear-gradient(0deg, #0C0680 0%, #FFFFFF 33%, #0c0680 50%, #FFFFFF 65%, #0C0680 100%); /* opera 11.10+ */
+        background: -ms-linear-gradient(0deg, #0C0680 0%, #FFFFFF 33%, #0c0680 50%, #FFFFFF 65%, #0C0680 100%); /* ie10+ */
+        background: linear-gradient(90deg, #0C0680 0%, #FFFFFF 33%, #0c0680 50%, #FFFFFF 65%, #0C0680 100%); /* w3c */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0C0680', endColorstr='#0C0680',GradientType=1 ); /* ie6-9 */
+    }
+
+    .paymentvert{
+
+        background: -moz-linear-gradient(90deg, #0C0680 0%, #ffffff 33%, #0c0680 50%, #FFFFFF 65%, #0C0680 100%); /* ff3.6+ */
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #0C0680), color-stop(35%, #FFFFFF), color-stop(50%, #0c0680), color-stop(67%, #ffffff), color-stop(100%, #0C0680)); /* safari4+,chrome */
+        background: -webkit-linear-gradient(90deg, #0C0680 0%, #ffffff 33%, #0c0680 50%, #FFFFFF 65%, #0C0680 100%); /* safari5.1+,chrome10+ */
+        background: -o-linear-gradient(90deg, #0C0680 0%, #ffffff 33%, #0c0680 50%, #FFFFFF 65%, #0C0680 100%); /* opera 11.10+ */
+        background: -ms-linear-gradient(90deg, #0C0680 0%, #ffffff 33%, #0c0680 50%, #FFFFFF 65%, #0C0680 100%); /* ie10+ */
+        background: linear-gradient(0deg, #0C0680 0%, #ffffff 33%, #0c0680 50%, #FFFFFF 65%, #0C0680 100%); /* w3c */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0C0680', endColorstr='#0C0680',GradientType=0 ); /* ie6-9 */
+
+    }
+
+    .paymentvertblack{
+        background: -moz-linear-gradient(90deg, #000000 0%, #ffffff 33%, #000000 50%, #FFFFFF 65%, #000000 100%); /* ff3.6+ */
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #000000), color-stop(35%, #FFFFFF), color-stop(50%, #000000), color-stop(67%, #ffffff), color-stop(100%, #000000)); /* safari4+,chrome */
+        background: -webkit-linear-gradient(90deg, #000000 0%, #ffffff 33%, #000000 50%, #FFFFFF 65%, #000000 100%); /* safari5.1+,chrome10+ */
+        background: -o-linear-gradient(90deg, #000000 0%, #ffffff 33%, #000000 50%, #FFFFFF 65%, #000000 100%); /* opera 11.10+ */
+        background: -ms-linear-gradient(90deg, #000000 0%, #ffffff 33%, #000000 50%, #FFFFFF 65%, #000000 100%); /* ie10+ */
+        background: linear-gradient(0deg, #000000 0%, #ffffff 33%, #000000 50%, #FFFFFF 65%, #000000 100%); /* w3c */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#000000',GradientType=0 ); /* ie6-9 */
+    }
+
+    .ama{
+        background: -moz-linear-gradient(90deg, #29FF50 0%, #29FF50 8%, #428CFC 22%, #428CFC 100%); /* ff3.6+ */
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #428CFC), color-stop(78%, #428CFC), color-stop(92%, #29FF50), color-stop(100%, #29FF50)); /* safari4+,chrome */
+        background: -webkit-linear-gradient(90deg, #29FF50 0%, #29FF50 8%, #428CFC 22%, #428CFC 100%); /* safari5.1+,chrome10+ */
+        background: -o-linear-gradient(90deg, #29FF50 0%, #29FF50 8%, #428CFC 22%, #428CFC 100%); /* opera 11.10+ */
+        background: -ms-linear-gradient(90deg, #29FF50 0%, #29FF50 8%, #428CFC 22%, #428CFC 100%); /* ie10+ */
+        background: linear-gradient(0deg, #29FF50 0%, #29FF50 8%, #428CFC 22%, #428CFC 100%); /* w3c */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#428CFC', endColorstr='#29FF50',GradientType=0 ); /* ie6-9 */
+    }
+
+    .ama2{
+        background: -moz-linear-gradient(90deg, #1EFF00 0%, #1EFF00 8%, #FFFCD9 22%, #FFFCD9 100%); /* ff3.6+ */
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #FFFCD9), color-stop(78%, #FFFCD9), color-stop(92%, #1EFF00), color-stop(100%, #1EFF00)); /* safari4+,chrome */
+        background: -webkit-linear-gradient(90deg, #1EFF00 0%, #1EFF00 8%, #FFFCD9 22%, #FFFCD9 100%); /* safari5.1+,chrome10+ */
+        background: -o-linear-gradient(90deg, #1EFF00 0%, #1EFF00 8%, #FFFCD9 22%, #FFFCD9 100%); /* opera 11.10+ */
+        background: -ms-linear-gradient(90deg, #1EFF00 0%, #1EFF00 8%, #FFFCD9 22%, #FFFCD9 100%); /* ie10+ */
+        background: linear-gradient(0deg, #1EFF00 0%, #1EFF00 8%, #FFFCD9 22%, #FFFCD9 100%); /* w3c */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFCD9', endColorstr='#1EFF00',GradientType=0 ); /* ie6-9 */
+    }
+
+    .naran{
+        background: -moz-linear-gradient(90deg, #15FF00 0%, #15FF00 8%, #E3E8FA 22%, #E3E8FA 100%); /* ff3.6+ */
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #E3E8FA), color-stop(78%, #E3E8FA), color-stop(92%, #15FF00), color-stop(100%, #15FF00)); /* safari4+,chrome */
+        background: -webkit-linear-gradient(90deg, #15FF00 0%, #15FF00 8%, #E3E8FA 22%, #E3E8FA 100%); /* safari5.1+,chrome10+ */
+        background: -o-linear-gradient(90deg, #15FF00 0%, #15FF00 8%, #E3E8FA 22%, #E3E8FA 100%); /* opera 11.10+ */
+        background: -ms-linear-gradient(90deg, #15FF00 0%, #15FF00 8%, #E3E8FA 22%, #E3E8FA 100%); /* ie10+ */
+        background: linear-gradient(0deg, #15FF00 0%, #15FF00 8%, #E3E8FA 22%, #E3E8FA 100%); /* w3c */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#E3E8FA', endColorstr='#15FF00',GradientType=0 ); /* ie6-9 */
+    }
+
+    .roge{
+        background: -moz-linear-gradient(90deg, #FF0505 0%, #FF0505 8%, #E3E8FA 22%, #E3E8FA 100%); /* ff3.6+ */
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #E3E8FA), color-stop(78%, #E3E8FA), color-stop(92%, #FF0505), color-stop(100%, #FF0505)); /* safari4+,chrome */
+        background: -webkit-linear-gradient(90deg, #FF0505 0%, #FF0505 8%, #E3E8FA 22%, #E3E8FA 100%); /* safari5.1+,chrome10+ */
+        background: -o-linear-gradient(90deg, #FF0505 0%, #FF0505 8%, #E3E8FA 22%, #E3E8FA 100%); /* opera 11.10+ */
+        background: -ms-linear-gradient(90deg, #FF0505 0%, #FF0505 8%, #E3E8FA 22%, #E3E8FA 100%); /* ie10+ */
+        background: linear-gradient(0deg, #FF0505 0%, #FF0505 8%, #E3E8FA 22%, #E3E8FA 100%); /* w3c */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#E3E8FA', endColorstr='#FF0505',GradientType=0 ); /* ie6-9 */
+    }
+
+    .verd{
+        background: -moz-linear-gradient(90deg, #FFFFFF 0%, #FFFFFF 8%, #8EDE93 22%, #8EDE93 100%); /* ff3.6+ */
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #8EDE93), color-stop(78%, #8EDE93), color-stop(92%, #FFFFFF), color-stop(100%, #FFFFFF)); /* safari4+,chrome */
+        background: -webkit-linear-gradient(90deg, #FFFFFF 0%, #FFFFFF 8%, #8EDE93 22%, #8EDE93 100%); /* safari5.1+,chrome10+ */
+        background: -o-linear-gradient(90deg, #FFFFFF 0%, #FFFFFF 8%, #8EDE93 22%, #8EDE93 100%); /* opera 11.10+ */
+        background: -ms-linear-gradient(90deg, #FFFFFF 0%, #FFFFFF 8%, #8EDE93 22%, #8EDE93 100%); /* ie10+ */
+        background: linear-gradient(0deg, #FFFFFF 0%, #FFFFFF 8%, #8EDE93 22%, #8EDE93 100%); /* w3c */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#8EDE93', endColorstr='#FFFFFF',GradientType=0 ); /* ie6-9 */
+    }
+
+    .azu{
+        background: -moz-linear-gradient(90deg, #F4FF1C 0%, #F4FF1C 8%, #DEEEFA 22%, #DEEEFA 100%); /* ff3.6+ */
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #DEEEFA), color-stop(78%, #DEEEFA), color-stop(92%, #F4FF1C), color-stop(100%, #F4FF1C)); /* safari4+,chrome */
+        background: -webkit-linear-gradient(90deg, #F4FF1C 0%, #F4FF1C 8%, #DEEEFA 22%, #DEEEFA 100%); /* safari5.1+,chrome10+ */
+        background: -o-linear-gradient(90deg, #F4FF1C 0%, #F4FF1C 8%, #DEEEFA 22%, #DEEEFA 100%); /* opera 11.10+ */
+        background: -ms-linear-gradient(90deg, #F4FF1C 0%, #F4FF1C 8%, #DEEEFA 22%, #DEEEFA 100%); /* ie10+ */
+        background: linear-gradient(0deg, #F4FF1C 0%, #F4FF1C 8%, #DEEEFA 22%, #DEEEFA 100%); /* w3c */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#DEEEFA', endColorstr='#F4FF1C',GradientType=0 ); /* ie6-9 */
+    }
+    .brown3{
+        background: -moz-linear-gradient(90deg, #9E634A 0%, #9E634A 12%, #FFDCB5 21%, #FFDCB5 100%); /* ff3.6+ */
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #FFDCB5), color-stop(79%, #FFDCB5), color-stop(88%, #9E634A), color-stop(100%, #9E634A)); /* safari4+,chrome */
+        background: -webkit-linear-gradient(90deg, #9E634A 0%, #9E634A 12%, #FFDCB5 21%, #FFDCB5 100%); /* safari5.1+,chrome10+ */
+        background: -o-linear-gradient(90deg, #9E634A 0%, #9E634A 12%, #FFDCB5 21%, #FFDCB5 100%); /* opera 11.10+ */
+        background: -ms-linear-gradient(90deg, #9E634A 0%, #9E634A 12%, #FFDCB5 21%, #FFDCB5 100%); /* ie10+ */
+        background: linear-gradient(0deg, #9E634A 0%, #9E634A 12%, #FFDCB5 21%, #FFDCB5 100%); /* w3c */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFDCB5', endColorstr='#9E634A',GradientType=0 ); /* ie6-9 */
+    }
+
+    .verdefos3{
+        background: -moz-linear-gradient(90deg, #06209E 0%, #151E9E 12%, #FFFFFF 20%, #FFFFFF 100%); /* ff3.6+ */
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #FFFFFF), color-stop(80%, #FFFFFF), color-stop(88%, #151E9E), color-stop(100%, #06209E)); /* safari4+,chrome */
+        background: -webkit-linear-gradient(90deg, #06209E 0%, #151E9E 12%, #FFFFFF 20%, #FFFFFF 100%); /* safari5.1+,chrome10+ */
+        background: -o-linear-gradient(90deg, #06209E 0%, #151E9E 12%, #FFFFFF 20%, #FFFFFF 100%); /* opera 11.10+ */
+        background: -ms-linear-gradient(90deg, #06209E 0%, #151E9E 12%, #FFFFFF 20%, #FFFFFF 100%); /* ie10+ */
+        background: linear-gradient(0deg, #06209E 0%, #151E9E 12%, #FFFFFF 20%, #FFFFFF 100%); /* w3c */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#06209E',GradientType=0 ); /* ie6-9 */
+
+    }
+
+    .olivo{
+
+        background: rgba(98,125,77,0.59);
+        background: -moz-linear-gradient(top, rgba(98,125,77,0.59) 37%, rgba(31,59,8,0.59) 78%, rgba(31,59,8,0.59) 82%, rgba(31,59,8,1) 94%);
+        background: -webkit-gradient(left top, left bottom, color-stop(37%, rgba(98,125,77,0.59)), color-stop(78%, rgba(31,59,8,0.59)), color-stop(82%, rgba(31,59,8,0.59)), color-stop(94%, rgba(31,59,8,1)));
+        background: -webkit-linear-gradient(top, rgba(98,125,77,0.59) 37%, rgba(31,59,8,0.59) 78%, rgba(31,59,8,0.59) 82%, rgba(31,59,8,1) 94%);
+        background: -o-linear-gradient(top, rgba(98,125,77,0.59) 37%, rgba(31,59,8,0.59) 78%, rgba(31,59,8,0.59) 82%, rgba(31,59,8,1) 94%);
+        background: -ms-linear-gradient(top, rgba(98,125,77,0.59) 37%, rgba(31,59,8,0.59) 78%, rgba(31,59,8,0.59) 82%, rgba(31,59,8,1) 94%);
+        background: linear-gradient(to bottom, rgba(98,125,77,0.59) 37%, rgba(31,59,8,0.59) 78%, rgba(31,59,8,0.59) 82%, rgba(31,59,8,1) 94%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#627d4d', endColorstr='#1f3b08', GradientType=0 );
+    }
+
+    .blackblue{
+        background: -moz-linear-gradient(270deg, #fff 0%, #000080 50%, #fff 99%, #fff 100%); /* ff3.6+ */
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #fff), color-stop(50%, #000080), color-stop(99%, #fff), color-stop(100%, #fff)); /* safari4+,chrome */
+        background: -webkit-linear-gradient(270deg, #fff 0%, #000080 50%, #fff 99%, #fff 100%); /* safari5.1+,chrome10+ */
+        background: -o-linear-gradient(270deg, #fff 0%, #000080 50%, #fff 99%, #fff 100%); /* opera 11.10+ */
+        background: -ms-linear-gradient(270deg, #fff 0%, #000080 50%, #fff 99%, #fff 100%); /* ie10+ */
+        background: linear-gradient(180deg, #fff 0%, #000080 50%, #fff 99%, #fff 100%); /* w3c */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#298DA3', endColorstr='#298DA3',GradientType=0 ); /* ie6-9 */
+    }
+
+    .descuentos{
+
+        background: -moz-linear-gradient(270deg, #ff0000 0%, #FFFFFF 16%, #ffffff 50%, #FFFFFF 83%, #ff0000 100%); /* ff3.6+ */
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ff0000), color-stop(16%, #FFFFFF), color-stop(50%, #ffffff), color-stop(83%, #FFFFFF), color-stop(100%, #ff0000)); /* safari4+,chrome */
+        background: -webkit-linear-gradient(270deg, #ff0000 0%, #FFFFFF 16%, #ffffff 50%, #FFFFFF 83%, #ff0000 100%); /* safari5.1+,chrome10+ */
+        background: -o-linear-gradient(270deg, #ff0000 0%, #FFFFFF 16%, #ffffff 50%, #FFFFFF 83%, #ff0000 100%); /* opera 11.10+ */
+        background: -ms-linear-gradient(270deg, #ff0000 0%, #FFFFFF 16%, #ffffff 50%, #FFFFFF 83%, #ff0000 100%); /* ie10+ */
+        background: linear-gradient(180deg, #ff0000 0%, #FFFFFF 16%, #ffffff 50%, #FFFFFF 83%, #ff0000 100%); /* w3c */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff0000', endColorstr='#ff0000',GradientType=0 ); /* ie6-9 */
+
+
+    }
+
+    .extracargos{
+        background: -moz-linear-gradient(270deg, #008080 0%, #FFFFFF 16%, #ffffff 50%, #FFFFFF 83%, #005757 100%); /* ff3.6+ */
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #008080), color-stop(16%, #FFFFFF), color-stop(50%, #ffffff), color-stop(83%, #FFFFFF), color-stop(100%, #005757)); /* safari4+,chrome */
+        background: -webkit-linear-gradient(270deg, #008080 0%, #FFFFFF 16%, #ffffff 50%, #FFFFFF 83%, #005757 100%); /* safari5.1+,chrome10+ */
+        background: -o-linear-gradient(270deg, #008080 0%, #FFFFFF 16%, #ffffff 50%, #FFFFFF 83%, #005757 100%); /* opera 11.10+ */
+        background: -ms-linear-gradient(270deg, #008080 0%, #FFFFFF 16%, #ffffff 50%, #FFFFFF 83%, #005757 100%); /* ie10+ */
+        background: linear-gradient(180deg, #008080 0%, #FFFFFF 16%, #ffffff 50%, #FFFFFF 83%, #005757 100%); /* w3c */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#008080', endColorstr='#005757',GradientType=0 ); /* ie6-9 */
+
+    }
+    
+    .oliverty{
+        border: 2px solid #fff;
+        border-radius: 9px 9px 2px 2px;
+        background-image: url(../../../global/img/confirm.png);
+        width: 130px;
+        height: 32px;
+        font-size: 14px;
+        font-weight: bold;
+        font-style: Normal;
+        color: #fff;
+        background-position: 0px 0px;
+        background-repeat: repeat-x;
+        padding: 0;
+        margin-left: 819px;
+        margin-top: -204px;
+        position: absolute;
+        filter: hue-rotate(1137deg);
+    }
+
+    @keyframes animatedBackgroundButton {
+        from { background-position: 0 0; }
+        to { background-position: 100% 0; }
+    }
+
+    .oliverty:hover{
+        animation: animatedBackgroundButton 1s linear infinite;
+        -moz-filter:hue-rotate(-350deg);
+        -webkit-filter:hue-rotate(-350deg);
+        -o-filter:hue-rotate(-350deg);
+        -ms-filter:hue-rotate(-350deg);
+        filter:hue-rotate(-350deg);
+
+    }
+
+    /*    .ui-datepicker .ui-widget-content {
+            background: #28F44D;
+        }
+    
+        .ui-widget-header {
+            border: 1px solid #dddddd;
+            background: #c00;
+            color: #fff;
+            font-weight: bold;
+        }
+    
+        .ui-datepicker {
+            background: #333;
+            border: 1px solid #555;
+            color: #EEE;
+        }
+        
+        .ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight {
+        border: 1px solid #dad55e;
+        background: #28F44D;
+        color: #777620;
+        }*/
+
+
+
+</style>
+<link rel="stylesheet" type="text/css" href="<?php echo $data['rootUrl']; ?>global/css/blitzer/jquery-ui-1.10.3.custom.min.css" />
+
+<script>
+    $(function () {
+        function mosrtarRastro(left, top) {
+
+            $("#dialog").dialog({
+                autoOpen: false,
+                width: 300,
+                height: 300,
+                show: {
+                    effect: "blind",
+                    duration: 1000
+                },
+                hide: {
+                    effect: "blind",
+                    duration: 1000
+                },
+                position: [left - 260, top + 50],
+            });
+            $("#dialog").dialog("open");
+        }
+        $("#btn-rastro").click(function () {
+            var posicion = $(this).position();
+            mosrtarRastro(posicion.left, posicion.top);
+        });
+
+    });
+</script>
+
+<script>
+    $(function () {
+        function mostrarPagos(left, top) {
+
+            $("#dialog2").dialog({
+                autoOpen: false,
+                width: 580,
+                height: 150,
+                show: {
+                    effect: "blind",
+                    duration: 1000
+                },
+                hide: {
+                    effect: "blind",
+                    duration: 1000
+                },
+                position: [left - 260, top + 50],
+            });
+            $("#dialog2").dialog("open");
+        }
+        $("#btn-pagos").click(function () {
+            var posicion = $(this).position();
+            mostrarPagos(posicion.left, posicion.top);
+        });
+
+    });
+</script>
+
+<?php if (isset($_GET['menssage'])) { ?>
+    <div class="success"><?php echo $_GET['menssage']; ?></div>
+<?php } ?>
+<?php if (isset($_GET['error'])) { ?>
+    <div class="error"><?php echo $_GET['error']; ?></div>
+<?php } ?>
+<!--<div id="header_page" >-->
+
+<!--<div id="menu-bar" style="display:none:">-->
+
+</div>
+<div id="header_page" style="height:77px; background-image: url('<?php echo $data['rootUrl'] ?>global/img/bg2.jpg');" >
+    <div class="header">
+        <table style="width:500px;" border="0">
+            <tr>
+                <td width="30%">Reserves [ edit ] </td>
+                <td width="10%" id="bnt-trips" class="btn" style="cursor:pointer;"><img src="<?php echo $data['rootUrl']; ?>global/img/admin/calendar_aviso32x32.png" /></td>
+                <td>ID <?php echo $reserva->id; ?></td>
+
+                <td width="10%" style="padding:5px;"><div id="mensajeTrip" class="temporizador">00:00</div></td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="info-group" style="">
+        <input type="text" readonly="true" style="    background: #33449C;
+               margin-left: 11px;
+               margin-top: -6px;
+               width: 303px;
+               color: #fff;
+               border-color: transparent;
+               /* font-family: -webkit-body; */
+               font-family: Arial, Helvetica, sans-serif;" name="taritrans" id="taritrans" placeholder="Rates" />
+    </div>
+
+    <script type="text/javascript">
+        function capturar2()
+        {
+            var x = document.getElementById('taritrans1').value;
+            document.getElementById('taritrans').value = x;
+        }
+    </script>
+
+    <div  id="toolbar">
+        <select style="margin-left:-425px; margin-top: 13px; width:303px; background: #AC1B29;color: #fff;border-color: transparent;" name="special_price_name" id="special_price_name" onchange="myFunction()">
+    <!--    <select style="margin-left:3px; margin-top:11px; width:303px; background: #AC1B29;color: #fff;border-color: transparent;" name="fnombre" id="rate" onchange="myFunction()">-->
+
+            <option id="" value="Rates">Rates</option>
+            <?php
+            $sql1 = "SELECT DISTINCT special_price_name FROM routes_net";
+            $rs1 = Doo::db()->query($sql1);
+            $routesnet = $rs1->fetchAll();
+            foreach ($routesnet as $r) {
+                echo '<option value="' . $r['special_price_name'] . '" >' . $r['special_price_name'] . '</option>';
+            }
+            ?>
+        </select>
+
+        <script>
+            function myFunction() {
+                var x = 'RATES ----------------------------------------------------->';
+                document.getElementById("taritrans").value = x;
+            }
+        </script>           
+
+        <div class="toolbar-list">
+            <ul>
+
+                <li class="btn-toolbar" id="">
+                    <form action="<?php echo $data['rootUrl'] ?>admin/reporte/cargar" id="formulario" method="post" name="formulario" onsubmit="onEnviar()">
+                        <input id="variable" style="display:none" name="variable"  value="<?php echo $reserva->id; ?>"  />
+                        <!--<input  type="submit" value="Summary" />-->
+                        <input  type="submit" value="Summary" style="margin-top: -13px; margin-left: -50px;padding: 10px; color: #AC1B29;font-weight: 700;" />
+
+                    </form>
+                    <script type="text/javascript">
+                        var variableJs = document.getElementById("variable").value;//"2259";
+
+                        function onEnviar() {
+                            document.getElementById("variable").value = variableJs;
+                        }
+                    </script>
+
+                </li>            
+
+                <li style="margin-left: -14px; margin-top: 1px;" class="btn-toolbar" id="btn-rastro">
+                    <a  style="margin-left: 12px; margin-top: -15px;" class="link-button" id="btn-rastro">
+                        <span class="icon-32-rastro" title="Mostrar Rastro" style="margin-left: 4px; margin-top: -3px; color:#4B0082; width: 32px; height: 32px; ">&nbsp;</span>
+
+                        Traces
+                    </a>
+                </li>
+
+                <li style="margin-left: -1px; margin-top: 1px;" class="btn-toolbar" id="btn-pagos">
+                    <a  style="margin-left: 10px; margin-top: -15px;" class="link-button" id="btn-pagos">    
+                        <span class="pagos" title="Pagos" style="margin-left: 4px; margin-top: -3px; color:#4B0082; width: 32px; height: 32px; ">&nbsp;</span>
+
+                        Payments
+                    </a>
+                </li>
+
+                <li style="margin-left: -1px; margin-top: 1px;" class="btn-toolbar" id="btn-save1">
+<!--                    <a  class="link-button" id="btn-save1"><span class="icon-32-save" title="Guardar">&nbsp;</span>Save</a>-->
+                    <a style="margin-left: 17px; margin-top: -14px;" class="link-button" id="btn-save1"> <i class="fa fa-floppy-o fa-3x" title="Guardar" style="margin-left: 4px; margin-top: -2px;  color:#4B0082;"></i><br>&nbsp;Save</a>
+                </li>
+
+
+                <li style="margin-left: -1px; margin-top: 1px;" class="btn-toolbar" id="btn-cancel1">
+<!--                    <a  class="link-button" ><span class="icon-back" title="Regresar">&nbsp;</span>Back</a>-->
+                    <a style="margin-left: 207px; margin-top: -64px;" class="link-button"><i class="fa fa-arrow-left fa-3x" title="Regresar" style="color: #33449C; margin-top: -4px;"></i><br>Back</a>
+                </li>
+            </ul>
+            <div class="clear"></div>
+        </div>
+        <div class="clear"></div>
+    </div>
+</div>
+<!-- header options -->
+
+<form  id="formula" class="form" action="<?php echo $data['rootUrl']; ?>admin/reservas/save-edit-reserve" method="post" name="formula" >
+
+
+    <div id="info-group2">
+        <div id="cancelation">
+            <div class="ho">CANCELATION <span>#</span></div>
+            <div id="cancel">00000</div>
+        </div>
+        <div id="reservation">
+            <div class="ho" style="color: #fff;background: #bb0000; height:12px;">RESERVATION <span>#</span></div>
+            <div id="reser"><?php echo $reserva->codconf; ?><input type="hidden" /></div>
+        </div>
+
+
+        <div id="status-change"  >
+<!--            <div  style="width: 102px;color:#4B0082;"><strong>CHANGE STATUS</strong></div>-->
+            <div class="ho" style="color: #fff;background: #2D2193;padding: 4px;margin-top: 3px; margin-left:0px; width:44px; ">STATUS</div>
+            <select style="width:112px; margin-left: -4px; margin-top:1px;"  id="estado" name="estado">
+                <option></option>
+                <option style="font-weight:bold; color:green;" <?php
+                if ($reserva->estado == 'CONFIRMED' || $reserva->estado == 'INVOICED') {
+                    echo ' selected="selected" ';
+                };
+                ?>  value="CONFIRMED">CONFIRMED</option>
+                <option style="font-weight:bold; color:green;"  <?php
+                if ($reserva->estado == 'QUOTE') {
+                    echo ' selected="selected" ';
+                };
+                ?>  value="QUOTE">QUOTE</option>
+                <option style="font-weight:bold; color:red;" value="NO SHOW W/ CHARGE" <?php
+                if ($reserva->estado == 'NO SHOW W/ CHARGE') {
+                    echo ' selected="selected" ';
+                };
+                ?>>NO SHOW W / CHARGE</option>
+                <option style="font-weight:bold; color:red;"  value="NO SHOW W/ O CHARGE" <?php
+                if ($reserva->estado == 'NO SHOW W/ O CHARGE') {
+                    echo ' selected="selected" ';
+                };
+                ?>>NO SHOW W / O CHARGE</option>
+                <option style="font-weight:bold; color:red;"  <?php
+                if ($reserva->estado == 'CANCELED') {
+                    echo ' selected="selected" ';
+                };
+                ?>  value="CANCELED">CANCELED</option>
+            </select>
+        </div>
+        <div id="status" style="width:110px;" >
+            <!--            <div class="ho" style="color: #fff;background: #bb0000; height:12px;">STATUS</div>
+            -->
+            <div  id="stat"><?php
+                if ($reserva->estado == 'CONFIRMED') {
+
+                    echo '<input style="background-color:green; color:#fff; text-align:center; font-weight:bold; font-size:24px; width:417px; margin-top: -1px; margin-left: 0px; height: 23px;" type="text" id="reservita" name="reservita" value="' . $reserva->estado . '" />';
+//                echo $reserva->estado;
+                };
+                ?>
+
+                <?php
+                if ($reserva->estado == 'QUOTE') {
+
+                    echo '<input style="background-color:green; color:#fff; text-align:center; font-weight:bold; font-size:24px; width:417px; margin-top: -1px; margin-left: 0px; height: 23px;" type="text" id="reservita" name="reservita" value="' . $reserva->estado . '" />';
+//                echo $reserva->estado;
+                };
+                ?>
+
+                <?php
+                if ($reserva->estado == 'INVOICED') {
+
+                    echo '<input style="background-color:#3821FF; color:#fff; text-align:center; font-weight:bold; font-size:24px; width:417px; margin-top: -1px; margin-left: 0px; height: 23px;" type="text" id="reservita" name="reservita" value="' . $reserva->estado . '" />';
+//                echo $reserva->estado;
+                };
+                ?>
+
+                <?php
+                if ($reserva->estado == 'NO SHOW W/ CHARGE') {
+
+                    echo '<input style="background-color:#FF2121; color:#fff; text-align:center; font-weight:bold; font-size:24px; width:417px; margin-top: -1px; margin-left: 0px; height: 23px;" type="text" id="reservita" name="reservita" value="' . $reserva->estado . '" />';
+//                echo $reserva->estado;
+                };
+                ?>
+
+                <?php
+                if ($reserva->estado == 'NO SHOW W/ O CHARGE') {
+
+                    echo '<input style="background-color:#FF2121; color:#fff; text-align:center; font-weight:bold; font-size:24px; width:417px; margin-top: -1px; margin-left: 0px; height: 23px;" type="text" id="reservita" name="reservita" value="' . $reserva->estado . '" />';
+//                echo $reserva->estado;
+                };
+                ?>
+
+                <?php
+                if ($reserva->estado == 'CANCELED') {
+
+                    echo '<input style="background-color:#FF2121; color:#fff; text-align:center; font-weight:bold; font-size:24px; width:417px; margin-top: -1px; margin-left: 0px; height: 23px;" type="text" id="reservita" name="reservita" value="' . $reserva->estado . '" />';
+//                echo $reserva->estado;
+                };
+                ?>
+
+            </div>
+        </div>
+    </div>
+
+    <!--    <div id="content_page"  >-->
+    <div id="content_page" style="margin-top: -26px; width: 1000px;z-index:1; height:1184px; background-image: url('<?php echo $data['rootUrl'] ?>global/img/bg2.jpg');" >
+        <div id="serpare">
+            <input id="fin_calculo" type="hidden" value="false"/>
+            <input type="hidden"  id="vista" value="1" />
+            <input name="id" type="hidden"  id="id"  value="<?php
+            if (isset($reserva)) {
+                echo $reserva->id;
+            }
+            ?>" />
+            <table width="100%">
+                <tr>    <td>
+                        <!--                        <fieldset id="inputype" style="width:40%;"><legend>INPUT TYPE</legend>-->
+                        <fieldset    id="inputype" style="margin-left:-6px; width:470px; border-radius: 3px 120px 0px 80px;" class="rojo"><legend style="border:1px solid #B83A36; background:#fff;margin-left:5px;">INPUT TYPE</legend>
+                            <div id="opera" class="input">
+                                <table width="100%" >
+                                    <tr align="left">
+
+                                        <td >
+                                            <label style="color:#FFFFFF;" id="label">CALL CENTER</label>
+                                        </td>
+                                        <td >
+<!--                                            <input name="nombre" type="text"  id="nombre" value="<?php echo trim($login->nombre . ' (' . $login->usuario . ')'); ?>" readonly="readonly"/>-->
+                                            <input style="margin-left:18px; width:275px; border-top-left-radius: 25px; text-align: center; border-top-right-radius: 25px;" name="nombre" type="text"  id="nombre" value="<?php echo trim($login->nombre . ' (' . $login->usuario . ')'); ?>" readonly="readonly"/>
+                                        </td>
+
+                                    </tr>
+                                    <tr><td colspan="2" >
+                                            <table width="100%">
+                                                <tr>
+                                                    <td width="10%">
+                                                        <label style="color:#FFFFFF;">AGENCY</label>
+                                                    </td>
+                                                    <td width="40%">
+                                                        <div class="ausu-suggest" >
+                                                            <input style="border-bottom-left-radius: 17px; margin-top:12px; margin-left:10px; " name="agency" type="text"  id="agency" size="19" maxlength="30" value="<?php echo $agencia->company_name; ?>"  autocomplete="off"  disabled="disabled"  />
+                                                            <input type="hidden" size="4" value="<?php echo $agencia->id; ?>" name="id_agency" id="id_agency" autocomplete="off"  readonly="readonly"/>
+                                                            <input type="hidden" size="4" value="<?php echo $agencia->type_rate; ?>" name="type_rate" id="type_rate" autocomplete="off"  readonly="readonly"/>
+                                                            <input type="hidden" size="4" value="0" name="disponible" id="disponible" autocomplete="off"  readonly="readonly"/>
+                                                            <input type="hidden" size="4" value="0" name="comision" id="comision" autocomplete="off"  readonly="readonly"/>
+
+                                                        </div>
+                                                    </td>
+                                                    <td width="10%">
+                                                        <label style="margin-left:16px; color:#FFFFFF;">Employ</label>
+                                                    </td>
+                                                    <td width="40%">
+                                                        <div class="ausu-suggest" >
+                                                            <input style="border-top-right-radius: 25px; width:150px;margin-top:10px; margin-left:18px;" name="uagency" type="text"  id="uagency" size="11" maxlength="30" value="<?php echo ($agencia->id != -1) ? $userA->firstname . ' ' . $userA->lastname : ''; ?>"  />
+                                                            <input type="hidden" size="4" value="<?php echo ($agencia->id != -1) ? $userA->id : ''; ?>" name="id_auser" id="id_auser" autocomplete="off" />
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                    <tr><td colspan="2" >&nbsp;</td></tr>
+                                    <tr><td colspan="2">
+                                            <table style="margin-top:-8px; margin-right:70px;" align="center" cellspacing="10">
+                                                <tr valign="top">
+                                                    <td><label style="color:#FFFFFF;" for="calan_phone"> BY PHONE</label> <input name="canal" <?php
+                                                        if ($reserva->canal == 'PHONE') {
+                                                            echo ' checked="checked" ';
+                                                        }
+                                                        ?>  type="radio" id="calan_phone" value="PHONE" />  </td>
+                                                    <td><label style="color:#FFFFFF;"  for="calan_mail"> BY MAIL</label> <input name="canal" <?php
+                                                        if ($reserva->canal == 'MAIL') {
+                                                            echo ' checked="checked" ';
+                                                        }
+                                                        ?> type="radio"  id="calan_mail"  value="MAIL" /> </td>
+                                                    <td><label style="color:#FFFFFF;" for="calan_web"> WEBSALE </label><input name="canal"  <?php
+                                                        if ($reserva->canal == 'WEBSALE') {
+                                                            echo ' checked="checked" ';
+                                                        }
+                                                        ?> type="radio" id="calan_web" value="WEBSALE" />  </td>
+                                                </tr>
+                                            </table>
+                                        </td></tr>
+                                </table>
+                            </div>
+
+                        </fieldset>
+                    </td>  
+
+
+                    <td>
+                        <!--                        <fieldset id="liderpax" style=""><legend>LEADER PASS</legend>-->
+                        <fieldset id="liderpax" style="margin-left:-1px; margin-top:0px; border-radius: 130px 3px 80px 0px; width:470px;" class="cerati"><legend style="border:1px solid #00C; margin-left:64px; background:#fff;">LEADER PASS</legend>
+                            <table>
+                                <tr>
+                                    <td >
+                                        <div id="opera" class="input" style="padding-top:5px;">
+                                            <table>
+                                                <tr>
+                                                    <td>
+                                                        <label style="color:#FFFFFF; margin-left:30px;" id="label" >SEARCH </label>
+                                                    </td>
+                                                    <td>
+                                                        <div class="ausu-suggest" id="opera">
+                                                            <input style="margin-left:4px; width:354px; border-top-left-radius: 17px;border-top-right-radius: 17px;" type="text" size="35" value="<?php
+                                                            if (isset($cliente) && isset($reserva)) {
+                                                                if ($cliente->id == $reserva->id_clientes) {
+                                                                    echo $cliente->lastname . " " . $cliente->firstname . " - E-Mail -" . $cliente->username;
+                                                                }
+                                                            }
+                                                            ?>" name="leader" id="leader" autocomplete="off" />
+
+                                                            <input type="hidden" size="4" value="" name="id_leader" id="id_leader" autocomplete="off" disabled="disabled"  readonly="readonly"/>
+                                                        </div>
+                                                    </td>
+                                                    <td>&nbsp;&nbsp;</td>
+                                                    <td title="">
+                                                        <div  class="ausu-suggest" style="margin-top:-5px; margin-left:2px; display:none">
+                                                            <a id="newClient" style="cursor:pointer; visibility:hidden;" ><img src="<?php echo $data['rootUrl']; ?>global/img/new.png" alt=""  align="absmiddle" border="0"  style="padding-bottom:0px;" /></a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div id="opera" class="input" >
+                                            <table width="100%">
+                                                <tr>
+                                                    <td width="" align="right">
+
+                                                        <input type="hidden" name="idCliente"   id="idCliente"  value="<?php
+                                                        if (isset($cliente) && isset($reserva)) {
+                                                            if ($cliente->id == $reserva->id_clientes) {
+                                                                echo trim($reserva->id_clientes);
+                                                            }
+                                                        }
+                                                        ?>" />
+                                                        <input type="hidden" name="idPagador" id="idPagador" value="0"  />
+                                                        <input type="hidden" name="idPagador_aux" id="idPagador_aux" value="0"  />
+                                                        <input type="hidden" name="cliente_apto" id="cliente_apto" value="0"  />
+                                                        <label style="color:#FFFFFF;" id="labeldere12">FIRST NAME</label>		
+                                                    </td>
+                                                    <td width="">
+                                                        <input style="margin-left:10px; width:140px;" name="firstname1" type="text"  id="firstname1" size="15" maxlength="15" value="<?php
+                                                        if (isset($reserva)) {
+                                                            echo $reserva->firsname;
+                                                        }
+                                                        ?>" />	
+                                                    </td>
+                                                    <td width="" align="right"> 
+                                                        <label style="color:#FFFFFF;" id="labeldere12" >LAST NAME </label>
+                                                    </td>
+                                                    <td width="">  
+                                                        <input style="margin-left:6px; width:134px;" name="lastname1" type="text"  id="lastname1" size="15" maxlength="15" value="<?php
+                                                        if (isset($reserva)) {
+                                                            echo $reserva->lasname;
+                                                        }
+                                                        ?>" />
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td align="right"> 
+                                                        <label style="color:#FFFFFF;" id="labeldere12">E-MAIL </label>
+                                                    </td>
+                                                    <td>
+                                                        <input style="margin-left:10px; margin-top:6px; width:140px; border-bottom-left-radius: 17px;" name="email1" type="text"  id="email1" size="15" value="<?php
+                                                        if (isset($reserva)) {
+                                                            echo $reserva->email;
+                                                        }
+                                                        ?>"/>
+                                                    </td>
+                                                    <td align="right">
+                                                        <label style="color:#FFFFFF;" id="labeldere12">PHONE </label>
+                                                    </td>
+                                                    <td>
+                                                        <input style="margin-top: 6px; margin-left:0px; width:134px; border-bottom-right-radius: 25px;" name="phone1" type="text"  id="phone1" size="15" maxlength="15" value="<?php
+                                                        if (isset($cliente) && isset($reserva)) {
+                                                            if ($cliente->id == $reserva->id_clientes) {
+                                                                echo $cliente->phone;
+                                                            }
+                                                        }
+                                                        ?>" /> 
+                                                        <input  type="hidden" name="type_cliente"  id="type_cliente" value="<?php
+                                                        if (isset($cliente) && isset($reserva)) {
+                                                            if ($cliente->id == $reserva->id_clientes) {
+                                                                echo $cliente->tipo_client;
+                                                            }
+                                                        }
+                                                        ?>" />       	
+                                                    </td>
+
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </fieldset>
+                    </td>
+
+                </tr>
+            </table>
+
+            <!--            <fieldset id="boo" ><legend>BOOKING</legend>-->
+            <fieldset id="boo" style="width:952px; height: 65px; border-radius: 26%;margin-top: 3px;" class="booking2" ><legend style="border:1px solid #00C; background:#fff;">BOOKING</legend>
+                <input type="hidden" name="id_oneway" id="id_tipo_ticket" value="<?php
+                if (isset($reserva)) {
+                    if ($reserva->tipo_ticket == 'oneway') {
+                        echo 1;
+                    } else {
+                        echo 2;
+                    }
+                }
+                ?>"/>
+
+                <div id="opera" class="input" style="padding-top:5px;"> <label style="color:#00f;"><strong>ONE WAY</strong> </label> <input name="tipo_ticket"  id="oneway" onclick="capturar(); reset_roundtrip();" type="radio" value="1"
+                    <?php
+                    if (isset($reserva)) {
+                        if ($reserva->tipo_ticket == 'oneway') {
+                            echo ' checked ';
+                        }
+                    }
+                    ?>
+
+                                                                                                                                            <?php
+                                                                                                                                            if (isset($reserva)) {
+                                                                                                                                                if ($reserva->tipo_ticket != 'oneway') {
+                                                                                                                                                    echo ' enabled ';
+                                                                                                                                                }
+                                                                                                                                            }
+                                                                                                                                            ?>/></div>
+                <div id="opera" class="input" style="padding-top:5px;"> <label style="color:#AC1B29;"><strong>ROUND TRIP</strong></label><input name="tipo_ticket" id="roundtrip" type="radio" value="2" onclick="capturar();" <?php
+                    if (isset($reserva)) {
+                        if ($reserva->tipo_ticket != 'oneway') {
+                            echo ' checked ';
+                        }
+                    }
+                    ?> /> </div>
+                <div id="opera" class="input" style="padding-top:5px;"> <label style="color:#4B0082;" style="padding-right:5px;"><strong>TYPE OF PASS</strong></label>
+                    <select name="tipo_pass" id="tipo_pass" disabled="disabled">
+                        <option style="color:red;" value="0">NO RESIDENT</option>
+                        <option style="color:blue;" value="1">RESIDENT</option>
+                    </select>
+
+                </div>
+
+                <div id="opera" class="input" >
+                    <input style="margin-top:31px; margin-right:2px;" name="byr" type="checkbox" value="1" <?php
+                    if (isset($reserva)) {
+                        if ($reserva->customer_disabilities == 1) {
+                            echo ' checked ';
+                        }
+                    }
+                    ?> />
+                    <label id="labeldere" style=" margin-left:-50x; margin-top:25px; width: 167px; color:#4B0082;"><strong>Customer With Disabilities</strong></label>                  
+                </div>
+                <div id="opera" class="input"  style="padding-top:10px; clear:left;">
+                    <label style="width:45px; margin-left:470px; margin-top:-58px;color:#000000;"><strong>ADULT</strong></label>
+                    <input name="pax" type="number" min="1"  id="pax" size="2" maxlength="2" value="<?php echo $reserva->pax ?>"  style="font-weight: bold;text-align: center; width:50px; margin-top:-58px;" onchange="
+                            var a = document.getElementById('pax').value();
+                            if (isNaN(a)) {
+                                return false;
+                            } else {
+                                var max = 100 - a;
+                                if (max < 0) {
+                                    var valor = 100 - $('#pax2').val();
+                                    document.getElementById('pax').value = valor;
+                                    $('#pax2').attr('max', valor);
+                                } else {
+                                    $('#pax2').attr('max', max);
+                                    if ($('#pax2').val() > max) {
+                                        $('#pax2').attr('value', max);
+                                    }
+                                }
+                            }
+                           "   />
+                </div>
+                <div id="opera" class="input"  style="padding-top:10px;">
+                    <label style="width:45px; margin-top:-58px; color:#000000;"  ><STRONG>CHILD</STRONG></label>
+                    <input name="pax2" type="number"  id="pax2" size="2" maxlength="2" value="<?php echo $reserva->pax2 ?>" style="font-weight: bold; text-align: center; width:50px; margin-top:-58px;" min="0" max="15" onchange="
+                            var a = document.getElementById('pax2').value;
+                            if (isNaN(a)) {
+                                return false;
+                            } else {
+                                var max = 16 - a;
+                                if (max <= 0) {
+                                    var valor = 16 - $('#pax').val();
+                                    document.getElementById('pax2').value = valor;
+                                    $('#pax2').attr('max', valor);
+                                } else {
+                                    if ($('#pax').val() > max) {
+                                        $('#pax').attr('value', max);
+                                    }
+                                }
+                            }"  />
+                </div>
+                <div id="opera" class="input"  style="padding-top:10px;">
+                    <label style="width:45px; margin-top:-58px; height:18px; color:#000;"  ><strong>TOTAL</strong></label>
+                    <input style="margin-top:-58px; height:18px; text-align: center;" name="totalpax" type="text"  id="totalpax" size="2" maxlength="2" value=""  readonly="readonly"/>
+                </div>
+                <div id="opera" class="input"  style="padding-top:10px;">
+                    <label style="width:45px; margin-left:-12px; margin-top:-58px; color:#000;"  ><strong>INFANT</strong></label>
+                    <input name="infat" type="number"  id="infat" size="2" maxlength="2" value="<?php echo $reserva->pax3; ?>" min="0" max="16" style="font-weight: bold; text-align: center; width:50px; margin-top:-58px;margin-left:4px;" />
+                </div>
+
+<!--    <div id="opera" class="input" style="float: left; margin-left:230px; margin-top:-30px; "><input style="margin-top:6px;" name="byr" type="radio" value="" /><label id="labeldere" style="color:#4B0082;"><strong>Customer With Disabilities</strong></label></div>-->
+            </fieldset>
+            <!--&nbsp;-->
+
+<!--            <table width="200"  cellspacing="0" class="sup" >
+                <tr>
+                    <td width="167" ><label > <strong>SUPERCLUB#</strong></label></td>
+                    <td width="27"><label id="labeldere"><span id="number_supu">N/A</span></label></td>
+                </tr>
+                <tr>
+                    <td><label> <strong>POINTS BALANCE</strong></label></td>
+                    <td><label id="labeldere"><span id="points">N/A</span></label></td>
+                </tr>
+                <tr>
+                    <td><label > <strong>POINTS REQUIRED
+                                <span style="font-size: 8px;">FOR THIS TRIP</span>
+
+                            </strong></label></td>
+                    <td><label id="labeldere" >N/A</label></td>
+                </tr>
+            </table>-->
+            <fieldset id="onew" style="border-radius: 7%; margin-top:0px;  height:246px;" class="cerati"><legend style="margin-top:4px; border:1px solid #00C; background:#fff;">ONE WAY</legend>
+                <div>
+                    <select style="width:193px; margin-left: 11px; margin-top:9px;" id="estado_oneway" name="estado_oneway" onchange="fecha_ns_one();">
+
+                        <optgroup label="STATUS">
+
+                            <option value="1">CONFIRMED</option>
+                            <option value="2">NO SHOW AND NO PAY</option>
+                            <option value="3">NO SHOW AND PAID</option>
+                            <option value="4">CANCELED</option>
+
+                        </optgroup>
+
+                    </select>
+                </div>
+                <div id="opera" class="input" style="padding-top:18px; ">
+
+                    <label style="width:75px; color:#FFFFFF;"  >DEPARTURE</label>
+<!--                    <a href="" id="dataclick1" ><img src="<?php echo $data['rootUrl']; ?>global/images/calendar.png" alt=""  align="absmiddle" width="19" height="20" border="0"  /></a>-->
+                    <a href="" id="dataclick1" ><i class="fa fa-calendar fa-2x" style="color: #fff;"></i></a>
+                    <input  style="width:84px; margin-left:8px; padding-top:3px; margin-top: -7px;"  name="fecha_salida" type="text"  id="fecha_salida" size="10" maxlength="15" value="<?php
+//                    if (isset($reserva)) {
+//                        echo ($reserva->fecha_salida == "0000-00-00" ? "00-00-0000" : date('m-d-Y', strtotime($reserva->fecha_salida)));
+//                    }
+//                    && $reserva->tipo_ticket != 'oneway'
+
+                    if ($reserva->fecha_salida == '-N/A-') {
+                        echo 'N/S';
+                    } else {
+                        if (isset($reserva)) {
+                            echo ($reserva->fecha_salida == "0000-00-00" ? "00-00-0000" : date('m-d-Y', strtotime($reserva->fecha_salida)));
+                        }
+                    }
+                    ?>" autocomplete="off"/>
+                </div>
+
+                <div id="opera" class="input"  >
+                    <div id="explo">  <label style="width:45px; color:#FFFFFF;"  > FROM</label></div>
+                    <div id="explo" align="left"> 
+                        <select name="fromt"  style="width:125px; height:25px;" id="from">
+                            <option value=""></option>
+                            <?php foreach ($data["areas"] as $e) { ?>
+                                <option value="<?php echo $e["id"]; ?>" <?php
+                                if (isset($reserva)) {
+                                    echo (trim($reserva->fromt) == trim($e["id"])) ? 'selected' : '';
+                                } else {
+                                    echo (trim($e['nombre'] == trim("ORLANDO") ? 'selected' : ''));
+                                }
+                                ?> ><?php echo $e["nombre"]; ?></option>
+                                    <?php } ?>
+                        </select>
+                    </div>
+                </div>
+                <div id="opera" class="input"  >
+                    <div id="explo"><label style="width:45px; color:#FFFFFF;"  > TO</label></div>
+                    <div id="explo" align="left">
+                        <select name="to"  id="to" style="width:130px; height:25px;">
+                            <?php foreach ($to_areas as $area) { ?>
+                                <option value="<?php echo $area['trip_to']; ?>"  <?php echo ($area["trip_to"] == $reserva->tot ? 'selected' : '') ?> >
+                                    <?php echo $area['nombre']; ?>
+                                </option>
+                            <?php } ?>
+                        </select>
+                        <input type="hidden" name="valto" id="valto" value="<?php
+                        if (isset($reserva)) {
+                            echo $reserva->tot;
+                        }
+                        ?>"/>
+                    </div>
+                </div>
+                <div id="mascaraP" style="display: none;">
+                </div>
+                <div id="popup" style="display: none;">
+                    <div class="content-popup">
+                    </div>
+                </div>
+
+                <div id="clienteN" style="display:none; width: 700px; margin-left: 100px;" ></div>
+
+                <div id="opera" class="input">
+                    <div style="width:50px; margin-top: -5px;" id="popup1">  <label style="width:20px; color:#FFFFFF;"  > TRIP</label><a id="search" style="cursor:pointer;color: #fff;" class="fa fa-search-plus fa-2x"></a>
+                        <input type="hidden" id="valorcomision01" name="valorcomision01" value="<?php /* echo $subto['comi1'] */ ?>" /></div>
+                    <div style="width:50px;"> <input type="hidden" id="trip_no_c" name="trip_no_c"  value="<?php
+                        if (isset($reserva)) {
+                            echo $reserva->trip_no;
+                        }
+                        ?>"/><input name="trip_no" type="text" style="margin-top:1px; height: 22px; width:75px;"  id="trip_no" size="3" maxlength="3" value="<?php
+                                                     if (isset($reserva)) {
+                                                         echo $reserva->trip_no;
+                                                     }
+                                                     ?>"  readonly="readonly"/>
+                    </div>
+                </div>
+                <div id="opera" class="input"  style="clear:right; padding-left:7px;">
+                    <div style="width:50px;">  <label style="width:45px; margin-left:10px; color:#FFFFFF;"  > DEP.TIME</label></div>
+
+                    <input name="departure1" type="text"  id="departure1" size="5" maxlength="8" style="padding-left: 12px; height:23px; width:62px; margin-left:11px; margin-top:-1px; height: 23px;" value="<?php
+                    if (isset($reserva)) {
+                        echo date("g:i a", strtotime($reserva->deptime1));
+                    }
+                    ?>" readonly="readonly"/>
+
+                </div>
+
+                <div id="opera" class="input"  style="clear:left; ">
+                    <div style="width:265px;">  <label style="width:150px;  color:#FFFFFF;"  >PICK UP POINT/ADDRESS</label></div>
+                    <div style="width:200px;">
+                        <div class="ausu-suggest" >
+                            <input name="pickup1" type="text"  id="pickup1" size="40" maxlength="55" value="<?php
+                            if (isset($pickup1) && $pickup1 != "") {
+                                echo $pickup1->place;
+                            }
+                            ?>" autocomplete="off"/>
+                            <input name="id_p1" type="hidden"  id="id_p1" size="40" maxlength="55" value="<?php
+                            if (isset($pickup1) && $pickup1 != "") {
+                                echo $pickup1->id;
+                            }
+                            ?>" />
+                        </div>
+                    </div>
+                </div>
+                <div id="opera" class="input"  >
+                    <div style="width:265px;">  <label style="margin-left:8px; width:250px;  color:#FFFFFF;"  >DROP OFF POINT/ADDRESS</label></div>
+                    <div style="width:210px;">
+                        <div class="ausu-suggest" >
+                            <input name="dropoff1" style="padding:2px; margin-left: 8px; width: 272px;" type="text"  id="dropoff1" size="39" maxlength="55" value="<?php
+                            if (isset($drop1) && $drop1 != "") {
+                                echo $drop1->place;
+                            }
+                            ?>" autocomplete="off"/>
+                            <input name="id_dropoff1" type="hidden"  id="id_dropoff1" size="39" maxlength="55" value="<?php
+                            if (isset($drop1) && $drop1 != "") {
+                                echo $drop1->id;
+                            }
+                            ?>" />
+                        </div>
+                    </div>
+                </div>
+                <div id="opera" class="input" style="margin-left: 16px;" >
+                    <div style="width:50px;">  <label style="width:45px; padding-left: 6px; color:#FFFFFF;"  >ARR.TIME</label></div>
+                    <div style="width:50px;">
+                        <input name="arrival1" type="text"  id="arrival1" size="5" maxlength="8" style="height: 22px; margin-left: 6px; padding-left: 10px; width:63px;"  value="<?php
+                        if (isset($reserva)) {
+                            echo date("g:i a", strtotime($reserva->arrtime1));
+                        }
+                        ?>" readonly="readonly" />
+                    </div>
+                </div>
+
+
+                <div id="opera" class="input" style="padding-top:5px;  "> <label style="padding-right:5px;color:#FFFFFF;">EXTENSION AREA:</label>
+                    <select name="ext_from1" id="ext_from1" style='width:123px; height:26px;' >
+                        <option value="0"></option>
+                        <?php foreach ($extenFrom1 as $ex) { ?>
+                            <option value="<?php echo $ex['id'] ?>"  <?php echo ($extencion1->id == $ex['id']) ? ' selected ' : ''; ?> > <?php echo $ex['place'] . ' ' . $ex['address'] ?></option>
+                        <?php } ?>
+                    </select></div>
+
+                <div id="opera" class="input" > <label style=" color:#FFFFFF; margin-left:-8px; margin-top:4px;">EXTENSION AREA:</label>
+                    <select name="ext_to1" id="ext_to1" style="width:132px; margin-left:5px; height:26px; margin-top:5px;">
+                        <option value="0"></option>
+                        <?php foreach ($extenTo1 as $ex) { ?>
+                            <option value="<?php echo $ex['id'] ?>"  <?php echo ($extencion2->id == $ex['id']) ? ' selected ' : ''; ?> > <?php echo $ex['place'] . ' ' . $ex['address'] ?></option>
+                        <?php } ?>
+                    </select>  </div>
+                <div id="opera" class="input">
+                    <label style="margin-left: 0px; color:#FFFFFF; margin-top:4px;" >ROOM #</label>
+                    <input name="room1" type="text"  id="room1" size="4" maxlength="6" style=" width:73px;  margin-left: 30px; margin-top:4px;" value="<?php echo $reserva->room1; ?>" />
+                </div>
+
+                <div id="opera" class="input"  style="clear:left; ">
+
+                    <div style="width:300px;">  <label style="width:250px;  color:#FFFFFF;"  >EXTENSION PICK UP POINT/ADDRESS</label></div>
+                    <div style="width:200px;">
+                        <div class="ausu-suggest" >
+                            <input name="exten1" type="text"  id="exten1" size="46" maxlength="55" value="<?php echo $reserva->pickup_exten1; ?>" <?php
+                            if ($extencion1->id == 0) {
+                                echo ' disabled="disabled" ';
+                            }
+                            ?>  autocomplete="off"/>
+                            <input name="id_ext_pikup1" type="hidden"  id="id_ext_pikup1" size="40" maxlength="55" value="" />
+                        </div>
+                    </div>
+                </div>
+                <div id="opera" class="input" >
+                    <div style="width:265px;">  <label style="width:250px;  color:#FFFFFF; margin-left: 11px;"  >EXTENSION DROP OFF POINT/ADDRESS</label></div>
+                    <!--                    <div style="width:200px;">-->
+                    <div class="ausu-suggest" >
+                        <input name="exten2" type="text"  id="exten2" size="47" maxlength="55" style="padding-left:11px; margin-left: 11px; width:313px;" value="<?php echo $reserva->pickup_exten2; ?>"  <?php
+                        if ($extencion2->id == 0) {
+                            echo ' disabled="disabled" ';
+                        }
+                        ?>  autocomplete="off"/>
+                        <input name="id_ext_pikup2" type="hidden"  id="id_ext_pikup2" size="40" maxlength="55" value="" />
+                        <!--                        </div>-->
+                    </div>
+                </div>
+
+            </fieldset>
+            <!--            <fieldset id="round" style="display:none;"><legend><font color="#990000">ROUND TRIP</font></legend>-->
+            <fieldset id="round" style="display:none;border-radius: 5%;  margin-top:7px; height:246px;" class="rojo"><legend style="border:1px solid #B83A36; background:#fff;"><font color="#990000">ROUND TRIP</font></legend>
+                <div>
+                    <select style="width:193px; margin-left: 11px; margin-top:9px;" id="estado_roundtrip" name="estado_roundtrip" onchange="fecha_ns_round();">
+
+                        <optgroup label="STATUS">
+
+                            <option value="1">CONFIRMED</option>
+                            <option value="2">NO SHOW AND NO PAY</option>
+                            <option value="3">NO SHOW AND PAID</option>
+                            <option value="4">CANCELED</option>
+
+                        </optgroup>
+
+                    </select>
+                </div>
+                <div id="opera" class="input" style="padding-top:18px; ">
+
+                    <label style="width:75px; color:#FFFFFF;"  >DEPARTURE</label>
+                    <a href="" id="dataclick2" ><i class="fa fa-calendar fa-2x" style="color: #fff; margin-top:5px; "></i></a>
+<!--                    <a href="" id="dataclick2" ><img src="<?php echo $data['rootUrl']; ?>global/images/calendar.png" alt=""  align="absmiddle" width="19" height="20" border="0"  /></a>-->
+                    <input name="fecha_retorno" type="text"  id="fecha_retorno" style="width:84px; margin-top:8px; margin-left:8px; padding-top:2px;" size="10" maxlength="15" value="<?php
+//                    && $reserva->tipo_ticket != 'oneway'
+                    if ($reserva->fecha_retorno == '-N/A-') {
+                        echo 'N/S';
+                    } else {
+                        if (isset($reserva)) {
+                            echo ($reserva->fecha_retorno == "0000-00-00" ? "00-00-0000" : date('m-d-Y', strtotime($reserva->fecha_retorno)));
+                        }
+                    }
+                    ?>" autocomplete="off" />
+                </div>
+
+                <div id="opera" class="input"  >
+                    <div id="explo">  <label style="width:45px; color:#FFFFFF;"> FROM</label></div>
+                    <div id="explo" align="left">
+                        <select name="fromt2"  style="width:125px; height:25px; margin-top:5px; " id="from2" >
+                            <option value=""></option>
+                            <?php foreach ($to_areas as $area) { ?>
+                                <option value="<?php echo $area['trip_to']; ?>"  <?php echo ($area["trip_to"] == $reserva->fromt2 ? 'selected' : '') ?>  >
+                                    <?php echo $area['nombre']; ?>
+                                </option>
+                            <?php } ?>
+
+                        </select>
+                    </div>
+                </div>
+
+                <div id="opera" class="input"  >
+                    <div id="explo">  <label style="width:45px; color:#FFFFFF;"  > TO</label></div>
+                    <div id="explo" align="left">
+                        <select name="to2"  id="to2" style="width:130px; height:25px; margin-top:5px; " <?php
+//            if($reserva->tipo_ticket=='oneway'){
+//                echo ' disabled="disabled" ';
+//            }
+                        ?> >
+                                    <?php foreach ($data["to_areas2"] as $area) { ?>
+                                <option value="<?php echo $area['trip_to']; ?>"  <?php echo ($area["trip_to"] == $reserva->tot2 ? 'selected' : '') ?>  >
+                                    <?php echo $area['nombre']; ?>
+                                </option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                </div>
+                <div id="opera" class="input" style="margin-top: -1px;"  >
+                    <div style="width:50px;" id="popup2">  <label style="width:20px; color:#FFFFFF;"  > TRIP</label><a id="search2" style="cursor:pointer;color: #fff;" class="fa fa-search-plus fa-2x"></a> 
+                        <input type="hidden" id="valorcomision02" name="valorcomision02" value="<?php /* echo $subto['comi2'] */ ?>" />
+                    </div>
+                    <div style="width:50px;"><input type="hidden" id="trip_no2_c" name="trip_no2_c" style="height: 22px; width:75px;" value="<?php
+                        if (isset($reserva)) {
+                            echo $reserva->trip_no2;
+                        }
+                        ?>"/> <input name="trip_no2" type="text"  style="margin-top:5px; height:22px; width:83px;" id="trip_no2" size="3" maxlength="3" value="<?php
+                                                    if (isset($reserva)) {
+                                                        echo ($reserva->trip_no2 != 0 ? $reserva->trip_no2 : "");
+                                                    }
+                                                    ?>"  readonly="readonly"/>
+                    </div>
+                </div>
+                <div id="opera" class="input"  style="clear:right; padding-left:7px;">
+                    <div style="width:50px;">  <label style="width:45px; padding-left: 15px; color:#FFFFFF;"  > DEP.TIME</label></div>
+                    <div style="width:50px;">
+                        <input name="departure2" type="text" style="height: 22px; padding-left: 9px; margin-top:5px; width:62px; margin-left:15px;" id="departure2" size="5" maxlength="8" value="<?php
+                        if (isset($reserva)) {
+                            echo ($reserva->deptime2 != "00:00:00" ? date("g:i a", strtotime($reserva->deptime2)) : "");
+                        }
+                        ?>" readonly="readonly"/>
+                    </div>
+                </div>
+
+                <div id="opera" class="input"  style="clear:left; ">
+                    <div style="width:265px;">  <label style="width:150px; color:#FFFFFF;"  >PICK UP POINT/ADDRESS</label></div>
+                    <div style="width:200px;">
+                        <div class="ausu-suggest" >
+                            <input name="pickup2" type="text"  id="pickup2" size="40" maxlength="55" value="<?php
+                            if (isset($pickup2) && $pickup2 != "") {
+                                echo $pickup2->place;
+                            }
+                            ?>" autocomplete="off"/>
+                            <input name="id_pickup2" type="hidden"  id="id_pickup2" size="40" maxlength="55" value="<?php
+                            if (isset($pickup2) && $pickup2 != "") {
+                                echo $pickup2->id;
+                            }
+                            ?>" />
+                        </div>
+                    </div>
+                </div>
+                <div id="opera" class="input"  >
+                    <div style="width:265px;">  <label style="width:250px; margin-left:8px; color:#FFFFFF;"  >DROP OFF POINT/ADDRESS</label></div>
+                    <div style="width:200px;">
+                        <div class="ausu-suggest" >
+                            <input name="dpoff2" type="text" style="margin-left:9px; width: 272px; padding-left:10px;" id="dropoff2" size="39" maxlength="55" value="<?php
+                            if (isset($drop2) && $drop2 != "") {
+                                echo $drop2->place;
+                            }
+                            ?>" autocomplete="off"/>
+                            <input name="id_dropoff2" type="hidden"  id="id_dropoff2" size="40" maxlength="55" value="<?php
+                            if (isset($drop2) && $drop2 != "") {
+                                echo $drop2->id;
+                            }
+                            ?>" />
+                        </div>
+                    </div>
+                </div>
+                <div id="opera" class="input" style="margin-left: 16px;"  >
+                    <div style="width:50px;">  <label style="width:45px; padding-left: 10px; color:#FFFFFF;"  >ARR.TIME</label></div>
+                    <div style="width:50px;">
+                        <input name="arrival2" type="text" style="height: 22px; margin-left: 10px; padding-left: 8px; width:63px;" id="arrival2" size="5" maxlength="8" value="<?php
+                        if (isset($reserva)) {
+                            echo ($reserva->arrtime2 != "00:00:00" ? date("g:i a", strtotime($reserva->arrtime2)) : "");
+                        }
+                        ?>" readonly="readonly" />
+                    </div>
+                </div>
+
+
+                <div id="opera" class="input" style="padding-top:5px;"> <label style="padding-right:5px; color:#FFFFFF;">EXTENSION AREA:</label>
+                    <select name="ext_from2" id="ext_from2" style="width:123px; height:26px;" >
+                        <option value="0"></option>
+                        <?php foreach ($extenFrom2 as $ex) { ?>
+                            <option value="<?php echo $ex['id'] ?>"  <?php echo ($extencion3->id == $ex['id']) ? ' selected ' : ''; ?> > <?php echo $ex['place'] . ' ' . $ex['address'] ?></option>
+                        <?php } ?>
+                    </select> 
+                </div>
+
+                <div id="opera" class="input" > <label style=" color:#FFFFFF; margin-left:-8px; margin-top:4px;">EXTENSION AREA:</label>
+                    <select name="ext_to2" id="ext_to2" style="width:122px; margin-left:7px; height:26px; margin-top:5px;">
+                        <option value="0"></option>
+                        <?php foreach ($extenTo2 as $ex) { ?>
+                            <option value="<?php echo $ex['id'] ?>"  <?php echo ($extencion4->id == $ex['id']) ? ' selected ' : ''; ?> > <?php echo $ex['place'] . ' ' . $ex['address'] ?></option>
+                        <?php } ?>
+                    </select>  
+                </div>
+                <div id="opera" class="input" >
+                    <label style=" margin-right:-13px; color:#FFFFFF;"  >ROOM #</label>
+                    <input name="room2" type="text" style=" width:58px; padding-left: 13px; margin-left:55px; margin-top:4px; " id="room2" size="4" maxlength="6" value="<?php echo $reserva->room2; ?>" />
+                </div>   
+
+
+                <div id="opera" class="input"  style="clear:left; ">
+                    <div style="width:300px;">  <label style="width:250px; color:#FFFFFF;">EXTENSION PICK UP POINT/ADDRESS</label></div>
+                    <div style="width:200px;">
+                        <div class="ausu-suggest" >
+                            <input name="exten3" type="text" style="margin-left: 1px; width: 313px; padding-left: 0px;"  id="exten3" size="46" maxlength="55" value="<?php echo $reserva->pickup_exten3; ?>"   <?php
+                            if ($extencion3->id == 0) {
+                                echo ' disabled="disabled" ';
+                            }
+                            ?> autocomplete="off" />
+                            <input name="id_ext_pikup3" type="hidden"  id="id_ext_pikup3" size="40" maxlength="55" value="" />
+                        </div>
+                    </div>
+                </div>
+                <div id="opera" class="input" style="clear:right;" >
+                    <div style="width:265px;"><label style=" margin-left: -1px; width: 310px; padding-left: 9px;  color:#FFFFFF;"  >EXTENSION DROP OFF POINT/ADDRESS</label></div>
+                    <div style="width:200px;">
+                        <div class="ausu-suggest" >
+                            <input name="exten4" type="text"  style="margin-left: 9px; width: 308px; padding-left: 20px;" id="exten4" size="47" maxlength="55" value="<?php echo $reserva->pickup_exten4; ?>"  <?php
+                            if ($extencion4->id == 0) {
+                                echo ' disabled="disabled" ';
+                            }
+                            ?>  autocomplete="off" />
+                            <input name="id_ext_pikup4" type="hidden"  id="id_ext_pikup4" size="40" maxlength="55" value="" />
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+<!--            <table width="246" cellspacing="0" class="sup2" style="margin-top: 2px;">-->
+            <table class="sky" border="1" width="256" height="205" cellspacing="0" class="sup2" style="margin-top: 30px;">
+                <tr class="blackblue">
+
+<!--                    <td width="136" style="text-align:center; color:#fff; font-size: 14px; font-weight:bold;"><label><strong>QUOTE</strong></label></td>
+                    <td width="54"  style="text-align:center; color:#fff; font-size: 14px; font-weight:bold;"><label style="color:#4B0082;"><strong>ADULT</strong></label></td>
+                    <td width="48"  style="text-align:center; color:#fff; font-size: 14px; font-weight:bold;"><label style="color:#4B0082;"><strong>CHILD</strong></label></td>
+                    -->
+                    <td width="136" style="text-align:center; color:#fff; font-size: 14px; font-weight:bold;" ><label><strong>QUOTE</strong></label></td>
+                    <td width="54"  style="text-align:center; font-size: 14px; font-weight:bold;"><label style="color:#fff;"><strong>ADULT</strong></label></td>
+                    <td width="48"  style="text-align:center; font-size: 14px; font-weight:bold;"><label style="color:#fff;"><strong>CHILD</strong></label></td>
+                </tr>
+                <tr>
+                    <td><label style="font-size: 14px; font-weight:bold; float:right; color:#4B0082;"><strong>Line Transportation</strong></label></td>
+                    <td style="text-align:center; color:blue;"><span name ="transporadult" id="transporadult" value="" style="font-size: 15px; font-weight:bold;"></span></td>
+                <input type="hidden" name ="transadult" id="transadult"/>
+                <input type="hidden" name ="transchild" id="transchild"/>
+                <td style="text-align:center; color:blue;"><span name ="transporechil" id="transporechil" style="font-size: 15px; font-weight:bold;"></span></td>
+                </tr>
+                <tr>
+                    <td><label style="float:right; color:#4B0082; font-size: 14px; font-weight:bold; "><strong>Extensions</strong></label></td>
+                    <td style="text-align:center; color:red;"><span id="extenadult" style="font-size: 15px;font-weight:bold; "></span></td>
+                    <td style="text-align:center; color:red;"><span id="extenchil" style="font-size: 15px;font-weight:bold; "></span></td>
+                </tr>
+<!--                <tr>
+                    <td><label style="text-align:left; color:#4B0082;"><strong> Discount %</strong></label></td>
+                    <td colspan="2">
+                        <input name="descuento" type="number" id="descuento" maxlength="3" onkeyup="valorExtra();" max="100" min="0"  value="<?php echo $reserva->descuento_procentaje; ?>"  style="text-align:left; height:20px; width:112px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td><label style="text-align:left; color:#4B0082;"><strong> Discount &nbsp;$</strong></label></td>
+                    <td colspan="2">
+                        <input name="descuento_valor" type="number" id="descuento_valor" size="12" maxlength="10" pattern="6[0-9]" style="height:20px; width:112px;" onkeyup="valorDescuento();"   value="<?php echo $reserva->descuento_valor; ?>"  />
+                    </td>
+                </tr>
+                <tr>
+                    <td><label style="text-align:left; color:#4B0082;"><strong>Extra Charges &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$</strong></label></td>
+                    <td colspan="2">
+                        <input name="extra" type="text" id="extra" size="12" maxlength="10" style="height:20px; width:114px;" onkeyup="valorExtra();"  />
+                    </td>
+                </tr>-->
+                <tr>
+                    <td><label style="float:right; color:#4B0082; font-size: 14px; font-weight:bold;"><strong>Sub-total per Pax</strong></label></td>                 
+
+                    <td style="text-align:center; color:#4B0082;"><span id="subtoadult" style="font-size: 15px; font-weight:bold; "></span></td>
+                    <td style="text-align:center; color:#4B0082;"><span id="subtochild" style="font-size: 15px; font-weight:bold; "></span></td>
+
+                </tr>
+                <tr>
+<!--                    <td><label style="text-align: center; color:#fff; font-size: 16px; font-weight:bold;" ><strong>TOTAL</strong></label></td>
+                    <td style="text-align:center;" colspan="2"><label style="color:#fff;"><strong   id="totaltotal" style="font-size: 18px; font-weight:bold; " >$ 00.0</strong></label></td>-->
+
+                    <td  style="float:center; text-align: center; color:#fff; font-size: 16px; font-weight:bold;"><label><strong>TOTAL&nbsp;</strong></label></td>
+                    <td style="text-align:center;" colspan="2"><label style="color:#fff;"><strong id="totaltotal" style="font-size: 18px; font-weight:bold; ">$ 00.0</strong></label></td>
+
+                <div id="enviarDatos"></div>
+
+                <!--Standard Price Trip No 1-->
+
+                <input size="5" type="hidden" id="subtoadult1" name="subtoadult1" value="<?php echo $reserva->precio_trip1_a; ?>" />
+                <input size="5" type="hidden" id="subtochild1" name="subtochild1" value="<?php echo $reserva->precio_trip1_c; ?>" /><br>
+
+                <!--SuperFlex Trip No1-->
+                <input size="5" type="hidden" id="subtoadult22" name="subtoadult22" value="<?php echo $reserva->precio_trip1_a; ?>" />
+                <input size="5" type="hidden" id="subtochild22" name="subtochild22" value="<?php echo $reserva->precio_trip1_c; ?>" /><br>
+
+
+                <input size="5" type="hidden" id="price_exten01" name="price_exten01" value="<?php echo $reserva->precio_exten1_a; ?>" />
+                <input size="5" type="hidden" id="price_exten02" name="price_exten02" value="<?php echo $reserva->precio_exten2_a; ?>" />
+                <input size="5" type="hidden" id="price_exten03" name="price_exten03" value="<?php echo $reserva->precio_exten3_a; ?>"  />
+                <input size="5" type="hidden" id="price_exten04" name="price_exten04" value="<?php echo $reserva->precio_exten4_a; ?>" />
+
+
+                <!--Standard Price Trip No 2-->
+                <input size="5" type="hidden" id="subtoadult2" name="subtoadult2" value="<?php echo $reserva->precio_trip2_a; ?>" />
+                <input size="5" type="hidden" id="subtochild2" name="subtochild2" value="<?php echo $reserva->precio_trip2_c; ?>" /><br>
+
+                <!--SuperFlex Trip No2-->
+                <input size="5" type="hidden" id="subtoadult4" name="subtoadult4" value="<?php echo $reserva->precio_trip2_a; ?>" />
+                <input size="5" type="hidden" id="subtochild4" name="subtochild4" value="<?php echo $reserva->precio_trip2_c; ?>" /><br>
+
+
+                <input size="5" type="hidden" id="subtoadult1_o" name="subtoadult1_o" value="<?php echo $reserva->precio_trip1_a; ?>" />
+                <input size="5" type="hidden" id="subtochild1_o" name="subtochild1_o" value="<?php echo $reserva->precio_trip1_c; ?>" />
+                <input size="5" type="hidden" id="subtoadult2_o" name="subtoadult2_o" value="<?php echo $reserva->precio_trip2_a; ?>" />
+                <input size="5" type="hidden" id="subtochild2_o" name="subtochild2_o" value="<?php echo $reserva->precio_trip2_c; ?>" />                
+                <input size="5" type="hidden" id="price_exten01_o" name="price_exten01_o" value="<?php echo $reserva->precio_exten1_a; ?>" />
+                <input size="5" type="hidden" id="price_exten02_o" name="price_exten02_o" value="<?php echo $reserva->precio_exten2_a; ?>" />
+                <input size="5" type="hidden" id="price_exten03_o" name="price_exten03_o" value="<?php echo $reserva->precio_exten3_a; ?>"  />
+                <input size="5" type="hidden" id="price_exten04_o" name="price_exten04_o" value="<?php echo $reserva->precio_exten4_a; ?>" />
+
+
+                <input size="5" type="hidden" id="price1" name="price1" value="<?php echo $reserva->id1; ?>" /><br>
+                <input size="5" type="hidden" id="price2" name="price2" value="<?php echo $reserva->id2; ?>" /><br>
+
+                </tr>
+                 <!--<tr>
+                    <td>&nbsp;</td>
+                    <td colspan="2">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;
+                        </td>
+                    <td colspan="2">&nbsp;
+            
+                    </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;
+            
+                        </td>
+                    <td colspan="2">&nbsp;
+                        </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;
+                        </td>
+                    <td colspan="2">&nbsp;
+            
+            
+                    </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;
+            
+                        </td>
+                    <td colspan="2">&nbsp;
+                        </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td colspan="2">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td colspan="2">&nbsp;</td>
+                </tr>
+            
+                <tr>
+                    <td>&nbsp;</td>
+                    <td colspan="2">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td colspan="2">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td colspan="2">&nbsp;</td>
+                </tr>-->
+
+            </table >
+
+            <!--            <fieldset id="pymen" style="height:375px;" ><legend >PAYMENT INFORMATIONS brown4</legend>-->
+            <fieldset id="pymen" style="margin-top:8px; height:403px; border-radius: 5%;" class="super" ><legend style="border:1px solid #00C; background:#fff" >PAYMENT INFORMATIONS</legend>
+                <input type="hidden" value="0" id="totalcom" name="totalcom">
+                <table width="100%">
+                    <tr><td>
+                            <div id="opera" class="input" style="padding-top:5px; width:450px;">
+                                <table width="100%" id="tr_complementary"  style="display:
+                                <?php
+                                if ($agencia->id == -1) {
+                                    echo 'block';
+                                } else {
+                                    echo 'none';
+                                }
+                                ?>;display:none;" ><tr>
+                                        <td width="2%">
+                                            <input name="opcion_pago" id="opcion_pago_complementary" value="7"  type="radio"  <?php echo ($typo_pago == strtoupper('Complementary')) ? ' checked ' : ''; ?>    ></td>
+                                        <td width="20%"><label for="opcion_pago_complementary">Complementary</label></td>
+                                    </tr></table>
+                                <table width="100%" height="125" id="tableorder" style="display:none;">
+                                    <tr>
+                                        <td  colspan="3" width="34%" height="" align="center"  >
+                                            <input type="hidden" name="opcion_pago_saldo" id="opcion_pago_saldo" value="1" />
+                                            <table width="100%" align="center" id="tableTypeSaldo"
+                                                   style="display:
+                                                   <?php
+                                                   if ($agencia->id != -1 && $agencia->type_rate == 0) {
+                                                       echo 'block';
+                                                   } else {
+                                                       echo 'none';
+                                                   }
+                                                   ?>;" >
+                                                <tr>
+                                                    <td colspan="6"   height="20" id="titlett" align="center"  ><strong>PAYMENT OPTION</strong></td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>&nbsp;</td>
+                                                    <td width="2%">
+                                                        <input name="opcion_saldo" id="opcion_saldo1" value="1" type="radio"  <?php echo ($typo_saldo == 'FULL') ? ' checked ' : ''; ?> ></td>
+                                                    <td width="20%">Paid Full</td>
+                                                    <td width="2%"><input name="opcion_saldo" id="opcion_saldo2" value="2" <?php echo ($typo_saldo == 'BALANCE') ? ' checked ' : ''; ?>   type="radio"></td>
+                                                    <td width="20%">Paid Balance</td>
+                                                    <td>&nbsp;</td>
+                                                <tr>
+                                                <tr><td colspan="6"><hr /></td></tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td  width="34%" height="35" id="titlett" align="left"  ><strong>PRED-PAID</strong></td>
+                                        <td  width="34%" height="35" id="titlett" align="left"  ><strong>COLLECT ON BOARD</strong></td>
+                                        <td  width="34%" height="35" id="titlett" align="left"  ><strong>VOUCHER</strong></td>
+                                    </tr>
+                                    <tr style="display:none;">
+                                        <td valign="top"  >
+                                            <table style="width:160px;">
+                                                <tr>
+                                                    <td colspan="2"></td>
+                                                </tr>
+
+<!--                                <tr id="tipo_passager">
+         <td width="5"><input name="opcion_pago" id="opcion_pago_passager"  value="2" agencypago="true" type="radio"  <?php echo ($typo_pago == strtoupper('Passenger Credit Card')) ? ' checked ' : ''; ?>  ></td>
+         <td width="" align="left"><label id="label_tipo_passager" for="opcion_pago_passager" class="opcion_pago">Passenger Credit Card</label></td>
+
+     </tr>
+     <tr id="tipo_agency" style="" >
+         <td width="5"><input name="opcion_pago" id="opcion_pago_agency"  value="1" agencypago="true" type="radio"   <?php echo ($typo_pago == strtoupper('Agency Credit Card')) ? ' checked ' : ''; ?>   ></td>
+         <td width="" align="left"> <label id="label_tipo_agency" for="opcion_pago_agency" class="opcion_pago">Agency Credit Card</label></td>
+     </tr>
+     <tr id="tipo_predpaid_cash" style="">
+         <td width="5"><input name="opcion_pago" id="opcion_pago_predpaid_cash"  value="6" agencypago="true" type="radio" <?php echo ($typo_pago == strtoupper('Cash in terminal')) ? ' checked ' : ''; ?>   ></td>
+         <td width="" align="left" id=""> <label id="label_tipo_predpaid_cash" for="opcion_pago_predpaid_cash" class="opcion_pago">Cash in terminal </label></td>
+     </tr>-->
+
+<!--                                <tr id="tipo_passager">
+         <td width="5"><input name="opcion_pago" id="opcion_pago_passager"  value="2" agencypago="true" type="radio" <?php echo ($typo_pago == strtoupper('Credit Card') || $typo_pago == strtoupper('Passenger Credit Card')) ? ' checked ' : ''; ?>  ></td>
+         <td width="" align="left"><label id="label_tipo_passager" for="opcion_pago_passager" class="opcion_pago">Credit Card no fee</label></td>
+     </tr>
+     <tr id="tipo_agency" style="" >
+         <td width="5"><input name="opcion_pago" id="opcion_pago_agency"  value="1" agencypago="true" type="radio"   <?php echo ($typo_pago == strtoupper('Agency Credit Card')) ? ' checked ' : ''; ?>   ></td>
+         <td width="" align="left"> <label id="label_tipo_agency" for="opcion_pago_agency" class="opcion_pago">Credit Card with fee</label></td>
+     </tr>
+     <tr id="tipo_predpaid_cash" style="">
+         <td width="5"><input name="opcion_pago" id="opcion_pago_predpaid_cash"  value="6" agencypago="true" type="radio" <?php echo ($typo_pago == strtoupper('Cash in terminal')) ? ' checked ' : ''; ?>   ></td>
+         <td width="" align="left" id=""> <label id="label_tipo_predpaid_cash" for="opcion_pago_predpaid_cash" class="opcion_pago">Cash in terminal </label></td>
+     </tr>-->
+                                                <tr id="tipo_passager" style="height:20px;width:160px; display:block;">
+                                                    <td width="5"><input name="opcion_pago" id="opcion_pago_passager"  value="2" agencypago="true" type="radio" class="opcion_pago" <?php echo ($typo_pago == strtoupper('Passenger Credit Card') || $typo_pago == strtoupper('Credit Card')) ? ' checked ' : ''; ?>></td>
+                                                    <td nowrap="nowrap" width="" align="left"><label id="label_tipo_passager" for="opcion_pago_passager" class="opcion_pago">Credit Card no fee</label></td>
+                                                </tr>
+                                                <tr id="tipo_agency" style="height:20px; width:160px;  display:block">
+                                                    <td width="5"><input name="opcion_pago" id="opcion_pago_agency"  value="1" agencypago="true" type="radio" class="opcion_pago" <?php echo ($typo_pago == strtoupper('Agency Credit Card')) ? ' checked ' : ''; ?>></td>
+                                                    <td  nowrap="nowrap" width="" align="left"> <label id="label_tipo_agency" for="opcion_pago_agency" class="opcion_pago">Credit Card with fee</label></td>
+                                                </tr>
+                                                <tr id="tipo_passager_3" style="height:20px;width:160px; display:block">
+                                                    <td width="5"><input name="opcion_pago" id="opcion_pago_predpaid_cash"  value="6" agencypago="true" type="radio" class="opcion_pago" <?php echo ($typo_pago == strtoupper('Cash in terminal')) ? ' checked ' : ''; ?>></td>
+                                                    <td nowrap="nowrap" > <label id="label_tipo_predpaid_cash" for="opcion_pago_predpaid_cash" class="">Cash</label></td>
+                                                </tr>
+                                                <tr id="tipo_passager_4" style="height:20px;width:160px; display:block">
+                                                    <td width="5"><input name="opcion_pago" id="opcion_pago_predpaid_check"  value="10" agencypago="true" type="radio" class="opcion_pago"></td>
+                                                    <td nowrap="nowrap" > <label id="label_tipo_predpaid_check" for="opcion_pago_predpaid_check" class="">Check</label></td>
+                                                </tr>
+
+                                            </table>
+                                        </td>
+                                        <td valign="top">
+                                            <table style="width:160px;" >
+                                                <tr>
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <!--<?php if ($agen_account['opcion3'] != 0) { ?>
+                                                                                                                                                                                <tr id="tipo_CrediFee">
+                                                                                                                                                                                    <td width="5"><input name="opcion_pago" id="opcion_pago_CrediFee" value="3" type="radio"    <?php echo ($typo_pago == strtoupper('Credit Card+ 4 % FEE')) ? ' checked ' : ''; ?>   ></td>
+                                                                                                                                                                                    <td align="left" > <label id="label_tipo_CrediFee" for="opcion_pago_CrediFee" class="opcion_pago">Credit Card+ 3 % FEE</label></td>
+                                                                                                                                                                                </tr>
+                                                <?php } ?>
+                                                <?php if ($agen_account['opcion4'] != 0) { ?>
+                                                                                                                                                                            <tr id="tipo_Cash">
+                                                                                                                                                                                <td width="5"><input name="opcion_pago" id="opcion_pago_Cash" value="4" type="radio"  <?php echo ($typo_pago == strtoupper('Cash')) ? ' checked ' : ''; ?>  ></td>
+                                                                                                                                                                                <td align="left"><label id="label_tipo_Cash" for="opcion_pago_Cash" class="opcion_pago">Cash</label></td>
+                                                <?php } ?>
+                                                </tr>-->
+                                                <tr id="tipo_passager_2" style="">
+                                                    <td width="5"><input name="opcion_pago" id="opcion_pago_passager_2"  value="8" agencypago="true" type="radio" class="opcion_pago" ></td>
+                                                    <td nowrap="nowrap" width="" align="left"><label id="label_tipo_passager_2" for="opcion_pago_passager_2" class="opcion_pago">Credit Card no fee</label></td>
+                                                </tr>
+                                                <tr id="tipo_CrediFee">
+                                                    <td width="5"><input name="opcion_pago" id="opcion_pago_CrediFee" value="3" type="radio" class="opcion_pago" <?php echo ($tipo_pago == strtoupper('Credit Card+ 4 % FEE')) ? ' checked ' : ''; ?>></td>
+                                                    <td align="left"  nowrap="nowrap" > <label id="label_tipo_CrediFee" for="opcion_pago_CrediFee" class="opcion_pago">Credit Card with fee</label></td>
+                                                </tr>
+                                                <tr id="tipo_Cash">
+                                                    <td width="5"><input name="opcion_pago" id="opcion_pago_Cash" value="4" type="radio" class="opcion_pago" <?php echo ($tipo_pago == strtoupper('Cash')) ? ' checked ' : ''; ?>></td>
+                                                    <td align="left"><label id="label_tipo_Cash" for="opcion_pago_Cash" class="opcion_pago">Cash</label></td>
+                                                </tr>
+                                                <tr id="tipo_Cash_2">
+                                                    <td width="5"><input name="opcion_pago" id="opcion_pago_Cash_2" value="9" type="radio" class="opcion_pago"></td>
+                                                    <td align="left"><label id="label_tipo_Cash" for="opcion_pago_Cash_2" class="opcion_pago">Check</label></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td align="left" valign="top" >
+                                            <?php if ($agen_account['opcion5'] != 0) { ?>
+                                                <div id="tipo_Voucher" style="">
+                                                    <table>
+                                                        <tr>
+                                                            <td>
+                                                                <input name="opcion_pago" id="opcion_pago_Voucher" value="5" type="radio"   <?php echo ($typo_pago == strtoupper('Credit Voucher')) ? ' checked ' : ''; ?> >
+                                                            </td>
+                                                            <td>
+                                                                <label id="label_tipo_Cash" for="opcion_pago_Voucher" class="opcion_pago">Credit Voucher</label>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            <?php } ?>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <!--Aqui-->
+                                <div id="opera" class="input" style="width: 525px; margin-top:-73px; margin-left:-5px;">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <table>
+                                                    <tr>
+                        <!--                                <td style="width:50px">  &nbsp;
+                                                            <a id="enviarF" style="display:none" ><img src="<?php echo $data['rootUrl']; ?>global/img/admin/charge.png" /></a>
+                                                        </td>-->
+                                                        <td style="width:60px;">
+                                                            &nbsp;
+<!--                                                            <a id="btn-save2" title="Save"><img width="50" height="40" src="<?php echo $data['rootUrl']; ?>global/img/admin/save2.png" /></a>-->
+
+<!--                                                            <input type="button" style="display:none" id="enviar_escondido" value="0"  />
+                                                            <a  id="pago_agente" style="display:block" ><img style="width: 77px; margin-left:3px;  margin-top: 164px;cursor:pointer" src="<?php echo $data['rootUrl']; ?>global/img/admin/charge.png" /></a>-->
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+
+                                            <td>
+<!--                                                <table style="margin-left:-8px; filter: alpha(opacity=35); background-color: #a4a4a4; height: 5px; -moz-opacity: 0.3; opacity: 0.3; -khtml-opacity: 0.3;" border="0" width="446" align="center">
+                                                    <tbody>
+                                                    <tr>
+                                                    <td> </td>
+                                                    </tr>
+                                                    </tbody>
+                                                    </table>-->
+
+
+                                                <table>
+                                                    <tr>
+                        <!--                                <td >
+                                                        <?php if ($agencia->id != -1 && $agencia->type_rate != 0) { ?>
+                                                                                                                                                                                        <label  style="padding-left:20px; font-size:11px; "><strong style="padding-bottom:10px;" >Agency Comision	$ </strong></label>
+                                                                                                                                                                                    </td>-->
+                                                                                                                                                    <!--                                <td>
+                                                                                                                                                                                        <label id="totalComision" ></label>
+                                                                                                                                                                                        <br />
+                                                        <?php } ?>
+                                                        </td>-->
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+<!--                                                            <label  style="padding-left:22px; font-size:16px; color:#4B0082; "><strong style="padding-bottom:10px;">TOTAL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$ </strong></label>-->
+                                                        </td>
+                                                        <td>
+                                                            <!--                                                            <label  style="font-size:16px; padding-left:3px; font-weight:bold;" id="totalPagar" ></label>-->
+                                                            <!--                                                            <font  style="float: left; height:23px; text-align: center;border: #AC1B29 solid thin; background-color: #AC1B29; width: 104px; margin-top:3px; font-size:22px; padding-left:3px; font-weight:bold; color:#fff;" id="totalPagar" ></font>
+                                                                                                                        <input name="totP" type="hidden"  id="totP" value="" />-->
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+
+                                                        <td>
+<!--                                                            <label  style="padding-left:21px; font-size:14px; margin-top: 6px; "><strong style="padding-bottom:0px; color:#090;">Total Amount Paid</strong></label>-->
+                                                        </td>
+                                                        <td>
+<!--                                                            <label id="saldoPagado" <strong style="font-size:16px; padding-left:20px;" >$  <?php echo number_format($pagado, 2, '.', ','); ?></strong></label>-->
+                                                            <br />
+                                                        </td>
+                                                    </tr>
+<!--                                                    <td>&nbsp;</td>-->
+                                                    <tr style=" height:35px;">
+                                                        <td>
+<!--                                                            <label  style="padding-left:20px; font-size:12px; "><strong   id="txtamountpendiente" style="padding-bottom:0px; color:#F00">Amount to Collect </strong></label>-->
+                                                        </td>
+<!--                                                        <td><select name="opcion_pago" id="op_pago_id" style="margin-left:10px;">
+                                                                <optgroup label="COLLECT ON BOARD">
+                                                                    <option value="8">Credit Card no fee</option>
+                                                                    <option value="3">Credit Card with fee</option>
+                                                                    <option value="4">Cash</option>
+                                                                    <option value="9">Check</option>
+                                                                </optgroup>
+                                                                <optgroup label="VOUCHER">
+                                                                    <option value="5">Credit Voucher</option>
+                                                                </optgroup>
+                                                                <optgroup label="COMPLEMENTARY">
+                                                                    <option value="7">Complementary</option>
+                                                                </optgroup>
+                                                            </select>
+                                                            <label style="font-family: Verdana, Geneva, sans-serif; color:#4B0082; font-size: 16px; font-weight: bold; margin-left:14px;    margin-top: -4px;" id="saldoporpagar" >$  <?php echo number_format(($saldoxPagar), 2, '.', ','); ?></label>
+                                                                                                                        <label style="font-family: Verdana, Geneva, sans-serif; color:#4B0082; font-size: 16px; font-weight: bold; margin-left:27px;    margin-top: -5px;" id="" >$  </label>
+                                                            <br />
+                                                        </td>-->
+                                                    </tr>
+<!--                                                    <td>&nbsp;</td>-->
+
+                                                    <tr id="tr_otheramount"   ><td>
+<!--                                                            <label  style="padding-left:20px; width:146px; font-size:16px; color:#4B0082;"><strong style="padding-bottom:10px;">Other Amount&nbsp;$</strong></label>	</td>-->
+                                                        <td>
+<!--                                                            <input type="text" id="otheramount" name="otheramount" style="text-align: center;font-size: 22px; float:left;width:100px; font-weight:bold; font-family:Verdana, Geneva, sans-serif; color: #fff;border: #AC1B29 solid thin; background-color: #AC1B29; width: 104px;float:left;width:106px; font-weight:bold; font-family:Verdana, Geneva, sans-serif; color:fff;"" value="<?php echo number_format($reserva->otheramount, 2, '.', ','); ?>" onkeyup="CalcularTotalTotal();"  />-->
+<!--                                                             <input type="text" id="otheramount" name="otheramount" style="text-align: center;font-size: 22px;font-weight: bold;color: #fff;border: #AC1B29 solid thin; background-color: #AC1B29; width: 104px;float:left;width:106px; font-weight:bold; font-family:Verdana, Geneva, sans-serif; color:fff;" value="" onkeyup="CalcularTotalTotal();"  />-->
+                                                        </td>
+                                                    </tr>
+<!--                                                    <td>&nbsp;</td>-->
+<!--                                                    <tr id="pay_amount_html" style="height: 50px;">
+                                                        <td>
+                                                            <label  style="padding-left:22px; font-size:16px;color:#4B0082;"><strong style="padding-bottom:10px;">Add Payment&nbsp;&nbsp;$ </strong></label>
+                                                        </td>
+                                                        <td>
+                                                            <input autocomplete="off" type="text" class="txtNumbers"  name="pay_amount" id="pay_amount" value=""  style="padding-left:5px; text-align: center;font-size: 22px;font-weight: bold;color: #fff;border: 1px #33F solid; background-color: #00f; padding-left:5px; width:100px; height:20px;float:left; margin-top:4px;" />
+                                                            <input autocomplete="off" type="text" class="txtNumbers"  name="pay_amount" id="pay_amount" value=""  style="padding-left:5px; width:100px; height:20px;float:left;" />
+                                                            <select name="opcion_pago_2" style="margin-left:10px; margin-top: -20px;">
+                                                                <optgroup label="PRED-PAID">
+                                                                    <option value="2">Credit Card no fee</option>
+                                                                    <option value="1">Credit Card with fee</option>
+                                                                    <option value="6">Cash</option>
+                                                                    <option value="10">Check</option>
+                                                                </optgroup>
+                                                                <optgroup label="COLLECT ON BOARD">
+                                                                    <option value="8">Credit Card no fee</option>
+                                                                    <option value="3">Credit Card with fee</option>
+                                                                    <option value="4">Cash</option>
+                                                                    <option value="9">Check</option>
+                                                                </optgroup>
+
+                                                            </select>
+                                                        </td>
+                                                    </tr>-->
+                                                </table>
+                                            </td>
+                                            <td>
+                                                <div id="estadoTranssacion">
+
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </td>
+
+
+
+                        <td>
+
+
+                        </td>
+
+
+
+
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+
+                        </td>
+                    </tr>
+                </table>
+                </td>
+                </tr>
+
+
+
+                <table class="oliveti" style="width: 39%; border: 2px solid #000; margin-left: 10px; margin-top: -7px; height: 155px;">
+                    <caption class="rojo" style=" font-weight:bold; font-size:16px; color:#fff;">Passenger Payment Information</caption>
+
+
+                    <tr  style=" height:33px; width:180px; ">
+
+                        <td style="width: 700px; margin-top:-49px; ">
+                            <label  style="padding-left:92px; font-size:16px;"><strong   id="txtamountpendiente" style="padding-bottom:0px; color:#000;">Amount to Collect&nbsp;$</strong></label>
+                        </td>
+                        <td>
+
+                            <!--<?php /* echo $reserva->totaltotal; */ ?>-->
+
+                            <input type="text"  autocomplete="off" class="verd"  style="font-family: sans-serif; font-size: 22px; color:#000; font-weight: bold; margin-top: 0px; margin-right:6px; text-align:right; width: 106px;" onKeyUp="dupliac();" id="saldoporpagar"  value=""  />             
+
+
+                        </td>
+                    </tr>
+
+
+                    <tr style="height:33px; width: 700px; " >
+                        <td>
+
+                            <label  style=" padding-left:77px; font-size:16px; margin-left: 68px; margin-top: -53px; "><strong style="padding-bottom:10px; color:#000;">Paid Driver&nbsp;$</strong></label>
+                        </td>
+                        <td>
+
+                            <input type="text" id="saldoPagado" class="brown2" style="display:none; font-family: sans-serif; font-size: 22px; color:#000; font-weight: bold; padding-left:23px; margin-left: -22px; width: 83px;" value="<?php echo number_format($pagado, 2, '.', ','); ?>" onKeyUp="CalcularTotalTotal();" onclick="CalcularTotalTotal();"  />
+
+                            <input autocomplete="off" readonly="readonly" type="text" id="paid_driver" name="paid_driver" class="brown3"   style="text-align: right; height: 24px; font-size: 22px;font-weight: bold;color: #000; border: #33F solid thin; margin-top: -3px; margin-right:6px; width: 104px; float:left; width:106px; font-weight:bold; color:#000;" value="<?php echo number_format($reserva->paid_driver, 2, '.', ','); ?>" onKeyUp="CalcularTotalTotal();" onclick="CalcularTotalTotal();" />
+                        </td>
+                    </tr>
+
+                    <tr style="height:33px; width: 700px; " >
+                        <td>
+                            <label  style=" padding-left:77px; font-size:16px; margin-top: -30px; margin-left: -29px;"><strong id="Passenger_Balance_Due" style="padding-bottom:10px; color:#000;">Passenger Balance Due&nbsp;$</strong></label>
+
+                        </td>
+
+                        <td>
+                            <input  readonly="readonly" style="border: 1px #33F solid; margin-top: -1px; margin-right:6px; text-align: right; height: 25px; font-size: 22px; width:106px;" autocomplete="off" type="text" class="ama2"  class="txtNumbers"  name="balance_due" id="balance_due" value="<?php echo number_format($reserva->passenger_balance_due, 2, '.', ','); ?>"    />
+                        </td>
+                    </tr>
+
+
+
+<!--                                <select name="opcion_pago" id="op_pago_id" style="margin-left:386px; margin-top:-28px;">
+                                    <optgroup label="COLLECT ON BOARD">
+                                        <option value="8">Credit Card no fee</option>
+                                        <option value="3">Credit Card with fee</option>
+                                        <option value="4">Cash</option>
+                                        <option value="9">Check</option>
+                                    </optgroup>
+                                    <optgroup label="VOUCHER">
+                                        <option value="5">Credit Voucher</option>
+                                    </optgroup>
+                                    <optgroup label="COMPLEMENTARY">
+                                        <option value="7">Complementary</option>
+                                    </optgroup>
+                                </select>-->
+
+                </table>
+
+
+                <table class="oliveti" style="width: 39%; border: 2px solid #000; margin-left: 10px; margin-top: 9px; height: 170px; ">
+
+                    <caption class="cerati" style="  font-weight:bold; font-size:16px; color:#fff;">Agency Payment Information</caption>
+
+                    <tr style="height:3px; width: 700px;">
+                        <td>
+                            <b style="display:none; font-size: 18px; margin-left: 3px; ">Agency Request to Collect&nbsp;$</b>
+                        </td>
+                        <td>
+                            <input autocomplete="off" type="text" id="otheramount" name="otheramount" class="black" style="display:none; margin-top: 2px; margin-left: 10px; text-align: center; height: 25px; font-size: 22px;font-weight: bold;color: #fff;border: #AC1B29 solid thin; background-color: #1B1478; width: 103px;float:left;width:106px; font-weight:bold; color:fff; border: 1px #33F solid;" value="<?php echo number_format($reserva->otheramount, 2, '.', ','); ?>" onkeyup="CalcularTotalTotal();ClkPay_Amount();"  />
+<!--                                        <input autocomplete="off" type="text"  class="black"  name="otheramount"  id="otheramount"  style="margin-top: -151px; margin-left: -107px; text-align: center; height: 25px; font-size: 22px;font-weight: bold;color: #fff;border: #AC1B29 solid thin; background-color: #1B1478; width: 103px;float:left;width:106px; font-weight:bold; color:fff;"   value="" onkeyup="ClkPay_Amount();" />-->
+
+                        </td>
+                    </tr>    
+                    <tr style="height:33px; width: 700px;">
+                        <td>
+                            <b style="font-size: 16px; padding-left: 124px; margin-top:3px;">Total Net Fare&nbsp;$</b>
+                        </td>
+                        <td>
+                            <font  class="orangered" style=" height:25px; text-align: right; border: 1px #33F solid; width: 93px; margin-top:-8px; margin-left:-2px; font-size:22px; padding-left:39px; font-weight:bold; color:#fff;" id="totalPagar" ></font>
+                            <input name="totP" type="hidden"  id="totP" value="" /> 
+<!--                                        <input type="text"  class="orangered" style="display:none; float: left; height:24px; text-align: center;border: #AC1B29 solid thin; font-weight:bold; color:#fff; background-color: #1B1478; height:25px; width: 103px; margin-left: 10px; margin-top:13px; font-size:22px; padding-left:3px;"  id="totalPagar" />-->
+
+<!--                                        <input name="totP" type="hidden"  id="totP" value="" />
+<font  style="float: left; height:23px; text-align: center;border: #AC1B29 solid thin; background-color: #AC1B29; width: 104px; margin-top:3px; font-size:22px; padding-left:3px; font-weight:bold; color:#fff;" id="totalPagar" ></font>
+                            -->
+                        </td>
+                    </tr>
+                    <tr id="pay_amount_html" style="height: 33px; width: 700px;">
+                        <td>
+                            <b style=" color:#000;font-size: 16px; margin-left:101px;">Pre Paid Amount&nbsp;$</b>                                       
+                        </td>
+                        <td>
+<!--                                        <input autocomplete="off" type="text" class="txtNumbers"  name="pay_amount" id="pay_amount" value=""  onKeyUp="CalcularTotalTotal();" onclick="CalcularTotalTotal();" style="text-align: center; z-index: 100; position: absolute; margin-top: -14px; margin-left:10px; width: 106px; height:25px; font-size:22px;" />-->
+<!--                                        <label id="saldoPagado" <strong style="font-family: sans-serif; font-size: 22px; color:#000; font-weight: bold; padding-left:38px;" ><?php echo number_format($pagado, 2, '.', ','); ?></strong></label>-->
+                            <input autocomplete="off" type="text" readonly="readonly" class="azu" class="txtNumbers"  name="pay_amount" id="pay_amount" value="<?php echo number_format($reserva->pred_paid_amount, 2, '.', ','); ?>"  onKeyUp="CalcularTotalTotal();" onclick="CalcularTotalTotal();" style="margin-top:-10px; margin-left: -2px; width:100.5px; height:25px; padding-left:5px; text-align: right; font-size: 22px; font-weight: bold; color: #000; border: 1px #33F solid;" />
+                        </td>
+                    </tr>
+
+
+                    <tr style="height:33px; width: 700px;">
+                        <td>
+                            <b style="padding-left:123px;"><strong style="margin-left:-33px; color:#000;font-size: 16px; font-weight:bold;">Total Amount Paid&nbsp;$</strong></b>                                         
+                        </td>
+                        <td>
+                            <input readonly="readonly" autocomplete="off" type="text" class="verdefos3"  class="txtNumbers"  name="tot_amount_paid" id="tot_amount_paid" value="<?php echo number_format($reserva->total_paid, 2, '.', ','); ?>"  style="text-align: right; border: 1px #33F solid; width:105.5px; margin-top:-10px; margin-left: -2px;  height: 25px; font-size: 22px; font-weight: bold;" />
+                        </td>
+
+
+                    </tr>  
+
+                    <tr style="height:33px; width: 700px;">
+                        <td>
+                            <b style="padding-left:123px;"><strong style="margin-left:-51px; color:#000;font-size: 16px; font-weight:bold;">Agency Balance Due&nbsp;$</strong></b>                                         
+                        </td>
+                        <td>
+                            <input readonly="readonly" autocomplete="off" type="text" class="roge"  class="txtNumbers"  name="agency_balance_due" id="agency_balance_due" value=""  style="text-align: right; border: 1px #33F solid; margin-top:-8px; margin-left: -2px; height: 25px; font-size: 22px; width:105.5px; font-weight: bold;" />
+                        </td>
+
+
+                    </tr>  
+
+
+                </table>
+                <img class="ventana-imagen-class" style="margin-left:547px; margin-top:-368px; width: 181px; height: 172px; " src="<?php echo $data['rootUrl']; ?>global/img/admin/ventana.png" />
+
+                <table class="oliveti" style="width: 22%; border: 2px solid #000; margin-left: 731px; margin-top: -368px; height: 159px; border-radius: 0px 0px 0px 0px;">
+
+                    <caption class="olivo" style=" font-weight:bold; font-size:15px; color:#fff; border-radius:0px 25px 0px 0px;">Extra Charges & Discounts</caption>
+
+
+
+                    <td>&nbsp;</td>
+
+
+                    <tr style="width: 700px;" >
+                        <td>
+                            <label  style=" float:right; font-size:14px; margin-top:-19px; "><strong style="padding-bottom:10px; color: #000;">Discount&nbsp;%</strong></label>
+                        </td>
+
+                        <td>
+<!--                                                    <input readonly="readonly" autocomplete="off" type="text" id="paid_driver" name="paid_driver" class=""   style="float:right; text-align: center; height: 24px; font-size: 22px;font-weight: bold;color: #000; border: #33F solid thin; margin-top: -45px;  width: 104px; width:93px; font-weight:bold; color:fff;" value="" />-->
+<!--                                                    <input name="descuento" type="number" id="descuento" maxlength="3" onkeyup="valorExtra();" max="100" min="0"   style="text-align:left; height:20px; width:112px;" />-->
+<!--                                                    <input name="descuento" type="number" id="descuento" maxlength="3" class="txtNumbers" onKeyUp="valorExtra();" max="100" min="0"  value=""  autocomplete="off" style="text-align: right; color:#000; font-size: 22px;font-weight: bold; border: #33F solid thin; float:right; margin-top: -14px; height:25px; width:111px; " />-->
+                            <input name="descuento" type="number" class="descuentos" id="descuento" maxlength="3" onkeyup="valorExtra();desporc();" max="100" min="0"   style="text-align: right; margin-top: -21px;  margin-right: 6px; color:#000; font-size: 22px;font-weight: bold; height:25px; width:80px; border: #33F solid thin; float:right;" value="0" autocomplete="off"/>
+                        </td>
+                    </tr>
+
+                    <tr style="width: 700px;" >
+                        <td>
+                            <label  style="float:right; font-size:14px;  margin-top: 8px; "><strong style="padding-bottom:10px; color:#000;">Discount&nbsp;&nbsp;&nbsp;$</strong></label>
+
+                        </td>
+
+                        <td>
+                            <!--maxlength="10" pattern="6[0-9]"-->
+<!--                                                    <input name="descuento_valor" type="text"  id="descuento_valor" size="12" style="float:right; border: 1px #33F solid; margin-top: 7px;  text-align: right; color:#000; font-size: 22px; font-weight: bold; height: 25px; width:111px;" value="0.00" autocomplete="off" onkeypress="validate(event);" onkeyup="desval();"   />-->
+                            <input name="descuento_valor" type="text" class="descuentos" id="descuento_valor" size="12"  style="float:right; border: 1px #33F solid; margin-top: 7px; margin-right: 6px; text-align: right; color:#000; font-size: 22px; font-weight: bold; height: 25px; width:80px;" value="0.00" autocomplete="off" onkeypress="validate(event);" onkeyup="valorExtra();desval();"  />
+                        </td>
+                    </tr>
+
+                    <td>&nbsp;</td>
+
+
+                    <tr  style="width: 700px;">
+
+                        <td style="width: 700px;">
+<!--                                                    <label  style="float:right;  font-size:16px; margin-top:-32px;"><strong   id="txtamountpendiente" style="padding-bottom:0px; color:#000">Extra Charges&nbsp;$</strong></label>-->
+                            <label  style="float:right;  font-size:14px;  margin-top: -16px;"><strong style="padding-bottom:10px; color: #000;">Extra Charges&nbsp;$</strong></label>
+                        </td>
+
+                        <td>
+
+<!--                                                    <input autocomplete="off" type="text"  class=""   id="saldoporpagar" value=""  style="float:right; border: 1px #33F solid; margin-top: -26px;  text-align: center; height: 25px; font-family: sans-serif; font-size: 22px; width:106px;"  />-->
+<!--                                                    <input name="extra" type="text" class="txtNumbers"  id="extra" size="12" style="float:right;  text-align: right; color:#000; margin-top: -17px; margin-right:0px;  width:111px; height:25px;  border: 1px #33F solid; font-family: sans-serif; font-size: 22px;"   value="0.00" autocomplete="off" onkeypress="validate(event);" onkeyup="resetextra();" />-->
+
+                            <input name="extra" type="text" id="extra" size="12" class="extracargos" style="float:right;  text-align: right; color:#000; margin-top: -17px; margin-right:6px;  width:80px; height:25px;  border: 1px #33F solid; font-family: sans-serif; font-size: 22px;"  value="<?php echo $reserva->extra_charge; ?>" autocomplete="off" onkeypress="validate(event);" onkeyup="valorExtra();resetextra();"  />
+<!--                                                    <input name="extra" type="text" class="txtNumbers"  id="extra" size="12" style="float:right;  text-align: right; color:#000; margin-top: -17px; margin-right:0px;  width:106px; height:25px;  border: 1px #33F solid; font-family: sans-serif; font-size: 22px;"   value="<?php echo $data['tour']->extra_charge; ?>" autocomplete="off" onkeypress="validate(event);" onkeyup="resetextra();"/>-->
+                            <br />
+                        </td>
+                    </tr>
+
+
+
+                </table>
+
+<!--                <div id="comco" class="input"> <textarea id="comments" name="notes" cols="0" rows="0" placeholder="Notes" style="margin: 13px; width: 388px; height:126px; margin-top:6px; margin-left:537px;"></textarea></div>
+                <div id="comco2" class="input"><div style=" width:265px; margin-left:50px; margin-top:50px;"></div><textarea id="comments2" name="notes2" cols="0" rows="0"  disabled="disabled" style=" margin: 0px; width: 388px; height: 126px; margin-top:-43px; margin-left:537px;"><?php echo trim($reserva->comments2); ?></textarea></div>
+                                
+                -->
+
+                <!--                <div id="accordion">
+                                    <h3 style="margin-left:548px; margin-top:13px; width:357px; height:10px;" >NOTES</h3>
+                                    <div style="margin-left:548px; margin-top:2px; width:334px; height:124.6px;">
+                
+                                        <textarea id="comments" name="notes" cols="0" rows="0" style="border-color:red; margin: 13px; width: 384px; height:127px; margin-top:-12px; margin-left:-28px;"></textarea>
+                                    </div>
+                                    <h3 style="margin-left:548px; margin-top:13px; width:357px; height:10px;">NOTES</h3>
+                                    <div style="margin-left:548px; margin-top:2px; width:334px; height:124.6px;">
+                
+                
+                                        <textarea id="comments2" name="notes2" cols="0" rows="0"  disabled="disabled" style="border-color:blue; margin: 13px; width: 383px; height: 127px; margin-top:-12px; margin-left:-27px;"><?php echo trim($reserva->comments2); ?></textarea>
+                                    </div>
+                
+                                </div>-->
+
+                <div id="tabs" style="margin-left:547px; margin-top:6px; width:386px; height:177px;">
+                    <ul>
+                        <li><a  href="#tabs-2">Saved Notes</a></li>
+                        <li><a title="Type your notes" href="#tabs-1">Add Notes</a></li>
+
+
+                    </ul>
+
+                    <div id="tabs-2">
+                        <textarea id="comments2" name="comments2" cols="0" rows="0"  disabled="disabled" style="border-color:blue; margin: 13px; width: 379px; height: 125px; margin-top:-10px; margin-left:-18px;"><?php echo trim($reserva->comments2); ?></textarea> 
+                    </div>
+                    <div id="tabs-1">
+                        <textarea id="comments" name="comments" cols="0" rows="0" style="border-color:red; margin: 13px; width: 379px; height:125px; margin-top:-10px; margin-left:-18px;"></textarea> 
+                    </div>
+
+
+                </div>
+
+
+<!--                                                            <label style="font-family: Verdana, Geneva, sans-serif; color:#4B0082; font-size: 16px; font-weight: bold; margin-left:14px;    margin-top: -4px;" id="saldoporpagar" >$  <?php echo number_format(($saldoxPagar), 2, '.', ','); ?></label>-->
+                <!--                                                            <label style="font-family: Verdana, Geneva, sans-serif; color:#4B0082; font-size: 16px; font-weight: bold; margin-left:27px;    margin-top: -5px;" id="" >$  </label>-->
+
+<!--                                                        <tr id="pay_amount_html" style="height: 50px;">
+
+  
+  <input autocomplete="off" type="text" class="txtNumbers"  name="pay_amount" id="pay_amount" value=""  style="padding-left:5px; width:100px; height:20px;float:left;" />
+</tr>    -->
+
+
+            </fieldset>
+            <select id="opcion_pago_2" name="opcion_pago_2" style="margin-left:401px; margin-top: -201px; display:none;">
+                <optgroup label="PRED-PAID">
+                    <option value="2">Credit Card no fee</option>
+                    <option value="1">Credit Card with fee</option>
+                    <option value="6">Cash</option>
+                    <option value="10">Check</option>
+                </optgroup>
+                <optgroup label="COLLECT ON BOARD">
+                    <option value="8">Credit Card no fee</option>
+                    <option value="3">Credit Card with fee</option>
+                    <option value="4">Cash</option>
+                    <option value="9">Check</option>
+                </optgroup>
+            </select>
+
+
+            <select id="opcion_pago_3" name="opcion_pago_3" style="display:none; margin-left:424px; margin-top: -168px;">
+                <optgroup label="PRED-PAID">
+                    <option value="2">Credit Card no fee</option>
+                    <option value="1">Credit Card with fee</option>
+                    <option value="6">Cash</option>
+                    <option value="10">Check</option>
+                </optgroup>
+                <optgroup label="COLLECT ON BOARD">
+                    <option value="8">Credit Card no fee</option>
+                    <option value="3">Credit Card with fee</option>
+                    <option value="4">Cash</option>
+                    <option value="9">Check</option>
+                </optgroup>
+            </select>
+
+            <input type="button" style="display:none" id="enviar_escondido" value="0"  />
+            <a  id="pago_agente" style="display:block" ><img style="width: 77px;   height: 28px; margin-left:401px;  margin-top: -147px;cursor:pointer" src="<?php echo $data['rootUrl']; ?>global/img/admin/charge.png" /></a>
+
+            <!--            <li class="btn-toolbar" id="btn-save2">
+                               
+                                <a class="link-button" id="btn-save2"> <i class="fa fa-floppy-o fa-3x"  title="Save" style="margin-left: 286px; margin-top:-58px; color:#4B0082;"></i></a>
+                     
+                        </li>-->
+
+            <li class="btn-toolbar" id="btn-save2">
+
+<!--                    <a  class="link-button" id="btn-save2"> <i class="fa fa-floppy-o fa-3x"  title="Save" style="margin-left: 286px; margin-top:-58px; color:#4B0082;"></i></a>-->
+                <input class="oliverty"  class="link-button"  type="button" id="btn-save2" name="btnsave2" title="Save" value="Confirm Booking" />
+
+            </li>
+
+            <!--            <li class="btn-toolbar" id="pagos">-->
+
+<!--                    <a class="link-button" id="btn-save2"> <i class="fa fa-floppy-o fa-3x"  title="Save" style="margin-left: 286px; margin-top:-58px; color:#4B0082;"></i></a>-->
+<!--                    <input  class="oliveti"  type="button" id="pagos" title="Pagos" onclick="pago();" style="border-color: #fff; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px; border-top-left-radius: 5px; border-top-right-radius: 5px; margin-left: 406px; margin-top:-380px; height: 21px; cursor:pointer; color: #000;font-weight: 700; width:56px;" value="Pagos" />
+            -->
+            <!--            </li>-->
+
+
+<!--            <input autocomplete="off" type="text" class="txtNumbers"  name="pay_amount" id="pay_amount" value=""  style="padding-left:5px; text-align: center;font-size: 22px;font-weight: bold; color: #000; border: 1px #33F solid; padding-left:5px; width:100px; height:20px;float:left; margin-top:-144px; margin-left: 286px;" />-->
+
+
+        </div>
+<!--         <a title="Save" style="cursor:pointer" id="btn-save2"><i class="fa fa-floppy-o fa-3x" style="color:#4B0082; margin-left: 295px; margin-top:-65px;"></i></a>-->
+<!--         <a class="link-button" id="btn-save2"> <i class="fa fa-floppy-o fa-3x" title="Save" style="cursor:pointer; margin-left: 295px; margin-top:-65px; color:#4B0082;"></i></a>-->
+<!--         <input title="Add Payment" type="button" id="pay_driver" name="pay_driver" onclick="pago_driver();" style="margin-left: -401px; margin-top: -269px; height: 35px; cursor:pointer; color: #000;font-weight: 700; width: 124px;  padding: 10px;" value="Add Payment"/>-->
+        <input title="Add Payment" class="brown2" type="button" id="pay_driver" name="pay_driver" onclick="mostrarVentana2();" style="border-color: #000; border-bottom-left-radius: 0px; border-bottom-right-radius: 0px; border-top-left-radius: 0px; border-top-right-radius: 0px; margin-left: 573px; margin-top: -400px; height: 26px; cursor:pointer; color: #000;font-weight: 700; width: 179px;  padding: 6px; padding-left: 2px;" value="Add Payment"/>
+        <td align="right">
+
+
+
+<!--         <input  class="link-button" title="Confirm Booking" type="button" id="btn-save3"  style="margin-left: 841px; margin-top:-71px; height: 35px; cursor:pointer; color: #000;font-weight: 700; width:124px;" value="Confirm Booking" />-->
+
+
+
+        </td>
+
+        <select name="opcion_pago_driver" id="opcion_pago_driver" style=" display:none; margin-left:414px; margin-top:-327px;">
+            <optgroup label="COLLECT ON BOARD">
+                <option value="8">Credit Card no fee</option>
+                <option value="3">Credit Card with fee</option>
+                <option value="4">Cash</option>
+                <option value="9">Check</option>
+            </optgroup>
+            <optgroup label="VOUCHER">
+                <option value="5">Credit Voucher</option>
+            </optgroup>
+            <optgroup label="COMPLEMENTARY">
+                <option value="7">Complementary</option>
+            </optgroup>
+        </select>
+
+        <select name="opcion_pago" id="op_pago_id" style="margin-left:411px; margin-top:-265px;">
+            <optgroup label="COLLECT ON BOARD">
+                <option value="8">Credit Card no fee</option>
+                <option value="3">Credit Card with fee</option>
+                <option value="4">Cash</option>
+                <option value="9">Check</option>
+            </optgroup>
+            <optgroup label="VOUCHER">
+                <option value="5">Credit Voucher</option>
+            </optgroup>
+            <optgroup label="COMPLEMENTARY">
+                <option value="7">Complementary</option>
+            </optgroup>
+        </select>
+
+
+        <input type="text" id="saldoPagado2"  style=" display:none; font-family: sans-serif; font-size: 22px; color:#000; font-weight: bold; padding-left:23px; margin-left: -32px; width: 83px;" value="" />
+
+        <input name="opc_ap"  type="text" id="opc_ap" size="12" style="display:none;" value="" />
+        <input name="PAP"  type="text" id="PAP" size="12" style="display:none;" value="0.00" />
+        <input name="PAP2"  type="text" id="PAP2" size="12" style="display:none;" value="0.00" />         
+        <input name="etb"  type="text" id="etb" size="12" style="display:none;" value="0.00" />
+        <input name="paid_drivert"  type="text" id="paid_drivert" size="12" style="display:none;" value="<?php echo number_format($reserva->paid_driver, 2, '.', ','); ?>" />
+        <input name="pred_paid_amountt"  type="text" id="pred_paid_amountt" size="12" style="display:none;" value="<?php echo number_format($reserva->pred_paid_amount, 2, '.', ','); ?>" />
+
+        <input name="tot_charge"  type="text" id="tot_charge" size="12" style="display:none;" value="<?php echo number_format($reserva->total_charge, 2, '.', ','); ?>" />
+        <!--paid driver edition-->
+        <input name="p_d_e"  type="text" id="p_d_e" size="12" style="display:none;" value="<?php echo $reserva->paid_driver ?>" />
+        <!--pay amount edition-->
+        <input name="p_a_e"  type="text" id="p_a_e" size="12" style="display:none;" value="<?php echo $reserva->pred_paid_amount ?>" />
+        <input name="totalbalance"  type="text" id="totalbalance" size="12" style="display:none;" value="0.00" />
+<!--         <input type="submit" name="banner" VALUE="Enviar">-->
+<!--         <input  class="oliveti" class="link-button"  type="button" id="btn-save2" name="btnsave2" title="Confirm Booking" style="border-color: #fff; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px; border-top-left-radius: 5px; border-top-right-radius: 5px; margin-left: 831px; margin-top:-63px; height: 35px; cursor:pointer; color: #000;font-weight: 700; width:124px;" value="Confirm Booking" />-->
+
+<!--        <script type="text/javascript">
+            $(function () {
+                $("#accordion").accordion({
+                    collapsible: false
+                });
+            });
+
+        </script>-->
+
+        <script>
+            $(function () {
+                $("#tabs").tabs();
+            });
+        </script>
+
+
+
+</form>
+
+
+
+<div id="userr"></div>
+<div id="puestosEnUso"></div>
+
+<div id="dialog_states__trips" title="Seats available on trips" style="display:none;">
+    <div>
+        <div id="states__trips_conte"></div>
+    </div>
+</div>
+<div id="userr"></div>
+<div id="dialog" title="History of changes of the reserve" style="display:none;">
+    <div style="overflow-y: scroll;height:250px;">
+        <table class="grid2" cellspacing="1" id="grid2">
+            <thead>
+                <tr>
+                    <td>Action</td>
+                    <td>User</td>
+                    <td>Date</td>
+                    <td>&nbsp;</td>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($rastro as $rr) { ?>
+                    <tr class="row1">
+                        <td><?php echo $rr['tipo_cambio']; ?></td>
+                        <td><?php echo $rr['usuario']; ?></td>
+                        <td><?php echo date('M-d-Y', strtotime($rr['fecha'])); ?></td>
+                        <td onclick="detalles_rastro('<?php echo $rr['id'] ?>');"><img src="<?php echo $data['rootUrl'] ?>global/img/admin/info.png" width="24" height="24" title="Details of change" /></td>
+                    </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="dialog2" title="History of Payments" style="display:none; width:550px; margin-left:12px;">
+    <div style="overflow-y: scroll;height:250px; width:550px;">
+        <table class="grid2" cellspacing="1" id="grid2">
+            <thead>
+                <tr>
+                    <td style="text-align: center;">Pago</td>
+                    <td style="text-align: center; width:158px;">Tipo Pago</td>
+                    <td style="text-align: center; width:78px;">Valor Pagado</td>
+                    <td style="text-align: center; width:150px;">Fecha</td>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                $sql122 = "SELECT pago, tipo_pago, pagado, fecha FROM reservas_pago where id_reserva=$reserva->id AND pagado <> '0.00' order by fecha";
+                $rs12 = Doo::db()->query($sql122);
+                $pagos2 = $rs12->fetchAll();
+                foreach ($pagos2 as $p):
+                    ?>
+                    <tr class="row1">
+                        <td style="text-align: left;"><?php echo $p['pago']; ?></td>
+                        <td style="text-align: left;"><?php echo $p['tipo_pago']; ?></td>
+                        <td style="text-align: right;"><?php echo $p['pagado']; ?></td>
+                        <td style="text-align: center;"><?php echo $p['fecha']; ?></td>
+
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="dialog_message_rastro" style="display:none" title="Details of change">
+    <div id="conten_rastro">
+    </div>
+</div>
+
+
+<div id="dialog-trip-pregunta" title="Time limit for booking" style="display:none">
+    <p>
+    <div id="reloj_temporizador" class="temporizador"></div>
+    <div id="mensaje_trips_pregunta">
+    </div>
+</p>
+</div>
+
+
+<div id="miVentana2" style="position: absolute; width: 174px; height: 166px;  top:766px; left: 834px; font-family:Verdana, Arial, Helvetica, sans-serif; font-size: 12px; font-weight: normal; border: #333333 3px solid; background-color: #FAFAFA; color: #000000; display:none;">
+
+    <div style="font-weight: bold; text-align: center; color: #FFFFFF; padding: 5px; background-color:#006394">Add Payment</div>
+
+<!--    <label  style="padding-left:57px; font-size:16px; "><strong style="padding-bottom:10px; color: #000; margin-left:-55px;">$</strong></label> -->
+    <p>
+        <label  id="tap" style="padding-left:57px; font-size:10px; "><strong style="padding-bottom:10px; color:#090; margin-left:-50px;">Total Amount Paid $</strong></label> 
+        <input type="text" id="saldoPagado"  readonly="readonly" style="text-align: right; font-family: sans-serif; font-size: 10px; color:#090; font-weight: bold; padding-left:4px; margin-left: 126px; margin-top: -16px; width: 38px;" value="<?php echo number_format($pagado, 2, '.', ','); ?>"  />
+    </p>
+
+    <label  id="dolares" style="padding-left:39px; font-size:16px; "><strong style="padding-bottom:10px; color:#006394; ">$</strong></label> 
+
+    <!--class="money"-->
+    <input autocomplete="off" name="pago_driver"   type="text" id="pago_driver" size="12" style="font-size: 22px;  text-align:right; margin-top:-21px; margin-left:54px; width:114px; height:20px;" value="0.00" onkeypress="validate(event);"  onkeyup="dupliPago();"/>
+
+    <input name="pago_driver2"  type="text" id="pago_driver2" size="12" style="display:none; margin-top:4px; margin-left:17px; width:114px; height:20px;" value="0.00" />
+
+    <input name="temp"  type="text" id="temp" title="Fees" size="12" style="display:none; margin-top:4px; margin-left:17px; width:114px; height:20px;" value="<?php echo number_format($reserva->total_charge, 2, '.', ','); ?>" />
+
+    <input name="collect"  type="text" id="collect" title="Paid Driver" size="12" style="display:none; margin-top:4px; margin-left:17px; width:114px; height:20px;" value="<?php echo number_format($reserva->paid_driver, 2, '.', ','); ?>" />
+
+    <input name="prepaid"  type="text" id="prepaid" title="Amount Paid" size="12" style="display:none;  margin-top:4px; margin-left:17px; width:114px; height:20px;" value="<?php echo number_format($reserva->pred_paid_amount, 2, '.', ','); ?>" />
+
+
+<!--    <input name="someTextBox" type="text" id="someTextBox" size="12" style="display:none; margin-top:9px; margin-left:27px; width:114px; height:20px;" value="0.00" />-->
+
+
+    <select name="opcion_pago1" id="op_pago_id1" style="margin-left:14px; margin-top: 8px;" disabled= "disabled" onclick="calculos();">
+        <option style="color:red;" id="" value="0">((( Amount Paid )))</option>
+        <optgroup label="PRED-PAID">
+            <option value="20">Credit Card no fee</option>
+            <option value="21">Credit Card with fee</option>
+            <option value="22">Cash</option>
+            <option value="23">Check</option>
+        </optgroup>
+        <option style="color:blue;" id="" value="1">((( Paid Driver )))</option>
+        <optgroup label="COLLECT ON BOARD">
+            <option value="24">Credit Card no fee</option>
+            <option value="25">Credit Card with fee</option>
+            <option value="26">Cash</option>
+            <option value="27">Check</option>
+        </optgroup>       
+
+
+    </select>
+
+
+
+
+
+
+
+    <script type="text/javascript">
+        function fecha_ns_round()
+        {
+
+            var opcround = $("#estado_roundtrip").val();
+
+            if (opcround == '2') {
+
+//            var extow = document.getElementById('price_exten01_o').value;
+
+                document.getElementById('fecha_retorno').value = 'N/S';
+
+                document.getElementById('subtoadult2').value = 0;
+
+                document.getElementById('subtochild2').value = 0;
+
+                document.getElementById('price_exten04').value = 0;
+
+//            $("#extenadult").val(extow);
+//            
+//            $("#extenchil").val(extow);
+
+//            document.getElementById('extenadult').value = '12.00'; 
+//            
+//            document.getElementById('extenchil').value = '12.00';       
+
+
+                CalcularTotalTotal();
+
+            } else if (opcround == '3') {
+
+                document.getElementById('fecha_retorno').value = 'N/S';
+
+
+            } else if (opcround == '4') {
+
+
+
+//                alert('hola');
+//                exit();
+
+                document.getElementById('fecha_retorno').value = <?php echo ($reserva->fecha_retorno == "0000-00-00" ? "00-00-0000" : date('m-d-Y', strtotime($reserva->fecha_retorno))); ?>;
+//           
+//            document.getElementById('subtoadult2').value = <?php echo $reserva->precio_trip2_a; ?>; 
+//            
+//            document.getElementById('subtochild2').value = <?php echo $reserva->precio_trip2_c; ?>; 
+//            
+//            document.getElementById('price_exten04').value = <?php echo $reserva->precio_exten4_a; ?>;
+
+            } else {
+
+                //&& $reserva->tipo_ticket != 'oneway'
+                document.getElementById('fecha_retorno').value = "<?php
+                if ($reserva->fecha_retorno == 'N/A') {
+                    echo 'N/S';
+                } else {
+                    if (isset($reserva)) {
+                        echo ($reserva->fecha_retorno == "0000-00-00" ? "00-00-0000" : date('m-d-Y', strtotime($reserva->fecha_retorno)));
+                    }
+                }
+                ?>"
+
+            }
+
+
+        }
+
+    </script>
+
+    <script type="text/javascript">
+        function fecha_ns_one()
+        {
+
+            var opcone = $("#estado_oneway").val();
+
+            if (opcone == '2') {
+
+                document.getElementById('fecha_salida').value = 'N/S';
+
+            } else if (opcone == '3') {
+
+                document.getElementById('fecha_salida').value = 'N/S';
+
+            } else {
+
+                // && $reserva->tipo_ticket != 'oneway'
+                document.getElementById('fecha_salida').value = "<?php
+                if ($reserva->fecha_salida == 'N/A') {
+                    echo 'N/S';
+                } else {
+                    if (isset($reserva)) {
+                        echo ($reserva->fecha_salida == "0000-00-00" ? "00-00-0000" : date('m-d-Y', strtotime($reserva->fecha_salida)));
+                    }
+                }
+                ?>"
+
+            }
+
+
+        }
+
+    </script>
+
+    <script type="text/javascript">
+        function validate(evt) {
+            var theEvent = evt || window.event;
+            var key = theEvent.keyCode || theEvent.which;
+            key = String.fromCharCode(key);
+            var regex = /[0-9]|\./;
+            if (!regex.test(key)) {
+                theEvent.returnValue = false;
+                if (theEvent.preventDefault)
+                    theEvent.preventDefault();
+            }
+        }
+    </script>
+    <script type="text/javascript">
+        function reset2()
+        {
+            setTimeout(function () {
+
+                $('#btnAceptar').click();
+                //document.getElementById('tot_amount_paid').value = '0.00';
+
+            }, 0.001);
+
+        }
+
+    </script>
+
+    <script type="text/javascript">
+        function coordenadas_modal()
+        {
+            setTimeout(function () {
+
+                $('#pay_driver').click();
+                //document.getElementById('tot_amount_paid').value = '0.00';
+
+            }, 0.001);
+
+        }
+
+    </script>
+
+
+    <script type="text/javascript">
+        function dupliac()
+        {
+            var pago_driver = document.getElementById('paid_driver').value;
+//      duplicar amount to collect ---- > otheramount
+
+
+
+
+            if (pago_driver > 0) {
+
+//        alert('hola');
+//        exit();
+
+                var dupliam = document.getElementById('saldoporpagar').value;
+
+                document.getElementById('otheramount').value = dupliam;
+
+                document.getElementById('balance_due').value = dupliam;
+
+                setTimeout(function () {
+                    //click al boton Balance_Due para hacer el calculo de passenger Balance Due  
+
+                    //$('#btn_Other').click(); 
+                    $('#paid_driver').click();
+//            alert('Presione el boton Amount to Collect')
+//            exit();
+//                            
+
+                }, 2000);
+
+
+            } else {
+
+                var dupliam = document.getElementById('saldoporpagar').value;
+
+                document.getElementById('otheramount').value = dupliam;
+
+                document.getElementById('balance_due').value = dupliam;
+
+            }
+
+
+            if (dupliam == '') {
+
+                setTimeout(function () {
+
+                    //click al boton Balance_Due para hacer el calculo de passenger Balance Due  
+                    $('#btnCancelar').click();
+
+                }, 100);
+
+            }
+            //$('#pay_amount').click();
+
+//            
+
+
+        }
+
+    </script>
+
+<!--    <script type="text/javascript">
+    function pago(){
+        //alert('hola');
+    </*?php
+        $sql1 = "SELECT pago, tipo_pago, pagado, fecha FROM reservas_pago where id_reserva='42514'";
+        $rs1 = Doo::db()->query($sql1, array(9));
+        $pagos = $rs1->fetchAll();
+        foreach ($pagos as $p) {
+            echo $p['pago'] ;
+        }
+   ?*/>
+    }
+            
+</script>-->
+
+    <script type="text/javascript">
+        function reset()
+        {
+
+
+            document.getElementById('pago_driver').value = '0.00';
+
+            document.getElementById('pago_driver').style.color = '#848484';
+
+            document.getElementById('pago_driver2').value = '0.00';
+
+            //document.getElementById('totalPagar').value = '0.00';
+
+            document.getElementById('op_pago_id1').value = 0;
+
+
+
+            //document.getElementById('temp').value = '0.00';   
+
+            document.getElementById('temp').value = <?php echo $reserva->total_charge; ?>;
+
+
+            document.getElementById('tot_charge').value = <?php echo $reserva->total_charge; ?>;
+
+            //document.getElementById('prepaid').value = '0.00';
+
+            document.getElementById('prepaid').value = <?php echo $reserva->pred_paid_amount; ?>;
+
+            //document.getElementById('collect').value = '0.00';     
+
+            document.getElementById('collect').value = <?php echo $reserva->paid_driver; ?>;
+            //document.getElementById('paid_drivert').value = '0.00';
+            //document.getElementById('pred_paid_amountt').value = '0.00';
+            //document.getElementById('tot_amount_paid').value = '0.00';
+
+            //document.getElementById('pago_driver').disabled = false;
+
+            document.getElementById('btnAceptar').style.background = '';
+
+            document.getElementById('btnAceptar').style.color = '#000';
+
+            document.getElementById('dolares').style.color = '#848484';
+
+            document.getElementById('btnAceptar').style.cursor = '';
+
+
+
+
+
+
+        }
+    </script>
+
+
+    <script type="text/javascript">
+        function reset_roundtrip()
+        {
+
+            document.getElementById('price2').value = 0;
+
+            document.getElementById('subtoadult2').value = 0;
+
+            document.getElementById('subtochild2').value = 0;
+
+            document.getElementById('subtoadult4').value = 0;
+
+            document.getElementById('subtochild4').value = 0;
+
+
+        }
+    </script>
+
+    <!--</form>-->
+    <script>
+
+        function calculos() {
+
+
+            var opcion = $("#op_pago_id1").val();
+
+            //PRED-PAID////////////////////////////////////////////
+
+            //Credit Card no fee
+
+            if (opcion === '20') {
+
+                //alert('opcion 20');
+                if (confirm('Confirme su Tipo de Pago !!!')) {
+
+                    document.getElementById('opcion_pago_2').value = 2;
+                    document.getElementById('opcion_pago_3').value = 2;
+
+                    var pago_driver2 = parseInt($("#pago_driver2").val());
+
+                    var total = (pago_driver2);
+
+
+
+                    var valor = 0;
+
+
+                    var prepaid = parseFloat($("#prepaid").val());
+
+                    prepaid = prepaid + total;
+
+
+
+                    //$("#prepaid").val((prepaid).toFixed(2));
+
+
+
+                    $("#pago_driver").val((total).toFixed(2));
+                    //$("#pred_paid_amountt").val((total).toFixed(2));
+
+                    //$("#tot_amount_paid").val((total).toFixed(2));
+
+
+                    $("#PAP").val((valor).toFixed(2));
+                    $("#prepaid").val((prepaid).toFixed(2));
+
+                    document.getElementById("op_pago_id1").disabled = true;
+
+                    //document.getElementById('prepaid').value = prepaid;
+
+                    document.getElementById("pago_driver").disabled = true;
+
+                    document.getElementById('pago_driver').style.color = '#848484';
+
+                    document.getElementById("btnAceptar").disabled = false;
+
+                    document.getElementById('btnAceptar').style.cursor = 'pointer';
+
+                    document.getElementById('btnAceptar').style.background = '#f20707';
+
+                    document.getElementById('btnAceptar').style.color = '#fff';
+
+
+                } else {
+                    // Do nothing!
+                    //exit();
+                    Exit2();
+                }
+
+
+            }
+
+            //Credit Card with fee
+
+            if (opcion === '21') {
+
+                if (confirm('Confirme su Tipo de Pago !!!')) {
+
+
+                    document.getElementById('opcion_pago_2').value = 1;
+                    document.getElementById('opcion_pago_3').value = 1;
+
+                    var pago_driver2 = parseInt($("#pago_driver2").val());
+
+                    var valor = pago_driver2 * 0.04;
+
+                    var total = (pago_driver2) + (valor);
+
+
+                    var temp = parseFloat($("#temp").val());
+
+                    temp = temp + valor;
+
+                    $("#temp").val((temp).toFixed(2));
+
+
+                    var prepaid = parseFloat($("#prepaid").val());
+
+                    prepaid = prepaid + total;
+
+                    $("#prepaid").val((prepaid).toFixed(2));
+
+
+
+
+                    $("#pago_driver").val((total).toFixed(2));
+
+                    //$("#pred_paid_amountt").val((total).toFixed(2));
+                    //$("#tot_amount_paid").val((total).toFixed(2));
+
+                    $("#tot_charge").val((temp).toFixed(2));
+
+                    $("#PAP").val((valor).toFixed(2));
+
+
+                    document.getElementById("op_pago_id1").disabled = true;
+
+                    document.getElementById("pago_driver").disabled = true;
+
+                    document.getElementById('pago_driver').style.color = '#848484';
+
+                    document.getElementById("btnAceptar").disabled = false;
+
+                    document.getElementById('btnAceptar').style.cursor = 'pointer';
+
+                    document.getElementById('btnAceptar').style.background = '#f20707';
+
+                    document.getElementById('btnAceptar').style.color = '#fff';
+
+
+                } else {
+                    // Do nothing!
+                    //exit;
+                    Exit2();
+                }
+
+
+            }
+
+            //Cash
+            if (opcion === '22') {
+
+                if (confirm('Confirme su Tipo de Pago !!!')) {
+
+
+                    document.getElementById('opcion_pago_2').value = 6;
+                    document.getElementById('opcion_pago_3').value = 6;
+                    var pago_driver2 = parseInt($("#pago_driver2").val());
+
+                    var total = (pago_driver2);
+
+                    var valor = 0;
+
+
+                    var prepaid = parseFloat($("#prepaid").val());
+
+                    prepaid = prepaid + total;
+
+                    $("#prepaid").val((prepaid).toFixed(2));
+
+
+                    $("#pago_driver").val((total).toFixed(2));
+                    //$("#pred_paid_amountt").val((total).toFixed(2));
+                    //$("#tot_amount_paid").val((total).toFixed(2));
+
+                    $("#PAP").val((valor).toFixed(2));
+
+                    document.getElementById("op_pago_id1").disabled = true;
+
+                    document.getElementById("pago_driver").disabled = true;
+
+                    document.getElementById('pago_driver').style.color = '#848484';
+
+                    document.getElementById('btnAceptar').style.cursor = 'pointer';
+
+                    document.getElementById("btnAceptar").disabled = false;
+
+                    document.getElementById('btnAceptar').style.background = '#f20707';
+
+                    document.getElementById('btnAceptar').style.color = '#fff';
+
+                } else {
+                    // Do nothing!
+                    //exit;
+                    Exit2();
+                }
+
+
+            }
+
+            //Check
+            if (opcion === '23') {
+
+                if (confirm('Confirme su Tipo de Pago !!!')) {
+
+
+                    document.getElementById('opcion_pago_2').value = 10;
+                    document.getElementById('opcion_pago_3').value = 10;
+
+                    var pago_driver2 = parseInt($("#pago_driver2").val());
+
+                    var total = (pago_driver2);
+
+                    var valor = 0;
+
+
+                    var prepaid = parseFloat($("#prepaid").val());
+
+                    prepaid = prepaid + total;
+
+                    $("#prepaid").val((prepaid).toFixed(2));
+
+
+                    $("#pago_driver").val((total).toFixed(2));
+                    //$("#pred_paid_amountt").val((total).toFixed(2));
+
+                    $("#PAP").val((valor).toFixed(2));
+
+                    document.getElementById("op_pago_id1").disabled = true;
+
+                    document.getElementById("pago_driver").disabled = true;
+
+                    document.getElementById('pago_driver').style.color = '#848484';
+
+                    document.getElementById('btnAceptar').style.cursor = 'pointer';
+
+                    document.getElementById("btnAceptar").disabled = false;
+
+                    document.getElementById('btnAceptar').style.background = '#f20707';
+
+                    document.getElementById('btnAceptar').style.color = '#fff';
+
+                } else {
+                    // Do nothing!
+                    //exit;
+                    Exit2();
+                }
+
+            }
+
+
+
+            ////////////////////////////////////////////////////////
+
+
+
+            //COLLECT ON BOARD//////////////////////////////////////
+
+            //Credit Card no fee
+            if (opcion === '24') {
+
+                if (confirm('Confirme su Tipo de Pago !!!')) {
+
+                    document.getElementById('op_pago_id').value = 8;
+                    document.getElementById('opcion_pago_driver').value = 8;
+
+
+
+                    var pago_driver2 = parseInt($("#pago_driver2").val());
+
+                    var total = (pago_driver2);
+
+                    var valor = 0;
+
+
+                    var collect = parseFloat($("#collect").val());
+
+                    collect = collect + total;
+
+                    $("#collect").val((collect).toFixed(2));
+
+
+                    $("#pago_driver").val((total).toFixed(2));
+                    //$("#paid_drivert").val((total).toFixed(2));
+                    //$("#tot_amount_paid").val((total).toFixed(2));
+
+                    $("#PAP").val((valor).toFixed(2));
+
+                    document.getElementById("op_pago_id1").disabled = true;
+
+                    document.getElementById("pago_driver").disabled = true;
+
+                    document.getElementById('pago_driver').style.color = '#848484';
+
+                    document.getElementById('btnAceptar').style.cursor = 'pointer';
+
+                    document.getElementById("btnAceptar").disabled = false;
+
+                    document.getElementById('btnAceptar').style.background = '#f20707';
+
+                    document.getElementById('btnAceptar').style.color = '#fff';
+
+                } else {
+                    // Do nothing!
+                    //exit;
+                    Exit2();
+                }
+
+
+            }
+
+            //Credit Card with fee
+            if (opcion === '25') {
+
+                if (confirm('Confirme su Tipo de Pago !!!')) {
+
+                    //document.getElementById('op_pago_id').value = 3;
+                    document.getElementById('opcion_pago_driver').value = 3;
+
+                    var pago_driver = parseFloat($("#pago_driver").val());
+
+                    var valor = pago_driver * 0.04;
+
+                    var total = (pago_driver) + (valor);
+
+                    var tot_cargo = (pago_driver) - (valor);
+
+
+
+                    var temp = parseFloat($("#temp").val());
+
+                    temp = temp + valor;
+
+                    $("#temp").val((temp).toFixed(2));
+
+
+                    var collect = parseFloat($("#collect").val());
+
+                    collect = collect + total;
+
+                    $("#collect").val((collect).toFixed(2));
+
+
+                    $("#pago_driver").val((total).toFixed(2));
+                    //$("#paid_drivert").val((total).toFixed(2));
+                    //$("#tot_amount_paid").val((total).toFixed(2));
+                    //$("#saldoporpagar").val((total).toFixed(2));
+
+                    //document.getElementById('PAP').value = valor;
+
+                    $("#PAP").val((valor).toFixed(2));
+
+                    $("#tot_charge").val((temp).toFixed(2));
+
+                    document.getElementById("op_pago_id1").disabled = true;
+
+                    document.getElementById("pago_driver").disabled = true;
+
+                    document.getElementById('pago_driver').style.color = '#848484';
+
+                    document.getElementById('btnAceptar').style.cursor = 'pointer';
+
+                    document.getElementById("btnAceptar").disabled = false;
+
+                    document.getElementById('btnAceptar').style.background = '#f20707';
+
+                    document.getElementById('btnAceptar').style.color = '#fff';
+
+                } else {
+                    // Do nothing!
+                    //exit;
+                    //reset();
+                    Exit2();
+                }
+
+            }
+
+            //Cash
+            if (opcion === '26') {
+
+                if (confirm('Confirme su Tipo de Pago !!!')) {
+                    //var cash = $('#op_pago_id1').val();
+                    document.getElementById('op_pago_id').value = 4;
+                    document.getElementById('opcion_pago_driver').value = 4;
+
+                    var pago_driver2 = parseInt($("#pago_driver2").val());
+
+                    var total = (pago_driver2);
+
+                    var valor = 0;
+
+                    var collect = parseFloat($("#collect").val());
+
+                    collect = collect + total;
+
+                    $("#collect").val((collect).toFixed(2));
+
+
+                    $("#pago_driver").val((total).toFixed(2));
+                    //$("#paid_drivert").val((total).toFixed(2));
+                    //$("#tot_amount_paid").val((total).toFixed(2));
+
+                    $("#PAP").val((valor).toFixed(2));
+
+                    document.getElementById("op_pago_id1").disabled = true;
+
+                    document.getElementById("pago_driver").disabled = true;
+
+                    document.getElementById('pago_driver').style.color = '#848484';
+
+                    document.getElementById('btnAceptar').style.cursor = 'pointer';
+
+                    document.getElementById("btnAceptar").disabled = false;
+
+                    document.getElementById('btnAceptar').style.background = '#f20707';
+
+                    document.getElementById('btnAceptar').style.color = '#fff';
+
+                } else {
+                    // Do nothing!
+                    //exit;
+                    Exit2();
+                }
+
+            }
+
+            //Check
+
+            if (opcion === '27') {
+
+
+                if (confirm('Confirme su Tipo de Pago !!!')) {
+
+
+                    document.getElementById('op_pago_id').value = 9;
+                    document.getElementById('opcion_pago_driver').value = 9;
+
+
+                    var pago_driver2 = parseInt($("#pago_driver2").val());
+
+                    var total = (pago_driver2);
+
+                    var valor = 0;
+
+
+                    var collect = parseFloat($("#collect").val());
+
+                    collect = collect + total;
+
+                    $("#collect").val((collect).toFixed(2));
+
+
+                    $("#pago_driver").val((total).toFixed(2));
+                    //$("#paid_drivert").val((total).toFixed(2));
+                    //$("#tot_amount_paid").val((total).toFixed(2));
+
+                    $("#PAP").val((valor).toFixed(2));
+
+                    document.getElementById("op_pago_id1").disabled = true;
+
+                    document.getElementById("pago_driver").disabled = true;
+
+                    document.getElementById('pago_driver').style.color = '#848484';
+
+                    document.getElementById('btnAceptar').style.cursor = 'pointer';
+
+                    document.getElementById("btnAceptar").disabled = false;
+
+                    document.getElementById('btnAceptar').style.background = '#f20707';
+
+                    document.getElementById('btnAceptar').style.color = '#fff';
+
+                } else {
+                    // Do nothing!
+                    //exit;
+                    Exit2();
+                }
+
+            }
+
+
+
+        }
+    </script>
+
+
+
+    <script type="text/javascript">
+        function ClkPay_Amount()
+        {
+
+            var clone = document.getElementById('otheramount').value;
+            var pd = document.getElementById('paid_driver').value;
+
+
+            if (clone == '') {
+
+                document.getElementById('otheramount').value = '0.00';
+                document.getElementById('etb').value = '0.00';
+
+            }
+
+            if (clone == '0.0') {
+
+                document.getElementById('otheramount').value = '0.00';
+                document.getElementById('etb').value = '0.00';
+            }
+
+
+            if (clone == '.00') {
+
+                document.getElementById('otheramount').value = '0.00';
+                document.getElementById('etb').value = '0.00';
+            }
+
+            if (clone > 0) {
+
+
+                document.getElementById('saldoporpagar').value = clone;
+                document.getElementById('paid_driver').value = pd;
+
+                $("#saldoporpagar").val((clone).toFixed(2));
+
+                setTimeout(function () {
+
+                    $('#paid_driver').click();
+
+                }, 0.001);
+
+
+                //$("#balance_due").val((clone-pd).toFixed(2));
+
+
+
+            }
+
+            if (clone == '0.') {
+
+                document.getElementById('otheramount').value = '0.00';
+                document.getElementById('etb').value = '0.00';
+            }
+
+
+            if (clone == '0') {
+
+                document.getElementById('otheramount').value = '0.00';
+                document.getElementById('etb').value = '0.00';
+            }
+            setTimeout(function () {
+                $('#paid_driver').click();
+
+            }, 0.001);
+
+
+        }
+    </script>
+
+
+
+    <div class="paymentvertblack" style="padding: 10px;  text-align: center; margin-top: 9px;">
+
+        <input id="btnExit" onclick="Exit();" style=" background-color: #006394; border-color: red; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px; border-top-left-radius: 5px; border-top-right-radius: 5px; cursor:pointer; color:#fff; padding:1px; width:43px; font-weight: 700;"name="btnExit" size="20" type="button" value="Exit"  />
+        <input id="btnCancelar" onclick="reset();
+                reset2();" style="background-color: #006394; border-color: red; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px; border-top-left-radius: 5px; border-top-right-radius: 5px; cursor:pointer; color:#fff; font-weight: 700;" name="btnCancelar" size="20" type="button" value="Reset"  />
+        <input type="button" id="btnAceptar" name="btnAceptar" size="20" value="Save"  style="border-color: red; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px; border-top-left-radius: 5px; border-top-right-radius: 5px; font-weight: 700;" onclick="ocultarVentana2();
+                banner();" disabled="true" />
+
+    </div>
+
+</div>    
+
+
+<input type="button" id="btnBD" name="btnBD" size="20" value="Balance_Due"  style="display:none; cursor:pointer; border-color: red; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px; border-top-left-radius: 5px; border-top-right-radius: 5px;" onclick="bal_due();"  />
+
+<input type="button" id="btnABD" name="btnABD" size="20" value="Agency_Balance_Due"  style="display:none; cursor:pointer; border-color: red; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px; border-top-left-radius: 5px; border-top-right-radius: 5px;" onclick="agen_bal_due();"  />
+
+<input type="button" id="btn_Other" name="btn_Other" size="10" value="Amount to Collect $"  style="display:none; cursor:pointer; margin-left:130px; margin-top:-396px; font-weight: bold; font-size: 16px; width: 163px; height: 27px;  border-color: red; " onclick="calc_other();"  />
+
+
+<div style="display:none;" id="resultado"></div>
+
+
+
+<script type="text/javascript">
+    function bal_due()
+    {
+
+        var saldopag = document.getElementById('saldoporpagar').value;
+
+        var paiddriver = document.getElementById('paid_driver').value;
+
+//      var tnk2 = parseFloat($("#totalPagar").text()); 
+//        
+//      var tap2 = parseFloat($("#tot_amount_paid").val());             
+
+        $("#balance_due").val(((saldopag) - (paiddriver)).toFixed(2));
+
+
+
+
+//       var a_b_d = (parseFloat(tnk2)-parseFloat(tap2)).toFixed(2);
+//        
+//       document.getElementById('agency_balance_due').value = a_b_d;
+
+    }
+</script>
+
+<script type="text/javascript">
+    function agen_bal_due()
+    {
+
+
+        var tnk2 = parseFloat($("#totalPagar").text());
+        var tap2 = parseFloat($("#tot_amount_paid").val());
+
+
+        var a_b_d = (parseFloat(tnk2) - parseFloat(tap2)).toFixed(2);
+
+        document.getElementById('agency_balance_due').value = a_b_d;
+
+        //$("#agency_balance_due").val(((tnk2) - (tap2)).toFixed(2));                
+
+
+    }
+</script>
+
+
+<script type="text/javascript">
+    function calc_other()
+    {
+
+        var duplic3 = document.getElementById('otheramount').value;
+
+        var totalcargo3 = document.getElementById('tot_charge').value;
+
+        var etb = parseFloat(totalcargo3);
+
+        var etb2 = parseFloat(duplic3);
+
+        var toti3 = parseFloat(etb2 + etb);
+
+        $("#etb").val((toti3).toFixed(2));
+
+
+        var sp = toti3.toFixed(2);
+
+
+        document.getElementById('saldoporpagar').value = sp;
+
+        bal_due();
+
+
+
+//        var tnk2 = parseFloat($("#totalPagar").text()); 
+//        var tap2 = parseFloat($("#tot_amount_paid").val());                          
+//          
+//
+//        var a_b_d = (parseFloat(tnk2)-parseFloat(tap2)).toFixed(2);
+//        
+//        document.getElementById('saldoporpagar').value = a_b_d;
+
+        //$("#agency_balance_due").val(((tnk2) - (tap2)).toFixed(2));                
+
+
+    }
+</script>
+
+<script type="text/javascript">
+    function dupliPago()
+    {
+//       ("#pago_driver").mask("99,99");
+        var dupli = document.getElementById('pago_driver').value;
+        document.getElementById('pago_driver2').value = dupli;
+
+        if (dupli == '') {
+            document.getElementById('pago_driver').value = '0.00';
+
+            document.getElementById('pago_driver').style.color = '#848484';
+
+            document.getElementById('dolares').style.color = '#848484';
+
+            $("#pago_driver").focus();
+        }
+
+        if (dupli > '0.00') {
+            document.getElementById("op_pago_id1").disabled = false;
+
+            document.getElementById('pago_driver').style.color = '#000';
+
+            document.getElementById('dolares').style.color = '#000';
+
+            $("#pago_driver").focus();
+
+
+
+        } else {
+            document.getElementById("op_pago_id1").disabled = true;
+
+            document.getElementById('pago_driver').style.color = '#848484';
+
+            document.getElementById('dolares').style.color = '#848484';
+
+            $("#pago_driver").focus();
+        }
+
+    }
+</script>
+
+<script type="text/javascript">
+    function Exit()
+    {
+        var ventana2 = document.getElementById('miVentana2'); // Accedemos al contenedor
+        ventana2.style.display = 'none'; // Y lo hacemos invisible
+//        document.getElementById('op_pago_id').value = 8;
+//        document.getElementById('opcion_pago_driver').value = 8;
+
+    }
+</script>
+
+
+<script type="text/javascript">
+    function Exit2()
+    {
+        var ventana2 = document.getElementById('miVentana2'); // Accedemos al contenedor
+        ventana2.style.display = 'none'; // Y lo hacemos invisible
+        reset();
+        mostrarVentana2();
+
+    }
+</script>
+
+<script type="text/javascript">
+//    var id, pause = 0, position = 0;
+//    function banner() {
+//        var i, k, msg = "  Confirm Booking";
+//        k = (15 / msg.length) + 1;
+//        for (i = 0; i <= k; i++)
+//            msg += " " + msg;
+//        document.getElementById('btn-save2').color = "blue";
+////document.formula.btnsave2.style="color:blue";
+//        document.formula.btnsave2.value = msg.substring(position, position + 15);
+//
+//        if (position++ === msg.length)
+//            position = 0;
+//        id = setTimeout("banner()", 600);
+
+//alert('hola');
+//exit();
+    }
+//banner();
+</script>
+
+<script type="text/javascript">
+//    var id, pause = 0, position = 0;
+//    function bannerstop() {
+//        var i, k, msg = "  Confirm Booking";
+//        k = (15 / msg.length) + 1;
+//        for (i = 0; i <= k; i++)
+//            msg += " " + msg;
+//        document.formula.btnsave2.value = msg.substring(position, position + 15);
+//        if (position++ === msg.length)
+//            position = 0;
+//        id = setTimeout("banner()", 0);
+
+//alert('hola');
+//exit();
+    }
+//banner();
+</script>
+
+
+<script type="text/javascript">
+
+    function mostrarVentana2() {
+
+        capturar();
+
+
+        if (window.screen.availWidth <= 640) {
+
+            window.parent.document.body.style.zoom = "62%";
+            var ventana2 = document.getElementById('miVentana2'); // Accedemos al contenedor  
+            ventana2.style.marginTop = "-0.5px"; // Definimos su posición vertical.        
+            ventana2.style.marginLeft = "0.6px"; // Definimos su posición horizontal
+            ventana2.style.display = 'block'; // Y lo hacemos visible
+            ventana2.style.position = 'absolute';
+            ventana2.style.height = '170px';
+        }
+
+        if (window.screen.availWidth == 800) {
+
+            window.parent.document.body.style.zoom = "78%";
+            var ventana2 = document.getElementById('miVentana2'); // Accedemos al contenedor  
+            ventana2.style.marginTop = "-0.5px"; // Definimos su posición vertical.        
+            ventana2.style.marginLeft = "0.6px"; // Definimos su posición horizontal
+            ventana2.style.display = 'block'; // Y lo hacemos visible
+            ventana2.style.position = 'absolute';
+            ventana2.style.height = '170px';
+        }
+        if (window.screen.availWidth == 1024) {
+
+            window.parent.document.body.style.zoom = "100%";
+            var ventana2 = document.getElementById('miVentana2'); // Accedemos al contenedor  
+            ventana2.style.marginTop = "-0.5px"; // Definimos su posición vertical.        
+            ventana2.style.marginLeft = "0.6px"; // Definimos su posición horizontal
+            ventana2.style.display = 'block'; // Y lo hacemos visible
+            ventana2.style.position = 'absolute';
+            ventana2.style.height = '170px';
+
+
+        }
+
+        if (window.screen.availWidth == 1366 && z == 1) {
+
+
+            var ventana2 = document.getElementById('miVentana2'); // Accedemos al contenedor  
+            ventana2.style.marginTop = "-1.5px"; // Definimos su posición vertical.        
+            ventana2.style.marginLeft = "0.6px"; // Definimos su posición horizontal
+            ventana2.style.display = 'block'; // Y lo hacemos visible
+            ventana2.style.position = 'absolute';
+            ventana2.style.height = '170px';
+
+        }
+
+        if (window.screen.availWidth == 1366 && z == 2) {
+
+
+            var ventana2 = document.getElementById('miVentana2'); // Accedemos al contenedor  
+            ventana2.style.marginTop = "230px"; // Definimos su posición vertical.        
+            ventana2.style.marginLeft = "-278.4px"; // Definimos su posición horizontal
+            ventana2.style.display = 'block'; // Y lo hacemos visible
+            ventana2.style.position = 'absolute';
+            ventana2.style.height = '170px';
+
+        }
+
+        if (window.screen.availWidth > 1366 && z == 1) {
+
+
+            var ventana2 = document.getElementById('miVentana2'); // Accedemos al contenedor  
+
+
+            ventana2.style.marginTop = "-51px"; // Definimos su posición vertical.        
+            ventana2.style.marginLeft = "0.6px"; // Definimos su posición horizontal
+            ventana2.style.display = 'block'; // Y lo hacemos visible
+            ventana2.style.position = 'absolute';
+            ventana2.style.height = '170px';
+
+
+        }
+
+        if (window.screen.availWidth > 1366 && z == 2) {
+
+            var ventana2 = document.getElementById('miVentana2'); // Accedemos al contenedor   
+
+            ventana2.style.marginTop = "265px"; // Definimos su posición vertical.        
+            ventana2.style.marginLeft = "1px"; // Definimos su posición horizontal
+            ventana2.style.display = 'block'; // Y lo hacemos visible
+            ventana2.style.position = 'absolute';
+            ventana2.style.height = '170px';
+
+        }
+
+
+
+
+        $("#pago_driver").focus();
+
+        document.getElementById("pago_driver").disabled = false;
+
+        document.getElementById('pago_driver').value = '0.00';
+
+        document.getElementById('pago_driver').style.color = '#848484';
+
+        document.getElementById('op_pago_id1').value = 0;
+        //document.getElementById('op_pago_id').value = 8;
+        document.getElementById('opcion_pago_2').value = 2;
+        //document.getElementById('opcion_pago_3').value = 2;
+
+        document.getElementById('btnAceptar').style.background = '';
+
+        document.getElementById('btnAceptar').style.color = '#000';
+
+        document.getElementById('btnAceptar').style.cursor = '';
+
+
+        //$('#pago_driver').val()='0.00';
+    }
+
+
+    function ocultarVentana2()
+    {
+        var ventana2 = document.getElementById('miVentana2'); // Accedemos al contenedor
+
+        var opcion_pago = $('#opcion_pago_id').val();
+        var pago_driver = $('#pago_driver').val();
+        var collect = $('#collect').val();
+        var prepaid = $('#prepaid').val();
+
+        var opcion = $("#op_pago_id1").val();
+
+        //PRED-PAID////////////////////////////////////////////
+        //Credit Card with fee
+
+        if (opcion === '0') {
+
+//            document.getElementById('paid_driver').value = '0.00';
+//            document.getElementById('pay_amount').value = '0.00';
+//            document.getElementById('paid_drivert').value = '0.00';
+//            document.getElementById('pred_paid_amountt').value = '0.00';
+
+
+            setTimeout(function () {
+                $('#pay_amount').click();
+
+            }, 0.001);
+
+            setTimeout(function () {
+                $('#paid_driver').click();
+
+            }, 0.001);
+
+            $("#pago_driver").focus();
+
+
+        }
+
+        if (opcion === '1') {
+
+//            document.getElementById('paid_driver').value = '0.00';
+//            document.getElementById('pay_amount').value = '0.00';
+//            document.getElementById('paid_drivert').value = '0.00';
+//            document.getElementById('pred_paid_amountt').value = '0.00';
+
+            setTimeout(function () {
+                $('#pay_amount').click();
+
+            }, 0.001);
+
+            setTimeout(function () {
+                $('#paid_driver').click();
+
+            }, 0.001);
+
+            $("#pago_driver").focus();
+
+        }
+
+        //Pred-Paid
+
+        if (opcion === '20') {
+
+            if (confirm('Esta Seguro que desea Aplicar este Pago?')) {
+
+
+                document.getElementById('pay_amount').value = prepaid;
+
+                document.getElementById('pred_paid_amountt').value = prepaid;
+
+                var prep = parseFloat($("#pred_paid_amountt").val());
+
+                var coll = parseFloat($("#paid_drivert").val());
+
+                $("#tot_amount_paid").val((prep + coll).toFixed(2));
+
+                setTimeout(function () {
+                    $('#pay_amount').click();
+
+                }, 0.001);
+
+                $("#pago_driver").focus();
+
+
+                Exit();
+
+            } else {
+                // Do nothing!
+//                $("#pago_driver").focus();
+//                exit;
+                //ocultarVentana2();
+                //mostrarVentana2();
+                Exit2();
+
+
+            }
+
+
+
+        }
+
+        if (opcion === '21') {
+
+            if (confirm('Esta Seguro que desea Aplicar este Pago?')) {
+
+
+                document.getElementById('pay_amount').value = prepaid;
+                document.getElementById('pred_paid_amountt').value = prepaid;
+
+                var prep = parseFloat($("#pred_paid_amountt").val());
+
+                var coll = parseFloat($("#paid_drivert").val());
+
+                $("#tot_amount_paid").val((prep + coll).toFixed(2));
+
+                setTimeout(function () {
+                    $('#pay_amount').click();
+
+                }, 0.001);
+
+                $("#pago_driver").focus();
+
+
+                Exit();
+
+
+            } else {
+                // Do nothing!
+//                $("#pago_driver").focus();
+//                exit;
+                //ocultarVentana2();
+                //mostrarVentana2();
+                Exit2();
+
+            }
+
+        }
+
+        if (opcion === '22') {
+
+            if (confirm('Esta Seguro que desea Aplicar este Pago?')) {
+
+                document.getElementById('pay_amount').value = prepaid;
+                document.getElementById('pred_paid_amountt').value = prepaid;
+
+                var prep = parseFloat($("#pred_paid_amountt").val());
+
+                var coll = parseFloat($("#paid_drivert").val());
+
+                $("#tot_amount_paid").val((prep + coll).toFixed(2));
+
+                setTimeout(function () {
+                    $('#pay_amount').click();
+
+                }, 0.001);
+
+
+                Exit();
+
+            } else {
+                // Do nothing!
+//                $("#pago_driver").focus();
+//                exit;
+                //ocultarVentana2();
+                //mostrarVentana2();
+                Exit2();
+
+            }
+
+        }
+
+        if (opcion === '23') {
+
+            if (confirm('Esta Seguro que desea Aplicar este Pago?')) {
+
+
+                document.getElementById('pay_amount').value = prepaid;
+                document.getElementById('pred_paid_amountt').value = prepaid;
+
+                var prep = parseFloat($("#pred_paid_amountt").val());
+
+                var coll = parseFloat($("#paid_drivert").val());
+
+                $("#tot_amount_paid").val((prep + coll).toFixed(2));
+
+                setTimeout(function () {
+                    $('#pay_amount').click();
+
+                }, 0.001);
+
+                $("#pago_driver").focus();
+
+
+                Exit();
+
+            } else {
+                // Do nothing!
+//                $("#pago_driver").focus();
+//                exit;
+                //ocultarVentana2();
+                //mostrarVentana2();
+                Exit2();
+
+            }
+
+        }
+
+        //Collect on Board
+
+        if (opcion === '24') {
+
+
+
+            if (confirm('Esta Seguro que desea Aplicar este Pago?')) {
+
+
+                document.getElementById('paid_driver').value = collect;
+                document.getElementById('paid_drivert').value = collect;
+
+
+                var prep = parseFloat($("#pred_paid_amountt").val());
+
+                var coll = parseFloat($("#paid_drivert").val());
+
+                $("#tot_amount_paid").val((prep + coll).toFixed(2));
+
+                setTimeout(function () {
+                    $('#paid_driver').click();
+
+                }, 0.001);
+
+                $("#pago_driver").focus();
+
+
+                Exit();
+                // Save it!
+            } else {
+                // Do nothing!
+//                $("#pago_driver").focus();
+//                exit;
+                //ocultarVentana2();
+                //mostrarVentana2();
+                Exit2();
+
+            }
+
+
+
+
+
+        }
+
+        if (opcion === '25') {
+
+            if (confirm('Esta Seguro que desea Aplicar este Pago?')) {
+
+                var otheramount = document.getElementById('otheramount').value;
+
+                var pd = document.getElementById('paid_driver').value;
+
+                document.getElementById('paid_driver').value = collect;
+                document.getElementById('paid_drivert').value = collect;
+
+
+
+                var prep = parseFloat($("#pred_paid_amountt").val());
+
+                var coll = parseFloat($("#paid_drivert").val());
+
+                $("#tot_amount_paid").val((prep + coll).toFixed(2));
+
+                setTimeout(function () {
+
+                    $('#paid_driver').click();
+
+                }, 0.001);
+
+                $("#pago_driver").focus();
+
+
+                if (otheramount > 0 && pd > 0) {
+
+                    setTimeout(function () {
+
+                        $('#btn_Other').click();
+
+                    }, 100);
+
+                }
+
+                //document.getElementById('btn-save2').style.background = "#96db8e";               
+                Exit();
+
+            } else {
+                // Do nothing!
+//                $("#pago_driver").focus();
+//                exit;
+                //ocultarVentana2();
+                //mostrarVentana2();
+                Exit2();
+
+            }
+
+
+
+        }
+
+        if (opcion === '26') {
+
+            if (confirm('Esta Seguro que desea Aplicar este Pago?')) {
+
+                document.getElementById('paid_driver').value = collect;
+
+                document.getElementById('paid_drivert').value = collect;
+
+
+                var prep = parseFloat($("#pred_paid_amountt").val());
+
+                var coll = parseFloat($("#paid_drivert").val());
+
+                $("#tot_amount_paid").val((prep + coll).toFixed(2));
+
+//                var otheramount  = document.getElementById('otheramount').value;
+//                
+//                var pd  = document.getElementById('paid_driver').value;
+
+
+
+                setTimeout(function () {
+                    $('#paid_driver').click();
+
+                }, 0.001);
+
+                $("#pago_driver").focus();
+
+//                if(otheramount > 0 && pd > 0 ){
+//                    
+//                setTimeout(function () {
+//                            
+//                            $('#btn_Other').click();   
+//
+//                }, 100);
+//
+//                }
+
+                Exit();
+
+            } else {
+                // Do nothing!
+
+//                $("#pago_driver").focus();
+//                exit;
+                Exit2();
+
+                //ocultarVentana2();
+                //mostrarVentana2();
+            }
+
+
+        }
+
+        if (opcion === '27') {
+
+            if (confirm('Esta Seguro que desea Aplicar este Pago?')) {
+
+//                var collect = $('#collect').val();
+//                var prepaid = $('#prepaid').val();
+//                
+//                document.getElementById('tot_amount_paid').value = (collect) +(prepaid);
+
+                document.getElementById('paid_driver').value = collect;
+
+                document.getElementById('paid_drivert').value = collect;
+//                document.getElementById('pay_amount').value = pago_driver;
+
+                var prep = parseFloat($("#pred_paid_amountt").val());
+
+                var coll = parseFloat($("#paid_drivert").val());
+
+                $("#tot_amount_paid").val((prep + coll).toFixed(2));
+
+                setTimeout(function () {
+                    $('#paid_driver').click();
+
+                }, 0.001);
+
+                $("#pago_driver").focus();
+
+                //document.getElementById('op_pago_id1').value = 0;
+//                document.getElementById('pago_driver').value = '0.00';
+
+//                setTimeout(function () {
+//                    $('#pay_amount').click();
+//
+//                }, 0.001);
+
+                Exit();
+
+            } else {
+                // Do nothing!
+
+//                $("#pago_driver").focus();
+//                exit;
+                //ocultarVentana2();
+                //mostrarVentana2();
+                Exit2();
+
+            }
+
+        }
+
+
+        //var resultados = prueba + opcion_pago_2;
+        //alert(pago_driver);
+    }
+</script>
+
+
+
+<script type="text/javascript">
+    $("#pago_agente").click(function () {
+
+//        var paid_driver = $("#paid_driver").val();
+//        var pay_amount = $("#pay_amount").val();
+//        var cantidad = parseFloat(paid_driver) + parseFloat(pay_amount);
+
+        var cantidad = $("#pay_amount").val();
+
+        if (cantidad <= 0) {
+            return false;
+        }
+        var email1 = $("#email1").val();
+        var primer_n = $("#firstname1").val();
+        var segundo_n = $("#lastname1").val();
+        var phone1 = $("#phone1").val();
+
+        if (segundo_n === '.') {
+            segundo_n = '';
+        }
+
+        var url = encodeURI('<?php echo $data['rootUrl'] ?>admin/pago/agente/' + cantidad + '/' + email1 + '/' + primer_n + '/' + segundo_n + '/' + phone1 + '/' + '<?php echo $reserva->codconf; ?>');
+
+        window.open(url, '_blank');
+        return false;
+    });
+    $(window).load(function () {
+
+
+        ocultarmenu();
+        comprobarScreen();
+//        $("accordion").hide();
+
+
+
+        var btnpay = <?php echo $reserva->Btnpay; ?>;
+
+        if (btnpay == 1) {
+
+            setTimeout(function () {
+                $('#pay_driver').click();
+
+            }, 0.001);
+
+        }
+
+        var saldop = document.getElementById('saldoPagado').value;
+        document.getElementById('saldoPagado2').value = saldop;
+
+        var pagado = <?php echo $pagado; ?>;
+        var saldo_porpagar = <?php echo $saldoxPagar; ?>;
+        //alert(saldo_porpagar);
+        //document.getElementById('saldoporpagar').value = saldo_porpagar;
+        // $("#saldoporpagar").val((saldo_porpagar).toFixed(2));
+
+        //document.getElementById('collect').value = '0.00';
+
+
+        //document.getElementById('otheramount').value = '0.00';
+        //document.getElementById('totalPagarnet').value = ('0.00');
+
+        //document.getElementById('balance_due').value = '0.00';
+        //document.getElementById('balance_due').value = <?php echo $passenger_balance_due; ?>;
+        //document.getElementById('agency_balance_due').value = '0.00';
+        //document.getElementById('agency_balance_due').value = <?php echo $agency_balance_due; ?>;
+        //document.getElementById('pay_amount').value = '0.00';   
+        //document.getElementById('pay_amount').value = <?php echo $pred_paid_amount; ?>;         
+        //document.getElementById('paid_driver').value = '0.00';
+        //document.getElementById('paid_driver').value = <?php echo $paid_driver; ?>;   
+        //document.getElementById('tot_amount_paid').value = '0.00';
+        //document.getElementById('tot_amount_paid').value = <?php echo $total_paid; ?>; 
+
+
+        $("#content").css("opacity", "1");
+        var sel_payment = '<?php echo $reserva->op_pago; ?>';
+
+        $("#op_pago_id option[value=" + sel_payment + "]").attr("selected", "selected");
+        CalcularTotalTotal();
+    });
+
+
+    $("#op_pago_id").change(function () {
+        CalcularTotalTotal();
+    });
+    $("#pay_amount").change(function () {
+        CalcularTotalTotal();
+    });
+
+    $("#paid_driver").change(function () {
+        CalcularTotalTotal();
+    });
+
+
+
+    $(document).ready(function () {
+
+
+        $("#content").css("opacity", "0.2");
+        if ($("#id_tipo_ticket").val() == "1") {
+
+            $("#round").css("display", "none");
+            $(".sup2").css("margin-top", " 2px");
+        } else {
+
+            $("#round").css("display", "block");
+            $(".sup2").css("margin-top", " -209px");
+        }
+        $("#clienteN").hide();
+
+        var tipo;
+
+        client = document.getElementById("newClient");
+<?php if ($reserva->id_clientes != NULL && $reserva->id != 0 && $cliente != NULL && $cliente->id != NULL && $cliente->id != 0 && $cliente->id != 'NULL') { ?>
+            client.style.visibility = "hidden";
+<?php } else { ?>
+            client.style.visibility = 'visible';
+<?php } ?>
+
+        if ($("#pax").val() != "" || $("#pax2").val() != "") {
+
+            var pax = $('#pax').val();
+            var pax2 = $('#pax2').val();
+            var total;
+
+            if (pax2 == "") {
+                pax2 = 0;
+                // $('#pax2').val(0);
+            }
+            if (pax == "") {
+                pax = 0;
+                $('#pax').val(0);
+            }
+            total = (parseInt(pax) + parseInt(pax2));
+            $('#totalpax').val(total);
+        }
+
+        var resident = '<?php
+if (isset($reserva)) {
+    echo $reserva->resident;
+}
+?>';
+        $("#tipo_pass option[value=" + resident + "]").attr("selected", true);
+        var idext1 = '<?php
+if (isset($reserva)) {
+    echo $reserva->extension1;
+}
+?>';
+        $("#ext_from1 option[value=" + idext1 + "]").attr("selected", true);
+        var precioa = '<?php
+if (isset($reserva)) {
+    echo $reserva->precioA;
+}
+?>';
+        var precion = '<?php
+if (isset($reserva)) {
+    echo $reserva->precioN;
+}
+?>';
+        if (precioa != "") {
+            $("#transporadult").text("$" + precioa + ".00");
+        }
+        if (precion != "") {
+            $("#transporechil").text("$" + precion + ".00");
+        }
+        $('#uagency').attr('disabled', 'disabled');
+        $('#leader').focus();
+        $.fn.autosugguest({
+            className: 'ausu-suggest',
+            methodType: 'POST',
+            minChars: 1,
+            rtnIDs: true,
+            dataFile: '<?php echo $data['rootUrl']; ?>leader/ajax'
+        });
+    });
+
+    function poner(id, id2) {
+        var id = id;
+        var id2 = id2;
+
+        $("#userr").load(encodeURI('<?php echo $data['rootUrl']; ?>leader/ajax2/' + id + '/' + id2), function (response, status, xhr) {
+            var id_leader = $('#id_leader').val();
+            $("#userr").load(encodeURI('<?php echo $data['rootUrl']; ?>consul/superclub/' + id_leader));
+        });
+
+    }
+
+    $('#agency').change(function () {
+
+        $('#uagency').attr('disabled', 'disabled');
+        $('#uagency').val('');
+        $('#id_auser').val('');
+        $('#id_agency').val('-1');
+
+    });
+
+    $('#pax').change(function () {
+        var pax = $('#pax').val();
+        var pax2 = $('#pax2').val();
+        var total;
+        if (pax2 == "") {
+            pax2 = 0;
+            // $('#pax2').val(0);
+        }
+        if (pax == "") {
+            pax = 0;
+            $('#pax').val(0);
+        }
+        total = (parseInt(pax) + parseInt(pax2));
+        $('#totalpax').val(total);
+        CalcularTotalTotal();
+
+    });
+
+    $('#pax2').change(function () {
+
+        var pax = $('#pax').val();
+        var pax2 = $('#pax2').val();
+        if (pax2 == "") {
+            pax2 = 0;
+            $('#pax2').val(0);
+        }
+        if (pax == "") {
+            pax = 0;
+            $('#pax').val(0);
+        }
+        var total;
+        total = (parseInt(pax) + parseInt(pax2));
+
+        $('#totalpax').val(total);
+        CalcularTotalTotal();
+    });
+
+
+    $('#oneway').change(function () {
+
+//    $("#fecha_retorno").attr("disable", true);
+//    $("#from2").attr("disable",true);
+//    $("#from2").attr("readonly", "readonly");
+//    $("#fecha_retorno").attr("readonly", "readonly");
+//    $("#pickup2").attr("readonly", "readonly");
+//    $("#dropoff2").attr("readonly", "readonly");
+//    $("#arrival2").attr("readonly", "readonly");
+//    $("#to2").attr("readonly", "readonly");
+//    $("#ext_from2").attr("disabled", "disabled");
+//    $("#departure2").attr("readonly", "readonly");
+//    $("#ext_to2").attr("disabled", "disabled");
+//    $("#room2").attr("readonly", "readonly");
+//    $("#exten3").attr("readonly", "readonly");
+//    $("#exten4").attr("readonly", "readonly");
+        $("#trip_no2").val("");
+        $("#departure2").val("");
+        $("#arrival2").val("");
+        $("#fecha_retorno").val("");
+
+        $("#pickup2").val("");
+        $("#id_pickup2").val("");
+
+        $("#dropoff2").val("");
+        $("#id_dropoff2").val("");
+
+        $("#exten3").val("");
+        $("#id_ext_pikup3").val("");
+
+        $("#exten4").val("");
+        $("#id_ext_pikup4").val("");
+
+
+        $("#ext_to2").find('option').removeAttr("selected");
+        $("#ext_from2").find('option').removeAttr("selected");
+
+
+        $("#round").css("display", "none");
+        $(".sup2").css("margin-top", "2px");
+        $("#subtochild2").val(0);
+        $("#subtoadult2").val(0);
+        //actualizacion
+//        $("#subtochild2_o").val(0);
+//        $("#subtoadult2_o").val(0);
+//        
+        $("#price_exten03").val(0);
+        $("#price_exten04").val(0);
+        CalcularTotalTotal();
+    });
+
+    $('#roundtrip').change(function () {
+//    $("#fecha_retorno").attr("disable", false);
+//    $("#from2").attr("disable",false);
+//    $("#fecha_retorno").removeAttr("readonly");
+//    $("#departure2").removeAttr("readonly");
+//    $("#dropoff2").removeAttr("readonly");
+//    $("#pickup2").removeAttr("readonly");
+//    $("#arrival2").removeAttr("readonly");
+//    $("#to2").removeAttr("readonly");
+//    $("#ext_from2").removeAttr("disabled");
+//    $("#ext_to2").removeAttr("disabled");
+//    $("#exten3").removeAttr("readonly");
+//    $("#exten4").removeAttr("readonly");
+//    $("#room2").removeAttr("readonly");
+//    $("#from2").removeAttr("readonly");
+        $("#round").css("display", "block");
+        $(".sup2").css("margin-top", " -209px");
+    });
+    $('#fecha_salida').datepicker({
+        dateFormat: 'mm-dd-yy',
+        minDate: 0
+    });
+    $("#dataclick1").click(function (e) {
+        e.preventDefault();
+
+        //$("#fecha_salida").datepicker("show");
+        return false;
+    });
+    $('#fecha_retorno').datepicker({
+        dateFormat: 'mm-dd-yy',
+        minDate: 0,
+        beforeShow: function () {
+            if ($('#fecha_retorno').attr("readonly") == "readonly") {
+                return false;
+            }
+        }
+
+    });
+    $("#dataclick2").click(function (e) {
+        e.preventDefault();
+
+        //$("#fecha_retorno").datepicker("show");
+        return false;
+    });
+//$("#fecha_salida").change(function(){
+//    $("#trip_no").val('');
+//    $("#departure1").val('');
+//    $("#arrival1").val('');    
+//    $("#subtoadult1").val(0);
+//    $("#subtochild1").val(0);
+//    CalcularTotalTotal();
+//});
+    function borrar() {
+        $("#transporadult").html("");
+        $("#transporechil").html("");
+        $("#subtoadult").html("");
+        $("#subtochild").html("");
+        $("#subtoadult2").html("");
+        $("#subtochild2").html("");
+        $("#totaltotal").html("$ 00.0");
+        //$("#ext_from1 option[value="+0+"]").attr("selected",true);
+        $("#extenadult").html("");
+        $("#extenchil").html("");
+        $("#totalPagar").html('$ 00.00');
+    }
+//$("#fecha_retorno").change(function(){
+//    $("#trip_no2").val('');
+//    $("#departure2").val('');
+//    $("#arrival2").val('');
+//    $("#subtochild2").val(0);
+//    $("#subtoadult2").val(0);
+//    CalcularTotalTotal();
+//});
+    $("#from").change(function () {
+        var id = $("#from").val();
+        $("#pickup1").val('');
+        $("#id_p1").val('');
+//    $("#dropoff2").val('');
+//    $("#id_dropoff2").val('');
+        $("#dropoff1").val('');
+        $("#id_dropoff1").val('');
+//    $("#pickup2").val('');
+//    $("#id_pickup2").val('');
+        $('#exten1').attr('disabled', 'disabled');
+        $("#exten1").val('');
+        $('#pickup1').removeAttr("disabled");
+
+        $("#price_exten01").val(0);
+        $("#price_exten02").val(0);
+        var id_agency = $("#id_agency").val();
+        if (id_agency != -1) {
+            $("#trip_no").val("");
+            $("#subtoadult1").val(0);
+            $("#subtochild1").val(0);
+        }
+
+        CalcularTotalTotal();
+
+        if (id != "") {
+            var id_agency = $("#id_agency").val();
+            $("#to").load(encodeURI('<?php echo $data['rootUrl']; ?>load/' + id));
+            $("#ext_to1").load(encodeURI('<?php echo $data['rootUrl']; ?>exten_to_tot_of_from/' + id));
+            $("#ext_from1").load(encodeURI('<?php echo $data['rootUrl']; ?>exten_to_tot_of_from/' + id));
+
+
+//        $("#from2").load(encodeURI('<?php echo $data['rootUrl']; ?>load/' + id),function(){
+//            $("#to2").load(encodeURI('<?php echo $data['rootUrl']; ?>area_to_tot_of_from/' + $("#from2").val()));
+//        });
+            $("#ext_from1").load(encodeURI('<?php echo $data['rootUrl']; ?>consul/exten/' + id + '/' + id_agency));
+//        $("#ext_to2").load(encodeURI('<?php echo $data['rootUrl']; ?>consul/exten/' + id+'/'+id_agency));
+//        $("#to2").load(encodeURI('<?php echo $data['rootUrl']; ?>area_to_tot_of_from/' + id));
+        }
+    });
+
+    $("#from2").change(function () {
+
+        var id = $("#from2").val();
+        $("#dropoff2").val('');
+        $("#id_dropoff2").val('');
+        $("#pickup2").val('');
+        $("#id_pickup2").val('');
+
+        $('#pickup2').removeAttr("disabled");
+
+        $("#price_exten03").val(0);
+        $("#price_exten04").val(0);
+        var id_agency = $("#id_agency").val();
+        if (id_agency != -1) {
+            $("#trip_no2").val("");
+            $("#subtoadult2").val(0);
+            $("#subtochild2").val(0);
+        }
+//    $("#trip_no2").val("");
+        CalcularTotalTotal();
+        $('#exten3').attr('disabled', 'disabled');
+        $("#exten3").val('');
+        if (id != "") {
+            var id_agency = $("#id_agency").val();
+            $("#to2").load(encodeURI('<?php echo $data['rootUrl']; ?>load/' + id));
+            $("#ext_from2").load(encodeURI('<?php echo $data['rootUrl']; ?>consul/exten/' + id + '/' + id_agency));
+        }
+    });
+    $("#to").change(function () {
+
+        var id = $("#to").val();
+//    $("#dropoff2").val('');
+//    $("#id_dropoff2").val('');
+        $("#dropoff1").val('');
+        $("#id_dropoff1").val('');
+//    $("#pickup2").val('');
+//    $("#id_pickup2").val('');
+
+        $('#dropoff1').removeAttr("disabled");
+        $('#exten2').attr('disabled', 'disabled');
+        $("#exten2").val('');
+//    $("#price_exten01").val(0);
+        $("#price_exten02").val(0);
+        var id_agency = $("#id_agency").val();
+        if (id_agency != -1) {
+            $("#trip_no").val("");
+            $("#subtoadult1").val(0);
+            $("#subtochild1").val(0);
+        }
+//    $("#trip_no").val("");
+        CalcularTotalTotal();
+
+        if (id != "") {
+            var id_agency = $("#id_agency").val();
+//        $("#ext_from2").load(encodeURI('<? echo $data['rootUrl']; ?>consul/exten/' + id+'/'+id_agency));
+            $("#ext_to1").load(encodeURI('<?php echo $data['rootUrl']; ?>consul/exten/' + id + '/' + id_agency));
+//        $("#to2").load(encodeURI('<?php echo $data['rootUrl']; ?>load/' + id));
+//        $("#from2").attr("value",id);
+            var idFrom = $("#from").val();
+
+        }
+    });
+    $("#to2").change(function () {
+        var id = $("#to2").val();
+
+        $('#dropoff2').removeAttr("disabled");
+        $("#dropoff2").val('');
+        $("#id_dropoff2").val('');
+//    $("#price_exten03").val(0);
+        $("#price_exten04").val(0);
+        var id_agency = $("#id_agency").val();
+        if (id_agency != -1) {
+            $("#trip_no2").val("");
+            $("#subtoadult2").val(0);
+            $("#subtochild2").val(0);
+        }
+        $('#exten4').attr('disabled', 'disabled');
+        $("#exten4").val('');
+//    $("#trip_no2").val("");
+        CalcularTotalTotal();
+        if (id != "") {
+            var id_agency = $("#id_agency").val();
+            $("#ext_to2").load(encodeURI('<?php echo $data['rootUrl']; ?>consul/exten/' + id + '/' + id_agency));
+        }
+    });
+    function extenprince(id, id2) {
+
+        if (document.getElementById('oneway').checked) {
+
+            var from = $("#from").val();
+            var to = $("#to").val();
+            var trip_no = $('#trip_no').val();
+            var fechasal = $("#fecha_salida").val();
+            var tp = 1;
+
+        }
+
+
+        if (document.getElementById('roundtrip').checked) {
+
+            var from = $("#from").val();
+            var to = $("#to").val();
+            var trip_no = $('#trip_no').val();
+            var fechasal = $("#fecha_salida").val();
+
+            var from2 = $("#from2").val();
+            var to2 = $("#to2").val();
+            var trip_no2 = $('#trip_no2').val();
+            var fecharetor = $("#fecha_retorno").val();
+
+            var tp = 2;
+
+        }
+
+
+
+
+
+        var transAdult = $("#transporadult").text();
+        var transChild = $("#transporechil").text();
+        if (isNaN(transAdult)) {
+            transAdult = 0;
+        } else {
+            transAdult = parseFloat(transAdult.substring(1, transAdult.length));
+        }
+        if (isNaN(transChild)) {
+            transChild = 0;
+        } else {
+            transChild = parseFloat(transChild.substring(1, transChild.length));
+        }
+        var id_agency = $("#id_agency").val();
+        var type_rate = $("#type_rate").val();
+        if (id_agency == '') {
+            id_agency = '-1';
+        }
+        //var url = '<?php echo $data['rootUrl']; ?>consul/extenp/' + id + '/' + id2 + '/' + transAdult + '/' + transChild + '/' + type_rate + '/' + id_agency;
+        var url = '<?php echo $data['rootUrl']; ?>consul/extenp/' + id + '/' + id2 + '/' + transAdult + '/' + transChild + '/' + type_rate + '/' + id_agency + '/' + from + '/' + to + '/' + trip_no + '/' + fechasal + '/' + tp + '/' + from2 + '/' + to2 + '/' + trip_no2 + '/' + fecharetor;
+        $("#userr").load(encodeURI(url));
+    }
+    $("#ext_from1").change(function () {
+        var id = $("#ext_from1").val();
+        var id2 = 1;
+        extenprince(id, id2);
+        if (id > 0) {
+            $('#exten1').removeAttr('disabled');
+            $("#pickup1").val('');
+            $("#id_p1").val('');
+            $('#pickup1').attr('disabled', 'disabled');
+        } else {
+            $('#pickup1').removeAttr('disabled');
+            $('#exten1').attr('disabled', 'disabled');
+            $("#exten1").val('');
+            $("#id_ext_pikup1").val('');
+        }
+    });
+    $("#ext_to1").change(function () {
+        var id = $("#ext_to1").val();
+        var id2 = 2;
+        extenprince(id, id2);
+        if (id > 0) {
+            $('#exten2').removeAttr('disabled');
+            $("#dropoff1").val('');
+            $("#id_dropoff1").val('');
+            $('#dropoff1').attr('disabled', 'disabled');
+        } else {
+            $('#dropoff1').removeAttr('disabled');
+            $('#exten2').attr('disabled', 'disabled');
+            $("#exten2").val('');
+            $("#id_ext_pikup2").val('');
+        }
+    });
+
+    $("#ext_from2").change(function () {
+
+        var id = $("#ext_from2").val();
+        var id2 = 3;
+        extenprince(id, id2);
+        if (id > 0) {
+            $('#exten3').removeAttr('disabled');
+            $("#pickup2").val('');
+            $("#id_pickup2").val('');
+            $('#pickup2').attr('disabled', 'disabled');
+        } else {
+            $('#pickup2').removeAttr('disabled');
+            $('#exten3').attr('disabled', 'disabled');
+            $("#exten3").val('');
+            $("#id_ext_pikup2").val('');
+        }
+    });
+    $("#ext_to2").change(function () {
+        var id = $("#ext_to2").val();
+        var id2 = 4;
+        extenprince(id, id2);
+        if (id > 0) {
+            $('#exten4').removeAttr('disabled');
+            $("#dropoff2").val('');
+            $("#id_dropoff2").val('');
+            $('#dropoff2').attr('disabled', 'disabled');
+        } else {
+            $('#dropoff2').removeAttr('disabled');
+            $('#exten4').attr('disabled', 'disabled');
+            $("#exten4").val('');
+            $("#id_ext_pikup4").val('');
+        }
+    });
+
+    function valorExtra() {
+        CalcularTotalTotal();
+    }
+
+    function valorDescuento() {
+        CalcularTotalTotal();
+    }
+
+    $("#opcion_pago_Voucher").change(function () {
+        $("#pay_amount_html").hide();
+    });
+    $("#opcion_pago_Cash").change(function () {
+        $("#pay_amount_html").show();
+    });
+    $("#label_tipo_CrediFee").change(function () {
+        $("#pay_amount_html").show();
+    });
+    $("#opcion_pago_agency").change(function () {
+        $("#pay_amount_html").show();
+    });
+    $("#opcion_pago_passager").change(function () {
+        $("#pay_amount_html").show();
+    });
+    $("#extra").change(function () {
+        valorExtra();
+    });
+    $("#descuento").change(function () {
+
+        valorDescuento();
+
+    });
+    $("#descuento_valor").change(function () {
+
+        valorDescuento();
+
+    });
+
+    //actualizacion
+//    $("#op_pago_id").change(function () {
+//        CalcularTotalTotal();
+//    });
+//    $("#pay_amount").change(function () {
+//        CalcularTotalTotal();
+//    });
+//
+//    $("#paid_driver").change(function () {
+//        CalcularTotalTotal();
+//    });
+
+    $("#descuento").keypress(Event, function (e) {
+        if (e.charCode > 47 && e.charCode < 58) {
+            var char = String.fromCharCode(e.charCode);
+            var valor = $("#descuento").val();
+            var d = valor + '' + char;
+            if (d > 100 || d < 0) {
+                return false;
+            }
+            /*
+             $("#descuento").val(valor + char + '%');
+             var pos = valor.length;
+             
+             if((valor+char) == '' ){
+             $("#descuento").val('0%');
+             }
+             establerCursorPosicion(pos+1,'descuento');*/
+        } else {
+            return false;
+        }
+    });
+
+    function establerCursorPosicion(pos, idElemento) {
+        var elemento = document.getElementById(idElemento);
+        if (typeof document.selection != 'undefined' && document.selection) {        //método IE
+            var tex = elemento.value;
+            elemento.value = '';
+            elemento.focus();
+            var str = document.selection.createRange();
+            elemento.value = tex;
+            str.move("character", pos);
+            str.select();
+        } else if (typeof elemento.selectionStart != 'undefined') {                    //método estándar
+            elemento.setSelectionRange(pos, pos);
+        }
+    }
+    var saber;
+    $("#popup1 a").click(function () {
+
+        var from = $('#from').val();
+        var to = $('#to').val();
+        var fecha_sali = $('#fecha_salida').val();
+        var tipopas = $('#tipo_pass').val();
+        var agency;
+        if ($('#id_agency').val() != '-1') {
+            agency = $('#id_agency').val()
+        } else {
+            agency = -1;
+        }
+        tipo = 1;
+        if ($('#fecha_salida').val() != '' && $('#totalpax').val() != '') {
+
+        } else {
+            var mensage = "";
+            if (trim($('#fecha_salida').val()) == '') {
+                mensage += "- Departure date is required. \n";
+            }
+            if (trim($('#totalpax').val()) == '') {
+                mensage += "- Total passengers required. \n";
+            }
+            if (trim($('#from').val()) == '') {
+                mensage += "From is required. \n";
+            }
+            if (trim($('#to').val()) == '') {
+                mensage += "To  is required. \n";
+            }
+
+            alert(mensage);
+
+            return false;
+
+        }
+        var special_price_name = $('#special_price_name').val();
+
+//    $("#transporadult").html("");
+//    $("#transporechil").html("");
+//    $("#subtoadult").html("");
+//    $("#subtochild").html("");
+//    $("#totaltotal").html("$ 00.0");
+//    //$("#ext_from1 option[value="+0+"]").attr("selected",true);
+//    $("#extenadult").html("");
+//    $("#extenchil").html("");
+        $('.content-popup').html(" ");
+        //$('.content-popup').load('<?php echo $data['rootUrl']; ?>consul/trips/' + from + '/' + to + '/' + fecha_sali + '/' + tipopas + '/' + saber + '/' + tipo + '/' + agency);
+        $('.content-popup').load('<?php echo $data['rootUrl']; ?>consul/trips/' + from + '/' + to + '/' + fecha_sali + '/' + tipopas + '/' + saber + '/' + tipo + '/' + agency + '/' + special_price_name);
+        $('#mascaraP').fadeIn('slow');
+        $('#popup').fadeIn('slow');
+        saber = 1;
+
+    });
+    $("#tipo_pass").change(function () {
+        $("#price_exten01").val(0);
+        $("#price_exten02").val(0);
+
+        $("#subtochild1").val(0);
+        $("#subtoadult1").val(0);
+        $("#trip_no").val("");
+
+        $("#price_exten03").val(0);
+        $("#price_exten04").val(0);
+
+        $("#subtochild2").val(0);
+        $("#subtoadult2").val(0);
+        $("#trip_no2").val("");
+
+        $("#ext_from1 option[value=" + 0 + "]").attr("selected", true);
+        $("#ext_from2 option[value=" + 0 + "]").attr("selected", true);
+        $("#ext_to1 option[value=" + 0 + "]").attr("selected", true);
+        $("#ext_to2 option[value=" + 0 + "]").attr("selected", true);
+        CalcularTotalTotal();
+    });
+    $("#popup2 a").click(function () {
+
+        var from = $('#from2').val();
+        var to = $('#to2').val();
+        var fecha_retorno = $('#fecha_retorno').val();
+        var tipopas = $('#tipo_pass').val();
+
+        if ($('#trip_no').val() == '') {
+            alert("Must fill out the form ONE WAY");
+            return false;
+        }
+
+        tipo = 2;
+
+        if ($('#from2').attr("readonly") != "readonly") {
+            if ($('#fecha_retorno').val() != '' && $('#totalpax').val() != '') {
+            } else {
+
+                var mensage = "";
+
+                if ($('#fecha_retorno').val() == '') {
+                    mensage += "- Return date is required. \n";
+                }
+
+                if ($('#totalpax').val() == '') {
+                    mensage += "- Total passengers required. \n";
+                }
+
+                if ($('#from2').val() == '') {
+                    mensage += "- From is required. \n";
+                }
+
+                if ($('#to2').val() == '') {
+                    mensage += "- To  is required. \n";
+                }
+
+                alert(mensage);
+
+                return false;
+
+            }
+
+            var special_price_name = $('#special_price_name').val();
+
+            var agency;
+            if ($('#id_agency').val() != '-1') {
+                agency = $('#id_agency').val()
+            } else {
+                agency = -1;
+            }
+
+            $('.content-popup').html(" ");
+            //$('.content-popup').load('<?php echo $data['rootUrl']; ?>consul/trips/' + from + '/' + to + '/' + fecha_retorno + '/' + tipopas + '/' + saber + '/' + tipo + '/' + agency);
+            $('.content-popup').load('<?php echo $data['rootUrl']; ?>consul/trips/' + from + '/' + to + '/' + fecha_retorno + '/' + tipopas + '/' + saber + '/' + tipo + '/' + agency + '/' + special_price_name);
+            $('#mascaraP').fadeIn('slow');
+            $('#popup').fadeIn('slow');
+
+            saber = 2;
+        }
+    });
+
+    $("#newClient").click(function () {
+
+    });
+
+    function registrarCliente() {
+        var email = $("#email1").val();
+        var firstname = $("#firstname1").val();
+        var lastname = $("#lastname1").val();
+        var phone = $("#phone1").val();
+        var id = $("#idCliente").val();
+        if (email == '') {
+            email = 0;
+        }
+        if (firstname == '') {
+            firstname = 0;
+        }
+        if (lastname == '') {
+            lastname = 0;
+        }
+        if (phone == '') {
+            phone = 0;
+        }
+        $("#clienteN").load(encodeURI('<?php echo $data['rootUrl']; ?>admin/clientes/pagador/' + email + '/' + firstname + '/' + lastname + '/' + phone + '/' + id), function () {
+            $("input[name='creator']").remove();
+        });
+        $('#mascaraP').fadeIn('slow');
+        $('#clienteN').fadeIn('slow');
+        $("#email1").focus();
+        //setInterval('setTimeout("activarenvioPago()",5000)',5000);
+    }
+
+    function llamar(extraSettings, $innerbox) {
+        var $innerbox = $innerbox;
+        var dato = extraSettings;
+        if (saber == 1) {
+            var from = $('#from').val();
+            var to = $('#to').val();
+            var fecha_sali = $('#fecha_salida').val();
+            var tipopas = $('#tipo_pass').val();
+        } else {
+            var from = $('#from2').val();
+            var to = $('#to2').val();
+            var fecha_sali = $('#fecha_retorno').val();
+            var tipopas = $('#tipo_pass').val();
+        }
+
+        var ruta = dato[0] + '/' + from + '/' + to + '/' + fecha_sali + '/' + tipopas + '/' + saber;
+        $.get(ruta, function (data) {
+            $(data).appendTo($innerbox);
+        });
+
+        if (saber == 1) {
+            var mensage = "";
+            if ($('#fecha_salida').val() == '') {
+                mensage += "fecha salida is requerida. \n";
+            }
+            if ($('#totalpax').val() == '') {
+                mensage += "total pass  is requerido. \n";
+            }
+            if ($('#from').val() == '') {
+                mensage += "From is requerido. \n";
+            }
+            if ($('#to').val() == '') {
+                mensage += "to  is requerido. \n";
+            }
+            if (mensage) {
+                $("P.close A").click();
+            }
+        } else {
+            var mensage = "";
+            if ($('#fecha_retorno').val() == '') {
+                mensage += "fecha salida is requerida. \n";
+            }
+            if ($('#totalpax').val() == '') {
+                mensage += "total pass  is requerido. \n";
+            }
+            if ($('#from2').val() == '') {
+                mensage += "From is requerido. \n";
+            }
+            if ($('#to2').val() == '') {
+                mensage += "to  is requerido. \n";
+            }
+            if (mensage) {
+                $("P.close A").click();
+            }
+        }
+    }
+
+    $('#btn-save1').click(function () {
+        if (validarFomulario()) {
+            CalcularTotalTotal();
+            $("#totP").val($("#totalPagar").text());
+            $("#transadult").val($("#transporadult").text().substring(1, $("#transporadult").text().length));
+            $("#transchild").val($("#transporechil").text().substring(1, $("#transporechil").text().length));
+            $("#formula").attr('target', '_parent');
+            $("#formula").attr('action', '<?php echo $data['rootUrl']; ?>admin/reservas/save-edit-reserve');
+            $("#content").css("opacity", "0");
+            $("#formula").submit();
+        }
+
+    });
+
+    $('#btn-save2').click(function () {
+        if (validarFomulario()) {
+            CalcularTotalTotal();
+            $("#totP").val($("#totalPagar").text());
+            $("#transadult").val($("#transporadult").text().substring(1, $("#transporadult").text().length));
+            $("#transchild").val($("#transporechil").text().substring(1, $("#transporechil").text().length));
+            $("#formula").attr('target', '_parent');
+            $("#formula").attr('action', '<?php echo $data['rootUrl']; ?>admin/reservas/save-edit-reserve');
+            $("#content").css("opacity", "0");
+            $("#formula").submit();
+        }
+    });
+
+
+    function irApagar() {
+        if (validarFomulario()) {
+            CalcularTotalTotal();
+            $("#totP").val($("#totalPagar").text());
+            $("#transadult").val($("#transporadult").text().substring(1, $("#transporadult").text().length));
+            $("#transchild").val($("#transporechil").text().substring(1, $("#transporechil").text().length));
+            $("#formula").attr('action', '<?php echo $data['rootUrl']; ?>admin/reservas/pago');
+            $("#formula").attr('target', '_blank');
+            var hilo = setInterval("estadoPago()", 5000);
+            $("#formula").submit();
+        }
+    }
+
+    function activarenvioPago() {
+        if ($("#enviar_escondido").val() == 1) {
+            $("#enviar_escondido").val(0);
+            irApagar();
+        }
+    }
+    $("#enviarF").click(function () {
+        if (validarFomulario()) {
+            if ($("#enviar_escondido").val() == 1) {
+                $("#enviar_escondido").val(0);
+                irApagar();
+            } else {
+                registrarCliente();
+            }
+        }
+    });
+    function validarFomulario() {
+        var msError = '';
+        if (trim($("#idCliente").val()) == '') {
+            if (trim($("#firstname1").val()) == '') {
+                msError = '- Enter the first name of the passenger';
+                alert(msError);
+                $("#leader").focus();
+                return false;
+            }
+
+            if (trim($("#lastname1").val()) == '') {
+                msError = '- Enter the last name of the passenger';
+                alert(msError);
+                $("#leader").focus();
+                return false;
+            }
+
+        }
+
+//    if(trim($("#id_agency").val())!='-1' && trim($("#id_agency").val()) != ''){
+//        if(trim($("#uagency").val()) == '' ){
+//            msError = '- Enter employee data Agency';
+//            alert(msError);
+//            $("#uagency").focus();
+//            return false;
+//        }
+//    }
+
+        var num = document.getElementsByName('canal').length
+        for (var i = 0; i < num; i++) {
+            if (document.getElementsByName('canal').item(i).checked) {
+                canal = document.getElementsByName('canal').item(i).value;
+            }
+        }
+        if (canal == 0) {
+            msError = '- Select the channel through which came the reservation.';
+            alert(msError);
+            $("#calan_phone").focus();
+            return false;
+        }
+
+        if (trim($("#trip_no").val()) == '') {
+            msError = '- Select the trip';
+            alert(msError);
+            $("#trip_no").focus();
+            return false;
+        }
+        if (trim($("#id_p1").val()) == '' && trim($("#ext_from1").val()) == '0') {
+            msError = '- Enter  pickup of ONE WAY';
+            alert(msError);
+            $("#pickup1").focus();
+            return false;
+        }
+        if (trim($("#id_dropoff1").val()) == '' && trim($("#ext_to1").val()) == '0') {
+            msError = '- Enter  dropoff of ONE WAY';
+            alert(msError);
+            $("#dropoff1").focus();
+            return false;
+        }
+
+
+        if (document.getElementById('roundtrip').checked) {
+            if (trim($("#trip_no2").val()) == '') {
+                msError = '- Select the return trip';
+                alert(msError);
+                $("#trip_no2").focus();
+                return false;
+            }
+            if (trim($("#id_pickup2").val()) == '' && trim($("#ext_from2").val()) == '0') {
+                msError = '- Enter  pickup of ROUND TRIP';
+                alert(msError);
+                $("#pickup2").focus();
+                return false;
+            }
+            if (trim($("#id_dropoff2").val()) == '' && trim($("#ext_to2").val()) == '0') {
+                msError = '- Enter  dropoff of ROUND TRIP';
+                alert(msError);
+                $("#dpoff2").focus();
+                return false;
+            }
+
+        }
+        var tipo_pago = 0;
+        var num = document.getElementsByName('opcion_pago').length
+        for (var i = 0; i < num; i++) {
+            if (document.getElementsByName('opcion_pago').item(i).checked) {
+                tipo_pago = document.getElementsByName('opcion_pago').item(i).value;
+            }
+        }
+        if (tipo_pago == 0) {
+            msError = '- Select the type of payment';
+//        alert(msError);
+//        return false;
+        }
+
+
+        return true;
+    }
+    $('#btn-cancel1').click(function () {
+        window.location = '<?php echo $data['url_back']; ?>';
+    });
+    function trim(myString) {
+        return myString.replace(/^\s+/g, '').replace(/\s+$/g, '')
+    }
+
+    function CalcularTotal(pax_1, pax_2) {
+
+        var transporChil1 = $("#subtochild1").val();
+        var transporAdul1 = $("#subtoadult1").val();
+        var transporChil2 = $("#subtochild2").val();
+        var transporAdul2 = $("#subtoadult2").val();
+
+        var price_exten01 = $("#price_exten01").val();
+        var price_exten02 = $("#price_exten02").val();
+        var price_exten03 = $("#price_exten03").val();
+        var price_exten04 = $("#price_exten04").val();
+
+
+        var x = $("#price1").val();
+
+//        //actualizacion
+
+        var y = $("#price2").val();
+
+
+        if (x == 1) {
+            var transporChil1 = $("#subtochild1").val();
+            var transporAdul1 = $("#subtoadult1").val();
+        }
+
+        if (x == 2) {
+            var transporChil1 = $("#subtochild22").val();
+            var transporAdul1 = $("#subtoadult22").val();
+        }
+
+//        if (x == 3) {
+//            var transporChil1 = $("#subtochild33").val();
+//            var transporAdul1 = $("#subtoadult33").val();
+//        }
+//        
+        if (y == 1) {
+            var transporChil2 = $("#subtochild2").val();
+            var transporAdul2 = $("#subtoadult2").val();
+        }
+
+        if (y == 2) {
+            var transporChil2 = $("#subtochild4").val();
+            var transporAdul2 = $("#subtoadult4").val();
+        }
+
+
+        if (isNaN(transporChil1)) {
+            transporChil1 = 0;
+        }
+        if (isNaN(transporAdul1)) {
+            transporAdul1 = 0;
+        }
+        if (isNaN(transporChil2)) {
+            transporChil2 = 0;
+        }
+        if (isNaN(transporAdul2)) {
+            transporAdul2 = 0;
+        }
+        if (isNaN(price_exten01)) {
+            price_exten01 = 0;
+        }
+        if (isNaN(price_exten02)) {
+            price_exten02 = 0;
+        }
+        if (isNaN(price_exten03)) {
+            price_exten03 = 0;
+        }
+        if (isNaN(price_exten04)) {
+            price_exten04 = 0;
+        }
+
+        //alert(transporChil1+', '+transporAdul1+', '+transporChil2+', '+transporAdul2+', '+price_exten01+', '+price_exten02+', '+price_exten03+', '+price_exten04);
+        var price_exten = parseFloat(price_exten01) + parseFloat(price_exten02) + parseFloat(price_exten03) + parseFloat(price_exten04);
+        //parseFloat(transporAdul2)
+        //parseFloat(transporChil2)
+
+        //if round trip checked
+
+//        if ($("#id_tipo_ticket").val() === "2") {
+//
+//            var transadult = ((parseFloat(transporAdul1) + parseFloat(transporAdul2)) * pax_1);
+//
+//            var transchild = ((parseFloat(transporChil1) + parseFloat(transporChil2)) * pax_2);
+//
+//        }
+//
+//        //if oneway checked
+//        if ($("#id_tipo_ticket").val() === "1") {
+//
+//            var transadult = (parseFloat(transporAdul1) + 0) * pax_1;
+//            var transchild = (parseFloat(transporChil1) + 0) * pax_2;
+//
+//        }
+
+        var transadult = (parseFloat(transporAdul1) + parseFloat(transporAdul2)) * pax_1;
+        var transchild = (parseFloat(transporChil1) + parseFloat(transporChil2)) * pax_2;
+
+        var totalA = parseFloat(transadult) + (parseFloat(price_exten) * pax_1);
+        var totalC = parseFloat(transchild) + (parseFloat(price_exten) * pax_2);
+
+//        alert(pax_1);
+        var totalP = totalA + totalC;
+//        alert(totalP);
+//        exit();
+        $("#totalPagar2").text(totalP.toFixed(2));
+        $("#extenadult").text('$' + (price_exten * pax_1).toFixed(2));
+        $("#extenchil").text('$' + (price_exten * pax_2).toFixed(2));
+        $("#transporadult").text('$' + transadult.toFixed(2));
+        $("#transporechil").text('$' + transchild.toFixed(2));
+        $("#subtoadult").text('$' + (totalA / parseFloat($("#pax").val())).toFixed(2));
+        $("#transporechil").text('$' + transchild.toFixed(2));
+        if (parseFloat($("#pax2").val()) <= 0) {
+            $("#subtochild").text('$0.00');
+        } else {
+            $("#subtochild").text('$' + (totalC / parseFloat($("#pax2").val())).toFixed(2));
+        }
+        return totalP;
+
+
+    }
+
+    function comision() {
+
+        var id_agency = $('#id_agency').val();
+        var type_rate = $('#type_rate').val();
+
+        if (id_agency == '-1') {
+            id_agency = -1;
+            type_rate = 0;
+
+            return 0;
+        }
+        if (type_rate == '1') {
+
+            $("#comision").val(0);
+
+        }
+        var pax_1 = $('#pax').val();
+        var pax_2 = $('#pax2').val();
+        var total;
+        if (pax_1 == "") {
+            pax_1 = 0;
+        }
+        if (pax_2 == "") {
+            pax_2 = 0;
+        }
+
+        var totalP = CalcularTotal(pax_1, pax_2);
+        if (totalP > 0) {
+
+            var transporChil1 = $("#subtochild1").val();
+            var transporAdul1 = $("#subtoadult1").val();
+            var transporChil2 = $("#subtochild2").val();
+            var transporAdul2 = $("#subtoadult2").val();
+            var porc_comi1 = $("#valorcomision01").val();
+            var porc_comi2 = $("#valorcomision02").val();
+            if (porc_comi2 != 0) {
+                var porc_comiEx = (parseFloat(porc_comi1) + parseFloat(porc_comi2)) / 2;
+                $("#comision").val((parseFloat(porc_comi1) + parseFloat(porc_comi2) + parseFloat(porc_comiEx)) / 2);
+            } else {
+                var porc_comiEx = porc_comi1;
+                $("#comision").val(porc_comi1);
+            }
+            var transpor1 = (parseFloat(transporChil1) * parseFloat(pax_2)) + (parseFloat(transporAdul1) * parseFloat(pax_1));
+            var transpor2 = (parseFloat(transporChil2) * parseFloat(pax_2)) + (parseFloat(transporAdul2) * parseFloat(pax_1));
+            var transporEx = parseFloat(totalP) - (parseFloat(transpor1) + parseFloat(transpor2));
+            var comiT1 = parseFloat(transpor1) * parseFloat(porc_comi1) / 100;
+            var comiT2 = parseFloat(transpor2) * parseFloat(porc_comi2) / 100;
+
+            if (transporEx > 0) {
+                var comiEx = parseFloat(transporEx) * parseFloat(porc_comiEx) / 100;
+            } else {
+                var comiEx = 0;
+            }
+            var comi = parseFloat(comiT1) + parseFloat(comiT2) + parseFloat(comiEx);
+            //alert(comi);
+            $("#totalComision").text(comi.toFixed(2));
+            $("#totalcom").val(comi);
+            $("#totalPagar").text(Math.ceil(totalP).toFixed(2));
+            //alert(subtotalAdulto+', '+subtotalninio+', '+totalP+','+transporChil1+', '+transporAdul1+', '+transporChil2+', '+transporAdul2+', '+porc_comi1+', '+porc_comi2+', '+transpor1+', '+transpor2+', '+transporEx+', '+comiT1+', '+comiT2+', '+porc_comi2+', '+comiEx+', '+comi);
+
+        } else {
+
+            var comi = 0;
+        }
+        return comi;
+    }
+
+    function CalcularTotalTotal() {
+
+        var opcion = $("#op_pago_id1").val();
+        var org = typeof (org) != 'undefined' ? org : 0;
+        var pax = $('#pax').val();
+        var pax2 = $('#pax2').val();
+        if (pax2 == "") {
+            pax2 = 0;
+        }
+        if (pax == "") {
+            pax = 0;
+        }
+
+        var comi = 0/*comision()*/;
+
+        var full = CalcularTotal(pax, pax2) + comi;
+
+        var balance = full - comi;
+        var disponible = $("#disponible").val();
+        var agency = $("#id_agency").val();
+        var pagado = <?php echo $pagado; ?>;
+        var otheramount = 0;
+        //alert(full);
+
+        var tipo_pago = 0;
+        var prepago = 0;
+
+        var num = document.getElementsByName('opcion_pago').length;
+        for (var i = 0; i < num; i++) {
+            if (document.getElementsByName('opcion_pago').item(i).checked) {
+                tipo_pago = document.getElementsByName('opcion_pago').item(i).value;
+            }
+        }
+
+        tipo_pago = $("#op_pago_id option:selected").val();//Collect on Board
+        /***************************************************/
+        prepago = $("#opcion_pago_2 option:selected").val();//pred paid
+
+        var tipo_saldo = $('#opcion_pago_saldo').val();
+        //Validar otheramount
+        var error = "";
+        error += validateNumber($("#otheramount").val(), 'Other Amount', true);
+        if (error == "") {
+            otheramount = $("#otheramount").val();
+        } else {
+            otheramount = 0;
+        }
+        var apagar = full;
+        if (tipo_saldo == 2) {
+            apagar = balance;
+        }
+
+        //SUMAMOS VALOR EXTRA
+        error = "";
+        error += validateNumber($("#extra").val(), 'Extra', true);
+        var extra = 0;
+        if (error == "") {
+            extra = $("#extra").val();
+        }
+        //RESTAMOS DESCUENTO DE %
+        error = "";
+        error += validateNumber($("#descuento").val(), 'Descuento', true);
+        var desc_porc = 0;
+        if (error == "") {
+            desc_porc = $("#descuento").val();
+        }
+        //RESTAMOS DESCUENTO DE $
+        error = "";
+        error += validateNumber($("#descuento_valor").val(), 'Descuento Valor', true);
+        var desc_valor = 0;
+        if (error == "") {
+            desc_valor = $("#descuento_valor").val();
+        }
+        /////////////////////////////////////////
+        var pagado = <?php echo $pagado; ?>;
+
+        var opcion = $("#op_pago_id1").val();
+
+        //opcion add payment   codigo de envio al controlador para aumento de cargos
+        document.getElementById('opc_ap').value = opcion;
+
+        var pay_amount = $("#pay_amount").val();
+
+        var paid_driver = $("#paid_driver").val();
+
+        var pago_driver = $("#pago_driver").val();
+
+        var total_pagar = $("#totalPagar").val();
+
+        var saldoXpagar = $("#saldoporpagar").val();
+
+        var otheramount2 = $("#otheramount").val();
+
+
+
+        //////////////////////////////////////////
+        apagar = parseFloat(apagar) + parseFloat(extra) - parseFloat((full * desc_porc) / 100) - parseFloat(desc_valor);
+
+        apagar = apagar;
+<?php
+if ($reserva->id < 17670) {
+    echo "var fee = apagar*0.03;";
+} else {
+    echo "var fee = apagar*0.04;";
+}
+?>
+
+        //alert(tipo_pago);
+        var totalPax = parseFloat(pax) + parseFloat(pax2);
+        $("#totalComision").text(comi.toFixed(2));
+        //CREDIT VOUCHER
+        if (tipo_pago == 5) {
+            if (disponible - full < 0) {
+                // alert('tipo 5');
+                /*alert('Your available credit is less than the total amount to be paid');
+                 
+                 $("#opcion_pago").attr("checked",false);
+                 $("#opcion_saldo1").attr('checked',false);
+                 $("#opcion_saldo2").attr('checked',false);
+                 $("#opcion_saldo2").attr('disabled',false);
+                 $("#opcion_saldo1").attr('disabled',false);*/
+                $("#opcion_saldo2").attr('checked', true);
+                $("#opcion_saldo1").attr('disabled', true);
+                $("#opcion_saldo2").attr('disabled', false);
+                $("#opcion_pago_saldo").val('2');
+                /*$("#totalPagar").text((balance).toFixed(2));
+                 $("#totaltotal").text((balance).toFixed(2));*/
+
+
+                var totalbalance = 0.00;
+//                $("#totalPagar").text((apagar).toFixed(2));
+//                $("#totaltotal").text((apagar).toFixed(2));
+                var cv = 0;
+
+                $("#saldoporpagar").val((cv).toFixed(2));
+                $("#paid_driver").val((cv).toFixed(2));
+                $("#balance_due").val((cv).toFixed(2));
+
+
+                var fees = parseFloat($("#temp").val());
+
+                var saldo_porpagar = <?php echo $saldoxPagar; ?>;
+
+                var prep = parseFloat($("#pred_paid_amountt").val());
+
+                var coll = parseFloat($("#paid_drivert").val());
+
+                $("#tot_amount_paid").val((prep).toFixed(2));
+
+                var pamt = document.getElementById('pay_amount').value;
+
+                document.getElementById('totalbalance').value = totalbalance;
+
+
+                if (pamt % 1 == 0) {
+
+                    //alert("Es un numero Entero");   
+
+                    $("#totalPagar").text((apagar).toFixed(2));
+
+                    $("#totaltotal").text(((apagar) - (pay_amount)).toFixed(2));
+
+                    $("#agency_balance_due").val(((apagar) - (pay_amount)).toFixed(2));
+
+
+                } else {
+
+                    //alert("Es un numero decimal");                           
+
+                    //alert(saldo_porpagar);
+
+                    var part_entera = Math.floor(pamt);
+
+                    //alert(part_entera);                       
+
+                    var pd = (pamt - part_entera);
+
+
+                    var part_decimal = pd.toFixed(2);
+
+                    //alert(part_decimal);
+
+                    var etb5 = parseFloat(part_entera);
+
+                    var etb6 = parseFloat(part_decimal);
+
+                    var toti7 = parseFloat(etb6 + saldo_porpagar);
+
+                    //alert(toti7);
+
+                    //$("#totalPagar").text((toti7).toFixed(2));
+
+                    //SELECT SUM(FLOOR(pagado)) FROM reservas_pago WHERE id_reserva='42546' AND pago='PRED-PAID';
+
+
+
+                    var kl = <?php echo $pago_prepaid; ?>;
+
+                    $("#totalPagar").text((apagar + kl).toFixed(2));
+
+                    $("#totaltotal").text(((apagar + kl) - (pay_amount)).toFixed(2));
+
+                    $("#agency_balance_due").val(((apagar + kl) - (pay_amount)).toFixed(2));
+
+
+                }
+
+
+
+            } else {
+
+                $("#opcion_saldo2").attr('checked', true);
+                $("#opcion_saldo1").attr('disabled', true);
+                $("#opcion_saldo2").attr('disabled', false);
+                $("#opcion_pago_saldo").val('2');
+
+                /*$("#totalPagar").text((balance).toFixed(2));
+                 $("#totaltotal").text((balance).toFixed(2));*/
+
+
+
+//                $("#totalPagar").text((apagar).toFixed(2));//               
+//                
+//                $("#totaltotal").text((apagar).toFixed(2));
+
+                $("#totalPagar").text((apagar).toFixed(2));
+
+                $("#totaltotal").text(((apagar) - (pay_amount)).toFixed(2));
+
+                $("#agency_balance_due").val(((apagar) - (pay_amount)).toFixed(2));
+
+//                $("#totalPagar").text((apagar).toFixed(2));
+//                $("#totaltotal").text((apagar).toFixed(2));
+//                
+
+                $("#saldoporpagar").val(((cv)).toFixed(2));
+                $("#paid_driver").val((cv).toFixed(2));
+                $("#balance_due").val((cv).toFixed(2));
+
+                var prep = parseFloat($("#pred_paid_amountt").val());
+
+                var coll = parseFloat($("#paid_drivert").val());
+
+                $("#tot_amount_paid").val((prep + coll).toFixed(2));
+
+
+
+            }
+
+
+        } else {
+
+            $("#opcion_saldo2").attr('disabled', false);
+
+            $("#opcion_saldo1").attr('disabled', false);
+
+            //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< CREDIT CARD WITH FEE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+            if (tipo_pago == 3) {
+
+//               alert('hola');
+//               exit();
+//                setTimeout(function () {
+//                            
+//                            $('#btn_Other').click();   
+//
+//                }, 100);
+//        
+
+
+                document.getElementById('op_pago_id1').value = 0;
+
+                //alert('hola');
+
+                var tap = parseFloat($("#tot_amount_paid").val());
+
+                var prep = parseFloat($("#pred_paid_amountt").val());
+
+                var coll = parseFloat($("#paid_drivert").val());
+
+                if (coll > 0) {
+
+                    $("#paid_driver").val((coll).toFixed(2));
+
+                }
+
+                var pdrv = parseFloat($("#paid_driver").val());
+
+                var saldo_porpagar = <?php echo $saldoxPagar; ?>;
+
+                var fee1 = apagar * 0.04;
+
+                var fee2 = apagar + fee1;
+
+                var fees = parseFloat($("#temp").val());
+
+                var kps = (apagar + fees);
+
+                var kps2 = (apagar + fees);
+
+                // var balance = (kps) - (paid_driver) - (pay_amount);
+
+                var balance = (kps) - (tap);
+
+                var totalbalance1 = (balance * 0.04);
+
+
+
+//                alert(totalbalance);
+//                exit();
+
+                //var agencybalance = (kps2) - (paid_driver) - (pay_amount);
+
+                var agencybalance = (kps2) - (tap);
+
+                var totalagencybalance = agencybalance * 0.04;
+
+
+//               if (otheramount > 0) {
+//                   
+//               var paid_driver = document.getElementById('paid_driver').value;
+//
+//               var dupli3 = document.getElementById('otheramount').value;                 
+//
+//               document.getElementById('saldoporpagar').value = dupli3;                   
+//
+//               $("#balance_due").val(((dupli3) - (paid_driver)).toFixed(2));  
+//                   
+////                    
+////                    alert('hola');
+//////                    $("#saldoporpagar").val((((saldo_porpagar) - pay_amount)).toFixed(2));
+//////                    $("#balance_due").val(((saldo_porpagar - pay_amount) - (paid_driver)).toFixed(2));
+////                    
+//////                    var bdch = parseFloat($("#balance_due").val());
+//////                    var porcsaldo_porpagar = bdch * 0.04;
+//////                    var tspp = apagar + porcsaldo_porpagar;
+//////
+//////                    $("#saldoporpagar").val((tspp).toFixed(2));
+//////                    $("#totalPagar").text((tspp).toFixed(2));
+//////                    $("#totaltotal").text((fee2).toFixed(2));
+//////
+//////
+//////                    $("#balance_due").val(((tspp) - (paid_driver) - (pay_amount)).toFixed(2));
+//////
+//////                    $("#agency_balance_due").val((((tspp) - (paid_driver)) - (pay_amount)).toFixed(2));
+//////                    
+//                  }
+
+                if (pdrv == 0 && otheramount === 0) {
+
+
+
+                    var tap = parseFloat($("#tot_amount_paid").val());
+                    var bdch = parseFloat($("#balance_due").val());
+
+                    var porcsaldo_porpagar = bdch * 0.04;
+                    var tspp = apagar + porcsaldo_porpagar;
+
+                    $("#saldoporpagar").val((tspp + fees).toFixed(2));
+                    $("#totalPagar").text((apagar).toFixed(2));
+                    $("#totaltotal").text((apagar + fees + totalbalance1).toFixed(2));
+                    //$("#balance_due").val(((apagar + fees+ totalbalance1) -  (tap)).toFixed(2));   
+                    $("#balance_due").val((tspp + fees).toFixed(2));
+                    $("#agency_balance_due").val(((apagar) - (tap)).toFixed(2));
+
+                    document.getElementById('totalbalance').value = totalbalance1;
+
+
+                }
+
+
+                if (pdrv === 0 && otheramount > 0) {
+
+
+                    //var dupliam = document.getElementById('saldoporpagar').value;
+
+                    // document.getElementById('otheramount').value = dupliam;
+
+//                    var dup = document.getElementById('balance_due').value; 
+//        
+//                    //var bdch = parseFloat($("#balance_due").val());
+//                    
+////                    var other = parseFloat($("#otheramount").val());
+////                    var salpag = 
+//                   
+//                    var psp = dup * 0.04;
+//                    
+//                    var pbd = (dup + psp);             
+
+                    //document.getElementById('saldoporpagar').value = dupliam;
+
+                    //document.getElementById('balance_due').value = pbd;
+                    //$("#saldoporpagar").val((tspp).toFixed(2));
+//                    $("#totalPagar").text((apagar + fees).toFixed(2));
+//                    $("#totaltotal").text((apagar + fees + totalbalance1).toFixed(2));
+                    //$("#balance_due").val((pbd).toFixed(2));               
+//                    $("#agency_balance_due").val(((apagar+fees) - (tap)).toFixed(2)); 
+//                    
+//                    document.getElementById('totalbalance').value = totalbalance1;    
+                    var tap = parseFloat($("#tot_amount_paid").val());
+                    var bdch = parseFloat($("#balance_due").val());
+
+                    var porcsaldo_porpagar = bdch * 0.04;
+                    var tspp = apagar + porcsaldo_porpagar;
+                    var pbd = bdch + porcsaldo_porpagar;
+                    $("#totalPagar").text((apagar).toFixed(2));
+                    $("#totaltotal").text((apagar).toFixed(2));
+                    //$("#balance_due").val(((apagar + fees+ totalbalance1) -  (tap)).toFixed(2));   
+
+                    $("#balance_due").val((pbd).toFixed(2));
+
+                    $("#agency_balance_due").val(((apagar) - (tap)).toFixed(2));
+
+                    document.getElementById('totalbalance').value = totalbalance1;
+
+                }
+
+                var bdch = parseFloat($("#balance_due").val());
+
+                var other_amount = parseFloat($("#otheramount").val());
+
+
+                if ((pdrv > 0) && (bdch > 0) && (other_amount > 0)) {
+
+                    //var dupli3 = document.getElementById('otheramount').value;                 
+
+                    //document.getElementById('saldoporpagar').value = dupli3;  
+
+                    var paid_driver = document.getElementById('paid_driver').value;
+
+                    if (paid_driver % 1 == 0) {
+
+                        //valor entero
+
+                        if (paid_driver > 0) {
+                            $("#totalPagar").text(((apagar + fees)).toFixed(2));
+                        } else {
+                            $("#totalPagar").text(((apagar)).toFixed(2));
+                        }
+
+                        var paid_driver = parseFloat($("#paid_driver").val());
+
+                        var bdch = parseFloat($("#balance_due").val());
+
+
+                        var other = parseFloat($("#otheramount").val());
+
+                        var salpagar = parseFloat($("#saldoporpagar").val());
+
+
+
+                        var porcsaldo_porpagar = bdch * 0.04;
+
+                        var salbd = ((salpagar) + (porcsaldo_porpagar)).toFixed(2);
+
+
+
+                        var bdpd = ((salbd) - (paid_driver)).toFixed(2);
+
+
+
+                        document.getElementById('saldoporpagar').value = salbd;
+
+                        document.getElementById('balance_due').value = bdpd;
+
+
+                    } else {
+
+                        //valor decimal
+                        var paid_driver = parseFloat($("#paid_driver").val());
+
+                        if (paid_driver > 0) {
+                            $("#totalPagar").text(((apagar + fees)).toFixed(2));
+                        } else {
+                            $("#totalPagar").text(((apagar)).toFixed(2));
+                        }
+
+
+
+                        var duplicado = parseFloat($("#otheramount").val());
+
+                        //var totalcargo = document.getElementById('tot_charge').value;
+
+                        var totalcargo = parseFloat($("#tot_charge").val());
+
+                        var tap = parseFloat($("#tot_amount_paid").val());
+
+                        var tnk = parseFloat($("#totalPagar").text());
+
+                        var agbd = tnk - tap;
+
+                        //var n = Math.floor(paid_driver);
+
+                        //var parte_decimal = ((paid_driver - n).toFixed(2));     
+
+
+//                        var etb = parseFloat(totalcargo);
+//
+//                        var etb2 = parseFloat(duplicado);
+//
+//                        var toti3 = parseFloat(etb2 + etb);
+//
+//                        $("#etb").val((toti3).toFixed(2));
+//
+//
+//                        var sp = toti3.toFixed(2);
+//
+//
+//                        document.getElementById('saldoporpagar').value = sp;
+
+
+
+
+                        var amount_to_collect = (parseFloat(duplicado) + parseFloat(totalcargo)).toFixed(2);
+
+
+
+
+
+                        var bdch = parseFloat($("#balance_due").val());
+
+                        var salpagar = parseFloat($("#saldoporpagar").val());
+
+                        var porcsalpagar = parseFloat(bdch * 0.04).toFixed(2);
+
+                        //var bala = (parseFloat(bdch) + parseFloat(porcsalpagar)).toFixed(2);  
+
+
+
+                        var salbd = (parseFloat(amount_to_collect) + parseFloat(porcsalpagar)).toFixed(2);
+
+
+
+                        document.getElementById('saldoporpagar').value = salbd;
+
+
+                        $("#agency_balance_due").val((agbd).toFixed(2));
+
+
+                        setTimeout(function () {
+
+                            //click al boton Balance_Due para hacer el calculo de passenger Balance Due  
+                            $('#btnBD').click();
+
+
+                        }, 100);
+
+
+                    }
+
+                }
+
+                var bdch = parseFloat($("#balance_due").val());
+
+                var other_amount = parseFloat($("#otheramount").val());
+
+                // si paid_driver es mayor que cero y passenger Balance Due es mayor que cero
+
+                if ((pdrv > 0) && (bdch > 0) && (other_amount === 0)) {
+
+//                   alert('hola');
+//                   exit();
+
+
+                    var tap = parseFloat($("#tot_amount_paid").val());
+                    var bdch = parseFloat($("#balance_due").val());
+
+                    var porcsaldo_porpagar = bdch * 0.04;
+                    var tspp = apagar + porcsaldo_porpagar;
+
+                    $("#saldoporpagar").val((tspp + fees).toFixed(2));
+                    $("#totalPagar").text((tspp + fees).toFixed(2));
+                    $("#totaltotal").text((tspp + fees).toFixed(2));
+                    //$("#balance_due").val(((apagar + fees+ totalbalance1) -  (tap)).toFixed(2));   
+                    //$("#balance_due").val((tspp).toFixed(2));
+                    $("#agency_balance_due").val(((tspp + fees) - (tap)).toFixed(2));
+
+                    document.getElementById('totalbalance').value = totalbalance1;
+
+                    setTimeout(function () {
+
+                        //click al boton Balance_Due para hacer el calculo de passenger Balance Due  
+                        $('#btnBD').click();
+
+
+                    }, 100);
+
+
+
+
+                }
+
+//                var bdch = parseFloat($("#balance_due").val());
+//                
+//                var other_amount = parseFloat($("#otheramount").val());
+//                 
+//                if((pdrv > 0) && (bdch > 0) && (other_amount > 0)) {
+//                    
+////                    alert('hola');
+////                    exit();
+//                    
+//                    
+//                }
+
+//                var bdch = parseFloat($("#balance_due").val()); 
+//                
+//                if((pdrv > 0) && (bdch == 0) ) {
+//
+//                    var tap = parseFloat($("#tot_amount_paid").val());  
+//
+//                    var bdch = parseFloat($("#balance_due").val()); 
+//
+//                    $("#saldoporpagar").val((apagar + fees + totalbalance1).toFixed(2));            
+//
+//                    $("#totalPagar").text((apagar + fees + totalbalance1).toFixed(2));
+//
+//                    $("#totaltotal").text((apagar + fees + totalbalance1).toFixed(2));                                
+//
+//                    $("#balance_due").val(((apagar + fees + totalbalance1) - (tap)).toFixed(2));
+//
+//
+//                    //agregamos cargo de passenger Balance due a Total Net Fare                   
+//
+//
+//                    $("#agency_balance_due").val(((apagar + fees + totalbalance1) - (tap)).toFixed(2));
+//
+//                    document.getElementById('totalbalance').value = totalbalance1;             
+//                              
+//                }
+
+
+//                if (otheramount > 0) {
+
+
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+//                    var tap = parseFloat($("#tot_amount_paid").val());
+//                    var bdch = parseFloat($("#balance_due").val());
+//                    
+//                    var porcsaldo_porpagar = bdch * 0.04;
+//                    var tspp = apagar + porcsaldo_porpagar;
+//
+//                    $("#saldoporpagar").val((tspp + fees).toFixed(2));
+//                    $("#totalPagar").text((apagar + fees).toFixed(2));
+//                    $("#totaltotal").text((apagar + fees + totalbalance1).toFixed(2));
+//                    $("#balance_due").val(((apagar + fees+ totalbalance1) -  (tap)).toFixed(2));               
+//                    $("#agency_balance_due").val(((apagar+fees) - (tap)).toFixed(2)); 
+//                    
+//                    document.getElementById('totalbalance').value = totalbalance1; 
+
+
+
+
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//                    if (paid_driver % 1 == 0) {
+//                        
+//                    var tnf = document.getElementById('totalPagar').value;
+//                    
+//                    //var paid_driver = document.getElementById('paid_driver').value;
+//                    //alert("Es un numero entero");
+//                    //exit();
+//
+//                    var dupli3 = document.getElementById('otheramount').value;
+//
+//                    document.getElementById('saldoporpagar').value = dupli3;                    
+//                    
+//
+//                    $("#balance_due").val(((dupli3) - (paid_driver)).toFixed(2));
+//                    
+//                    var paid_driver = parseFloat($("#paid_driver").val());
+//                    
+//                    var spag = parseFloat($("#saldoporpagar").val());
+//
+//                    var bdch = parseFloat($("#balance_due").val());
+//                    
+//                    var psp = ((spag)+(bdch * 0.04)).toFixed(2);
+//                    
+//                    var tbd = ((psp)-(paid_driver)).toFixed(2);
+//
+//                    document.getElementById('saldoporpagar').value = psp;
+//                    
+//                    document.getElementById('balance_due').value = tbd;
+//                    
+//                    
+//                                    //$("#totalPagar").text((tnf).toFixed(2));
+//
+//
+//                                    //$("#totaltotal").text((tnf).toFixed(2));                   
+//
+//
+//                                    //$("#agency_balance_due").val((((psp) - (paid_driver)) - (pay_amount)).toFixed(2));
+//
+//
+//                    } else {
+//
+////                       alert("Es un numero decimal");          
+////                       exit();
+//
+//
+//
+//                        var paid_driver = document.getElementById('paid_driver').value;
+//
+//                        var n = Math.floor(paid_driver);
+//
+//                        var parte_decimal = (paid_driver - n);
+//
+//
+//
+//                        var duplicado = document.getElementById('otheramount').value;
+//
+//                        var etb = parseFloat(parte_decimal);
+//
+//                        var etb2 = parseFloat(duplicado);
+//
+//                        var toti4 = parseFloat(etb2 + etb);
+//                        
+//                        alert(toti4);
+//                        exit();
+//
+//                        $("#etb").val((toti4).toFixed(2));
+//
+//
+//                        var sp = toti4.toFixed(2);
+//
+//
+//                        document.getElementById('saldoporpagar').value = sp;
+//
+//                        $("#balance_due").val(((sp) - (paid_driver)).toFixed(2));
+//
+//                        setTimeout(function () {
+//
+//                            $('#paid_driver').click();
+//
+//                        }, 0.001);
+//
+//
+//                    }
+
+
+//                }
+
+
+
+//            } else {
+//                
+//                if ((otheramount > 0) && (pay_amount == 0)) {
+//                    var fees = parseFloat($("#temp").val());
+//                    $("#saldoporpagar").val(((((apagar) - pay_amount) + fees)).toFixed(2));
+//                    $("#balance_due").val(((apagar - pay_amount + fees) - (paid_driver)).toFixed(2));
+//                    
+//                  
+//                }
+//                if((otheramount > 0) && (pay_amount > 0)) {
+//                     
+//                    var x = (100*paid_driver)/104;
+//                    
+//                    var z_u = (paid_driver-x);
+//                    
+//     
+//                    $("#saldoporpagar").val((z_u+x).toFixed(2));
+//                    $("#balance_due").val(((z_u+x) - paid_driver).toFixed(2));
+//                    
+//                   
+//                }   
+//                
+//                if(otheramount > 0 && paid_driver == 0 && pay_amount == 0){
+//                    
+//               $("#saldoporpagar").val((apagar).toFixed(2));
+//               $("#totalPagar").text((apagar).toFixed(2));
+//               $("#totaltotal").text((apagar).toFixed(2));
+//               $("#balance_due").val(((apagar - pay_amount) - (paid_driver)).toFixed(2));
+//                    
+//                }
+
+
+                //alert('tipo3');
+                //apagar = parseFloat(apagar) + parseFloat(fee);
+                //quitamos cargo para reajustar valores.
+                //apagar = parseFloat(apagar);
+
+//                $("#totalPagar").text((apagar).toFixed(2));
+//                $("#totaltotal").text((apagar).toFixed(2));
+
+
+//                $("#totalPagar").text((apagar).toFixed(2));
+//                $("#totaltotal").text((apagar).toFixed(2));
+
+
+
+
+            } else {
+
+                //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< tipo 8 CREDIT CARD NO FEE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+//                $("#totalPagar").text((apagar).toFixed(2));
+//                $("#totaltotal").text((apagar).toFixed(2));
+
+
+
+                // document.getElementById('op_pago_id1').value = 0;
+
+
+//                if ((otheramount > 0) && (pay_amount == 0)) {
+//                    var fees = parseFloat($("#temp").val());
+//                    $("#saldoporpagar").val(((((apagar) - pay_amount) + fees)).toFixed(2));
+//                    $("#balance_due").val(((apagar - pay_amount + fees) - (paid_driver)).toFixed(2));
+//                    
+//                  
+//                }
+//                if((otheramount > 0) && (pay_amount > 0)) {
+//                     
+//                    var x = (100*paid_driver)/104;
+//                    
+//                    var z_u = (paid_driver-x);
+//                    
+//     
+//                    $("#saldoporpagar").val((z_u+x).toFixed(2));
+//                    $("#balance_due").val(((z_u+x) - paid_driver).toFixed(2));
+//                    
+//                   
+//                }   
+//                
+//                if(otheramount > 0 && paid_driver == 0 && pay_amount == 0){
+//                    
+//                    var paid_driver2 = document.getElementById('paid_driver').value;
+//                    var clone = document.getElementById('otheramount').value;
+//                   //alert(paid_driver2); 
+//
+//                    var z = (clone)-(paid_driver2);
+//                    //alert(z);
+//                   //$("#saldoporpagar").val((45.00).toFixed(2));
+//                   //$("#totalPagar").text((apagar).toFixed(2));
+//                   //$("#totaltotal").text((apagar).toFixed(2));
+//                  // $("#balance_due").val((z).toFixed(2));
+//               
+//               
+//                    document.getElementById('saldoporpagar').value = clone;
+//                    alert(paid_driver2);
+//                    //document.getElementById('balance_due').value = z; 
+//                    $("#balance_due").val((z).toFixed(2));
+//                    
+//                }
+
+                //var  tcharge = document.getElementById('tot_charge').value;
+
+
+//                setTimeout(function () {
+//                            
+//                            $('#btn_Other').click();   
+//
+//                }, 100);
+
+                var totalbalance = 0.00;
+
+
+                var saldo_porpagar = <?php echo $saldoxPagar; ?>;
+
+                var opcion = $("#op_pago_id1").val();
+
+                var fees = parseFloat($("#temp").val());
+
+                var prep = parseFloat($("#pred_paid_amountt").val());
+
+                var coll = parseFloat($("#paid_drivert").val());
+
+                if (coll > 0) {
+
+                    $("#paid_driver").val((coll).toFixed(2));
+
+                }
+
+
+
+                //$("#saldoporpagar").val((saldo_porpagar + fees).toFixed(2));             
+
+
+
+                //$("#totalPagar").text(((saldo_porpagar + fees)).toFixed(2));
+
+                var paid_driver = document.getElementById('paid_driver').value;
+
+                /////////////////////////////////////////////////////////////////////////////////////////
+                if (paid_driver > 0) {
+//
+//                    alert('hola');
+//                    exit();
+                    
+                    var tap = parseFloat($("#tot_amount_paid").val());
+
+//                    var salpag = ((apagar + fees) - pay_amount);
+                    
+                    var cargoCC = <?php echo $CargoCC; ?>;
+                    
+//                    alert(cargoCC);
+//                    exit();
+                    var cargoCC2 = parseFloat(cargoCC);
+//                    var tf = <?php echo $totaltotalfull; ?>;
+
+//                    var tff = parseFloat(cargoCC) + parseFloat(tf);
+
+                    var paid_driver = document.getElementById('paid_driver').value;
+                    
+                    
+//                    $("#saldoporpagar").val((apagar).toFixed(2));
+
+//                    $("#balance_due").val(((tff) - (paid_driver) - prepaid_amount).toFixed(2));
+                        
+
+                    $("#saldoporpagar").val((apagar + fees + cargoCC2).toFixed(2));
+
+                    $("#balance_due").val(Math.abs(((apagar + fees + cargoCC2) - pay_amount) - paid_driver).toFixed(2));
+
+                    $("#totalPagar").text(((apagar + fees + cargoCC2)).toFixed(2));
+
+                    $("#agency_balance_due").val(((apagar + fees + cargoCC2) - (tap)).toFixed(2));
+                    
+
+                } else {     //paid_driver==0
+
+                    /*si existe un pre Paid Total Net Fare debe ser igual a este pago */
+
+
+                    var cargoCC = <?php echo $CargoCC; ?>;
+
+                    var tf = <?php echo $totaltotalfull; ?>;
+
+                    var tff = parseFloat(cargoCC) + parseFloat(tf);
+
+                    var paid_driver = document.getElementById('paid_driver').value;
+
+                    var prepaid_amount = document.getElementById('pay_amount').value;
+
+
+
+
+
+                    if (pagado != 0) {
+                        ///aquiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+
+                        $("#saldoporpagar").val((tff).toFixed(2));
+
+                        $("#balance_due").val(((tff) - (paid_driver) - prepaid_amount).toFixed(2));
+
+//                        $("#saldoporpagar").val((tff).toFixed(2));
+//
+//                        $("#balance_due").val((((pagado) - pay_amount) - paid_driver).toFixed(2));
+
+                        $("#totalPagar").text(((tff)).toFixed(2));
+
+                        $("#totaltotal").text((tff).toFixed(2));
+
+                        $("#agency_balance_due").val(((pagado) - (tap)).toFixed(2));
+
+                        document.getElementById('totalbalance').value = totalbalance;
+
+                        setTimeout(function () {
+
+                            //click al boton Agency Balance_Due para hacer el calculo de Agency Balance Due  
+                            $('#btnABD').click();
+
+                        }, 100);
+
+
+
+
+                    } else {
+
+                        var tap = parseFloat($("#tot_amount_paid").val());
+
+                        $("#saldoporpagar").val(((apagar + fees) - pay_amount).toFixed(2));
+
+                        //$("#balance_due").val(((apagar)-(coll)).toFixed(2));
+
+                        $("#balance_due").val((((apagar + fees) - pay_amount) - paid_driver).toFixed(2));
+
+                        $("#totalPagar").text(((apagar + fees)).toFixed(2));
+
+                        $("#totaltotal").text((apagar).toFixed(2));
+
+                        $("#agency_balance_due").val(((apagar + fees) - (tap)).toFixed(2));
+
+                        document.getElementById('totalbalance').value = totalbalance;
+
+                        setTimeout(function () {
+
+                            //click al boton Balance_Due para hacer el calculo de passenger Balance Due  
+                            $('#btnABD').click();
+
+                        }, 100);
+                    }
+
+                }
+
+                ////////////////////////////////////////////////////////////////////////////////////////
+                // $("#totaltotal").text((apagar + fees).toFixed(2));
+
+                //$("#balance_due").val(((apagar + fees)-(coll)).toFixed(2));
+
+                //document.getElementById('totalbalance').value = totalbalance;
+
+
+
+//                $("#tot_amount_paid").val((paid_driver + pay_amount).toFixed(2));
+
+                //opcion_pago_2 ---> value = 3
+
+                //var paid_driver = document.getElementById('paid_driver').value;
+
+                if (otheramount > 0) {
+//                    setTimeout(function () {
+//                            
+//                            $('#btn_Other').click();   
+//
+//                    }, 100);            
+
+                    var paid_driver = document.getElementById('paid_driver').value;
+
+
+                    if (paid_driver % 1 === 0) {
+
+//                        alert("Es un numero entero");
+//                        exit();
+                        if (paid_driver > 0) {
+                            $("#totalPagar").text(((apagar + fees)).toFixed(2));
+                        } else {
+                            $("#totalPagar").text(((apagar + fees)).toFixed(2));
+                        }
+
+                        var tap = parseFloat($("#tot_amount_paid").val());
+
+                        var tnk = parseFloat($("#totalPagar").text());
+
+                        var a_b_d = tnk - tap;
+
+                        var dupli3 = document.getElementById('otheramount').value;
+                        //var dupli3 = document.getElementById('saldoporpagar').value;    
+                        document.getElementById('saldoporpagar').value = dupli3;
+                        //ojo debe pasar a saldoporpagar otheramount + cargo 
+
+
+                        $("#balance_due").val(((dupli3) - (paid_driver)).toFixed(2));
+
+                        //$("#agency_balance_due").val((a_b_d).toFixed(2));
+
+                        setTimeout(function () {
+
+                            //click al boton Balance_Due para hacer el calculo de passenger Balance Due  
+                            $('#btnABD').click();
+
+
+                        }, 100);
+
+
+                    } else {
+
+//                        alert("Es un numero decimal");              
+//
+//                        exit();
+                        //$("#totalPagar").text(((apagar)).toFixed(2));
+
+                        if (paid_driver > 0) {
+
+                            $("#totalPagar").text(((apagar + fees)).toFixed(2));
+
+                        } else {
+
+                            $("#totalPagar").text(((apagar + fees)).toFixed(2));
+
+                        }
+
+                        var paid_driver = document.getElementById('paid_driver').value;
+
+                        var tap = parseFloat($("#tot_amount_paid").val());
+
+                        var duplic = document.getElementById('otheramount').value;
+
+                        var tnk = parseFloat($("#totalPagar").text());
+
+                        var totalcargo = document.getElementById('tot_charge').value;
+
+
+                        var agbd = tnk - tap;
+
+
+                        var etb = parseFloat(totalcargo);
+
+                        var etb2 = parseFloat(duplic);
+
+                        var toti3 = parseFloat(etb2 + etb);
+
+                        $("#etb").val((toti3).toFixed(2));
+
+
+                        var sp = toti3.toFixed(2);
+
+
+                        document.getElementById('saldoporpagar').value = sp;
+
+                        //document.getElementById('otheramount').value = sp;
+
+                        $("#balance_due").val(((sp) - (paid_driver)).toFixed(2));
+
+                        $("#agency_balance_due").val((agbd).toFixed(2));
+
+
+
+//                        setTimeout(function () {
+//
+//                                    $('#btn_Other').click();   
+//
+//                        }, 100);
+
+
+
+
+                    }
+
+
+                } else {
+
+                    //var tap = $("#tot_amount_paid").val();  
+
+
+
+                    var totp = $("#totalPagar").text();
+
+
+
+
+
+                    if (pay_amount > totp) {
+
+                        var salp = 0;
+
+                        $("#saldoporpagar").val((salp).toFixed(2));
+                        //$("#paid_driver").val((salp).toFixed(2));
+                        $("#balance_due").val((salp).toFixed(2));
+
+                    }
+
+
+
+                    //$("#balance_due").val((Math.abs((saldo_porpagar + fees) - (pay_amount) - (paid_driver))).toFixed(2));
+                    //$("#balance_due").val((Math.abs((apagar + fees) - (pay_amount) - (paid_driver))).toFixed(2));
+                    //$("#balance_due").val(((apagar + fees) - (tap)).toFixed(2));
+
+
+                    //ATACAR 
+                    //$("#agency_balance_due").val((Math.abs((saldo_porpagar + fees) - (pay_amount) - (paid_driver))).toFixed(2));
+                    //$("#agency_balance_due").val(((apagar+ fees) - (pay_amount) - (paid_driver))).toFixed(2));
+
+
+
+
+                    // $("#agency_balance_due").val(((apagar) -  (tap)).toFixed(2));
+
+                }
+
+                if (opcion == 20 && pay_amount > 0) {
+                    //alert('20');
+
+                    //$("#agency_balance_due").val((Math.abs((saldo_porpagar) - (pay_amount) - (paid_driver))).toFixed(2));
+                    //$("#agency_balance_due").val((Math.abs((apagar + fees) - (pay_amount) - (paid_driver))).toFixed(2));
+                    $("#agency_balance_due").val((((apagar + fees) - (pay_amount) - (paid_driver))).toFixed(2));
+
+
+                }
+
+                if (opcion == 21 && pay_amount > 0) {
+                    //alert('21');
+
+                    //$("#agency_balance_due").val(((Math.abs((saldo_porpagar + fees) - (pay_amount)) - (paid_driver))).toFixed(2));
+
+                    //$("#agency_balance_due").val((((saldo_porpagar) - (paid_driver)) - (pay_amount)).toFixed(2));
+                    //$("#agency_balance_due").val((Math.abs((apagar + fees) - (pay_amount) - (paid_driver))).toFixed(2));
+                    $("#agency_balance_due").val((((apagar + fees) - (pay_amount) - (paid_driver))).toFixed(2));
+
+                }
+
+                if (opcion == 24 && pay_amount == 0) {
+                    //alert('24');
+
+                    //$("#agency_balance_due").val(((Math.abs((saldo_porpagar + fees) - (pay_amount)) - (paid_driver))).toFixed(2));
+
+                    //$("#agency_balance_due").val((Math.abs((apagar + fees) - (pay_amount) - (paid_driver))).toFixed(2));
+                    $("#agency_balance_due").val((((apagar + fees) - (pay_amount) - (paid_driver))).toFixed(2));
+
+                    //$("#agency_balance_due").val((((saldo_porpagar) - (paid_driver)) - (pay_amount)).toFixed(2));
+
+                }
+
+                if (opcion == 25 && pay_amount == 0) {
+                    // alert('25');
+
+                    //$("#agency_balance_due").val(((Math.abs((saldo_porpagar + fees) - (pay_amount)) - (paid_driver))).toFixed(2));
+                    //$("#agency_balance_due").val((Math.abs((apagar + fees) - (pay_amount) - (paid_driver))).toFixed(2));
+                    $("#agency_balance_due").val((((apagar + fees) - (pay_amount) - (paid_driver))).toFixed(2));
+
+                    //$("#agency_balance_due").val((((saldo_porpagar) - (paid_driver)) - (pay_amount)).toFixed(2));
+
+                }
+
+
+
+
+                var tap = document.getElementById('tot_amount_paid').value;
+
+                if (tap == 0) {
+
+                    $("#tot_amount_paid").val((prep + coll).toFixed(2));
+
+                }
+
+                //$("#tot_amount_paid").val((prep + coll).toFixed(2));
+
+                var part_ent = Math.floor(tap);
+
+                var partdeci = (tap - part_ent);
+
+                var part_deci = partdeci.toFixed(2);
+
+                //alert(part_deci);
+
+                $("#PAP2").val((partdeci).toFixed(2));
+
+                // alert(part_deci);
+
+
+
+            }
+        }
+
+        if ($("#fin_calculo").val() == "false") {
+            /**/
+            var diferencia;
+
+            if (otheramount != 0) {
+                diferencia = otheramount - pagado;
+            } else {
+                diferencia = apagar - pagado;
+            }
+            if (diferencia > 0) {
+//                $('#saldoporpagar').html((diferencia).toFixed(2));
+                //$('#saldoporpagar').val((diferencia).toFixed(2));
+//                $('#txtamountpendiente').html('Amount to Collect $');                
+//                $('#txtamountpendiente').css('color', '#F00');
+                $('#Passenger_Balance_Due').html('Passenger Balance Due $');
+                $('#Passenger_Balance_Due').css('color', '#F00');
+
+            } else if (diferencia == 0) {
+//                $('#saldoporpagar').html((diferencia).toFixed(2));
+                //$('#saldoporpagar').val((diferencia).toFixed(2));
+
+//                $('#txtamountpendiente').html('Amount to Collect $');
+//                $('#txtamountpendiente').css('color', '#666666');
+                $('#Passenger_Balance_Due').html('Passenger Balance Due $');
+                $('#Passenger_Balance_Due').css('color', '#666666');
+
+            } else {
+//                $('#saldoporpagar').html((diferencia * -1).toFixed(2));
+               // $('#saldoporpagar').val((diferencia * -1).toFixed(2));
+
+//                $('#txtamountpendiente').html('Amount to Collect $');
+//                $('#txtamountpendiente').css('color', '#00F');
+                $('#Passenger_Balance_Due').html('Passenger Balance Due $');
+                $('#Passenger_Balance_Due').css('color', '#00F');
+            }
+
+            if (tipo_pago == 1 || tipo_pago == 2) {
+                if (diferencia <= 0) {
+                    $('#enviarF').css('display', 'none');
+                    $('#btn-save1').css('display', 'block');
+                    $('#btn-save2').css('display', 'block');
+                } else {
+                    $('#enviarF').css('display', 'block');
+//                $('#btn-save1').css('display','none');
+//                $('#btn-save2').css('display','none');
+                }
+            } else {
+                $('#enviarF').css('display', 'none');
+                $('#btn-save1').css('display', 'block');
+                $('#btn-save2').css('display', 'block');
+            }
+        }
+
+    }
+
+
+    $('#opcion_saldo1, #opcion_saldo2').change(function () {
+        if ($(this).get(0).id == 'opcion_saldo1') {
+            $('#opcion_pago_saldo').val('1');
+        } else if ($(this).get(0).id == 'opcion_saldo2') {
+            $('#opcion_pago_saldo').val('2');
+        }
+        CalcularTotalTotal();
+    });
+
+    $('#opcion_pago_passager, #opcion_pago_agency, #opcion_pago_predpaid_cash,#opcion_pago_complementary,#opcion_pago_CrediFee, #opcion_pago_Cash,#opcion_pago_Voucher').change(function (e) {
+        CalcularTotalTotal();
+    });
+    function estadoTrip() {
+        $("#mensajeTrip").load('<?php echo $data['rootUrl']; ?>admin/reservas/consultatrip');
+    }
+    function estadoPago() {
+        $("#estadoTranssacion").load('<?php echo $data['rootUrl']; ?>transaction/admin/reserva/pago');
+    }
+    function detalles_rastro(id) {
+        $("#conten_rastro").load(encodeURI('<?php echo $data['rootUrl']; ?>admin/reservas/rastro_detalles/' + id));
+
+        $("#dialog_message_rastro").dialog({
+            modal: false,
+            width: 600,
+            buttons: {
+                Ok: function () {
+                    $(this).dialog("close");
+                }
+            }
+        });
+    }
+    $("#bnt-trips").click(function () {
+        var posicion = $(this).position();
+        mosrtarTrips(posicion.left, posicion.top);
+    });
+    function mosrtarTrips(left, top) {
+        $("#dialog_states__trips").dialog({
+            autoOpen: false,
+            width: 300,
+            height: 300,
+            show: {
+                effect: "blind",
+                duration: 1000
+            },
+            hide: {
+                effect: "blind",
+                duration: 1000
+            },
+            position: [left - 260, top + 50],
+        });
+        $("#states__trips_conte").empty().html('<img src="<?php echo $data['rootUrl']; ?>global/images/loading.gif"   width="100px" height="100px" id="gif"/>');
+        $("#states__trips_conte").load('<?php echo $data['rootUrl']; ?>admin/reservas/estado_trips');
+        $("#dialog_states__trips").dialog("open");
+    }
+    $("#bnt-trips").click(function () {
+        var posicion = $(this).position();
+        mosrtarTrips(posicion.left, posicion.top);
+    });
+    function preguntaTrip() {
+        $("#dialog-trip-pregunta").dialog({
+            resizable: false,
+            height: 250,
+            modal: true,
+            buttons: {
+                "YES": function () {
+                    $("#puestosEnUso").load("<?php echo $data['rootUrl']; ?>admin/reservas/ocuparPuestoUsuario/2");
+                    $(this).dialog("close");
+                },
+                'NOT': function () {
+                    $("#puestosEnUso").load("<?php echo $data['rootUrl']; ?>admin/reservas/ocuparPuestoUsuario/4");
+                    $(this).dialog("close");
+                }
+            }
+        });
+    }
+    $("#transporadult").html("$ <?php echo $transporadult; ?>");
+    $("#transporechil").html("$ <?php echo $transporechil; ?>");
+    $("#subtoadult").html("$ <?php echo $subtoadult; ?>");
+    $("#subtochild").html("$ <?php echo $subtochild; ?>");
+    $("#totaltotal").html("$ <?php echo $totaltotal; ?>");
+    $("#extenadult").html("$ <?php echo $reserva->pax * $precioExt; ?>");
+    $("#extenchil").html("$ <?php echo $reserva->pax2 * $precioExt; ?>");
+    $("#disponible").val('<?php echo $disponible; ?>');
+
+    $("#extra").val('<?php echo $reserva->extra_charge; ?>');
+    CalcularTotalTotal();
+
+<?php echo $adaptacion; ?>
+
+<?php if ($reserva->tipo_ticket == 'oneway') { ?>
+
+        //$("#fecha_retorno").attr("disable", true);
+        //$("#from2").attr("disabled",true);
+        //$("#from2").attr("readonly", "readonly");
+        //$("#fecha_retorno").attr("readonly", "readonly");
+        //$("#pickup2").attr("readonly", "readonly");
+        //$("#dropoff2").attr("readonly", "readonly");
+        //$("#arrival2").attr("readonly", "readonly");
+        //$("#to2").attr("readonly", "readonly");
+        //$("#ext_from2").attr("disabled","disabled");
+        //$("#ext_to2").attr("disabled", "disabled");
+        $("#departure2").attr("readonly", "readonly");
+        //$("#room2").attr("readonly", "readonly");
+        //$("#exten3").attr("readonly", "readonly");
+        //$("#exten4").attr("readonly", "readonly");
+        $("#trip_no2").html("");
+        $("#departure2").html("");
+        $("#arrival2").html("");
+<?php } ?>
+    $(function () {
+//    setInterval(function(){
+//        CalcularTotalTotal();
+//        console.log('calculando');
+//    },500);
+        $("#uagency, #agency").change(function () {
+            if (trim($("#uagency").val()).length == 0) {
+                console.log('limpiado');
+                $("#id_auser").val("-1");
+            }
+        });
+    });
+
+
+    var ttt = <?php echo $totaltotal; ?>;
+    $("#totaltotal").html("$ " + (ttt).toFixed(2));
+    $("#totalPagar").html("$ " + (ttt).toFixed(2));
+    var porp = <?php echo $saldoxPagar; ?>;
+    $('#saldoporpagar').html((porp).toFixed(2));
+</script>
+<script>
+
+    var z;
+    function capturar()
+    {
+        var resultado = "ninguno";
+
+        var porNombre = document.getElementsByName("tipo_ticket");
+        // Recorremos todos los valores del radio button para encontrar el
+        // seleccionado
+        for (var i = 0; i < porNombre.length; i++)
+        {
+            if (porNombre[i].checked)
+                resultado = porNombre[i].value;
+
+        }
+
+        //document.getElementById("resultado").innerHTML=" \
+        //Value: "+resultado;
+        z = document.getElementById("resultado").innerHTML = " \ " + resultado;
+
+
+    }
+</script>
+
+<!--<script type="text/javascript">
+    var int=self.setInterval("refresh()",100);
+    function refresh()
+    {
+        location.reload(true);
+    }
+</script>-->
+
+
+<script languague="javascript">
+
+    function ocultarmenu() {
+        div = document.getElementById('menu-bar');
+        div.style.display = 'none';
+    }
+
+</script>
+
+<script languague="javascript">
+
+    function cambiarfondo() {
+
+//    alert('cambio fondo');
+//    exit();
+        $('#header_page').style = "background-image: url('<?php echo $data['rootUrl'] ?>global/img/bg3.jpg');";
+
+    }
+
+</script>
+
+<script type="text/javascript">
+
+    function comprobarScreen()
+    {
+        if (window.screen.availWidth <= 640) {
+            window.parent.document.body.style.zoom = "62%";
+        }
+
+        if (window.screen.availWidth == 800) {
+            window.parent.document.body.style.zoom = "78%";
+        }
+        if (window.screen.availWidth == 1024) {
+            window.parent.document.body.style.zoom = "100%";
+
+        }
+        if (window.screen.availWidth == 1280) {
+            window.parent.document.body.style.zoom = "100%";
+
+        }
+        if (window.screen.availWidth == 1366) {
+            window.parent.document.body.style.zoom = "100%";
+
+        }
+
+        if (window.screen.availWidth > 1366) {
+            window.parent.document.body.style.zoom = "125%";
+//            capturar();
+
+
+
+        }
+    }
+
+</script>
+
+<script type="text/javascript">
+
+    function resetextra()
+    {
+
+        var extra_cargo = document.getElementById('extra').value;
+
+
+        if (extra_cargo === "") {
+
+            document.getElementById('extra').value = '0.00';
+
+            $("#extra").focus();
+
+        }
+
+
+
+    }
+
+</script>
+
+<script type="text/javascript">
+
+    function desval()
+    {
+
+
+        var dcval = document.getElementById('descuento_valor').value;
+
+        if (dcval === "") {
+
+            document.getElementById('descuento_valor').value = "0.00";
+        }
+
+
+
+        if (dcval === "0") {
+
+            document.getElementById('descuento_valor').value = "0.00";
+
+            $("#descuento_valor").focus();
+
+        }
+
+
+    }
+</script>
+
+
+<script type="text/javascript">
+
+    function desporc()
+    {
+
+
+        var dcporc = document.getElementById('descuento').value;
+
+        if (dcporc === "") {
+
+            document.getElementById('descuento').value = "0";
+        }
+
+
+
+        if (dcporc === "0.00") {
+
+            document.getElementById('descuento').value = "0";
+
+            $("#descuento_valor").focus();
+
+        }
+
+
+    }
+</script>
+
+
+
+
+<script>
+
+    function quitBox(cmd)
+    {
+
+//        self.close();
+//    if (cmd=='quit')
+//    {
+//        open(location, '_self').close();
+//    }   
+//    return false;   
+    }
+
+</script>
+
+

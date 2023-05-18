@@ -1,0 +1,11 @@
+Reporting-MTA: dns; p3plsmtpa07-03.prod.phx3.secureserver.net [173.201.192.229]
+Received-From-MTA: dns; DESKTOP0AA1O1N [190.69.127.57]
+Arrival-Date: Mon, 03 Jun 2019 19:20:06 -0700
+
+
+Final-recipient: rfc822; internetproductsupport@convergepay.com
+Diagnostic-Code: smtp; 550 #5.1.0 Address rejected.
+
+Last-attempt-Date: Mon, 03 Jun 2019 19:20:14 -0700
+
+

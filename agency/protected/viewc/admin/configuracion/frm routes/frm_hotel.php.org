@@ -1,0 +1,231 @@
+<?php $hotel= $data["hotel"];?>
+
+<div id="header_page" >
+    <div class="header2">Hotel [ <? echo $data['dato'];?> ]</div>
+    <div  id="toolbar">
+
+        <div class="toolbar-list">
+            <ul>
+
+                <li class="btn-toolbar" id="btn-save">
+                    <a   class="link-button" id="btn-save">
+                        <span class="icon-32-save" title="Nuevo" >&nbsp;</span>
+                        Save
+                    </a>
+                </li>
+
+                <li class="btn-toolbar" id="btn-cancel">
+                    <a  class="link-button" >
+                        <span class="icon-back" title="Editar" >&nbsp;</span>
+                        Cancel
+                    </a>
+                </li>
+            </ul>
+            <div class="clear"></div>
+        </div>
+        <div class="clear"></div>
+    </div>
+</div>
+<div id="content_page" >
+    <div id="serpare">
+
+        <fieldset><legend>General Information</legend>
+
+            <form id="form1" class="form" action="<?php echo $data['rootUrl']; ?>admin/tours/hotel/save" method="post" name="form1" enctype="multipart/form-data">
+
+
+                <div class="input">
+                    <label style="width:150px" class="required" id="l_trip_no">Code: </label>
+                    <input type="text" name="codigo" id="codigo"  size="25" maxlength="20"  value="<?php echo $hotel->codigo; ?>"/>
+                </div>
+                <div class="input">
+                    <label style="width:150px" class="required" id="l_trip_no">Category: </label>
+                    <select name="categoria" id="categoria" class="select">
+                        <option value=""></option>
+                        <?php foreach($data["category"] as $e):?>
+                            <option value="<?php echo  $e['star']; ?>"  <?php echo ($hotel->categoria == trim($e['star'])?'selected':''); ?>><?php echo $e["nombre"]; ?></option>
+                        <?php endforeach;?>
+                    </select>
+                </div>
+                <div class="input">
+                    <label style="width:150px" class="required" id="l_trip_no">Name: </label>
+                    <input type="text" name="nombre" id="nombre"  size="28" maxlength="100"  value="<?php echo $hotel->nombre; ?>"/>
+                </div>
+                <div class="input">
+                    <label style="width:150px" class="required" id="l_equipment">Address: </label>
+                    <input type="text" name="address" id="address" size="25" maxlength="25" value="<?php echo $hotel->address; ?>"/>
+                </div>
+
+                <div class="input">
+                    <label style="width:150px" class="required" id="l_capacity">City: </label>
+                    <input name="city" type="text"  id="city" size="25" maxlength="20"  value="<?php echo $hotel->city; ?>" />
+                </div>
+
+                <div class="input">
+                    <label style="width:150px" class="required" id="l_phone">Zip Code:</label>
+                    <input name="zipcode" type="text"  id="zipcode" size="20" maxlength="20"  value="<?php echo $hotel->zipcode; ?>" />
+                </div>
+                <div class="input">
+                    <label style="width:150px" class="required" id="l_celphone">Contact Name: </label>
+                    <input name="contacname" type="text"  id="contacname" size="20" maxlength="20"  value="<?php echo $hotel->contacname; ?>" />
+                </div>
+                <div class="input">
+                    <label style="width:150px" class="required" id="l_city">Phone: </label>
+                    <input name="phone" type="text"  id="phone" size="25" maxlength="25"  value="<?php echo $hotel->phone; ?>" />
+                </div>
+
+
+                <div class="input">
+                    <label style="width:150px" class="required" id="l_address">E-Mail: </label>
+                    <input name="email" type="text"  id="email" size="25" maxlength="25"  value="<?php echo $hotel->email; ?>" />
+                </div>
+                <div class="input">
+                    <label style="width:150px" class="required" id="l_address">Web Page: </label>
+                    <input name="webpage" type="text"  id="webpage" size="25" maxlength="25"  value="<?php echo $hotel->webpage; ?>" />
+                </div>
+                <div class="input">
+                    <label style="width:150px" class="required" id="l_address">Breakfast </label>
+                    <select name="breakfast">
+
+                        <option value="0" <?php echo ($hotel->breakfast == trim(0)?'selected':''); ?> >NO</option>
+                        <option value="1" <?php echo ($hotel->breakfast == trim(1)?'selected':''); ?> >YES</option>
+                    </select>
+                </div>
+                <div class="input">
+                    <label style="width:150px" class="required" for="id_super_breakfast">Super Breakfast </label>
+                    <select name="super_breakfast" id="id_super_breakfast">
+                        <option value="0" <? if($hotel->super_breakfast){ ?>selected <? } ?> >NO</option>
+                        <option value="1" <? if($hotel->super_breakfast){ ?>selected <? } ?> >YES</option>
+                    </select>
+                </div>
+                <div class="input">
+                    <label style="width:150px" class="required" id="l_address">Resort fee </label>
+                    <select name="resoftfe">
+
+                        <option value="0" <?php echo ($hotel->resoftfe == trim(0)?'selected':''); ?>  >NO</option>
+                        <option value="1" <?php echo ($hotel->resoftfe == trim(1)?'selected':''); ?>>YES</option>
+                    </select>
+                </div>
+
+                <div class="input">
+                    <label style="width:150px" class="required" id="l_address"> Longitude GoogleMAP </label>
+                    <input name="longitud" type="text"  id="longitud" size="25" maxlength="25"  value="<?php echo $hotel->longitud; ?>" />
+                </div>
+                <div class="input">
+                    <label style="width:150px" class="required" id="l_address">Latitude GoogleMAP </label>
+                    <input name="latitud" type="text"  id="latitud" size="25" maxlength="25"  value="<?php echo $hotel->latitud; ?>" />
+                </div>
+
+                <div class="input">
+                    <label style="width:150px" class="required" id="l_address">TAX: </label>
+                    <input name="tax" type="text"  id="tax" size="5" maxlength="5"  value="<?php echo $hotel->tax; ?>" />%
+                </div>
+                <div class="input">
+                    <label style="width:150px" class="required" id="l_address">STO PROFIT: </label>
+                    <input name="stoproft" type="text"  id="stoproft" size="5" maxlength="5"  value="<?php echo $hotel->stoproft; ?>" />%
+                </div>
+
+                <div class="input">
+                    <label style="width:150px" class="required" id="l_address">MAXIMUN COMMIS: </label>
+                    <input name="maximo" type="text"  id="maximo" size="5" maxlength="5"  value="<?php echo $hotel->maximo; ?>" />%
+                </div>
+
+                <div class="input">
+                    <label style="width:150px" class="required" id="l_address">Description: </label>
+                    <textarea name="description" cols="40" rows="5" id="description"><?php echo $hotel->description; ?></textarea>
+                </div>
+                <div class="input">
+                    <label style="width:150px" class="required" id="l_address">Image </label>
+                    <input name="image1" type="file"  id="image1" accept="image/*" />
+                </div>
+
+                <input name="id" type="hidden" id="id" value="<? echo $hotel->id; ?>" />
+        </fieldset>
+    </div>
+</div>
+</form>
+
+</div>
+
+
+<div id="dialog-message" title="Error file">
+    <p>
+        <span class="ui-icon ui-icon-circle-check" style="float:left; margin:0 7px 50px 0;"></span>
+        Se ha producido un problema durante la subida.
+        Comprueba que el archivo que subes sea un JPG, GIF o PNG y vuelve a intentarlo.
+    </p>
+</div>
+
+<script type="text/javascript" src="<?php echo $data['rootUrl']; ?>global/js/form.js"></script>
+
+<script type="text/javascript">
+
+    //$( "#dialog:ui-dialog" ).dialog( "destroy" );
+
+    $("#dialog-message").css("display", "none");
+
+    $('#image1').change(function() {
+        var ext = $('#image1').val().split('.').pop().toLowerCase();
+        if($.inArray(ext, ['gif','png','jpg','jpeg']) == -1) {
+
+            $('#image1').val("");
+
+            $( "#dialog-message" ).dialog({
+                modal: true,
+                buttons: {
+                    Ok: function() {
+                        $( this ).dialog( "close" );
+                    }
+                }
+            });
+
+        }
+    });
+
+    function validateForm(){
+
+        var sErrMsg = "";
+        var flag = true;
+
+        /* sErrMsg += validateText($('#username').val(), $('#l_trip_no').html(), true);*/
+
+
+        if(sErrMsg != "")
+        {
+            alert(sErrMsg);
+            flag = false;
+        }
+
+        return flag;
+
+    }
+
+    $('#btn-save').click(function(){
+        if (validateForm()){
+            $('#form1').submit();
+        }
+    });
+
+    $('#btn-cancel').click(function(){
+        window.location = '<?php echo $data['rootUrl']; ?>admin/tours/hotel';
+    });
+
+    $(document).ready(function(){
+        $('#categoria').change(function(){
+            var cat = $(this).val();
+            if(cat != ''){
+                cat = parseInt(cat);
+                if(cat > 2){
+                    $('#id_super_breakfast').val(1);
+                }else{
+                    $('#id_super_breakfast').val(0);
+                }
+            }
+
+
+        });
+    });
+
+</script>
+
+

@@ -1,0 +1,68 @@
+@mixin convertir($propiedad) {
+    background-color: $grisclaro;
+    -webkit-box-shadow: 7px 12px 12px -8px rgba(143,139,143,1);
+    -moz-box-shadow: 7px 12px 12px -8px rgba(143,139,143,1);
+    box-shadow: 7px 12px 12px -8px rgba(143,139,143,1);
+    transition: .4s;
+    margin-bottom: 20px;
+    z-index: 1;
+}
+
+.box-shadow{
+    @include convertir($rojooscuro);
+}
+
+.box-shadow:hover{
+    -webkit-box-shadow: 0px 0 0 0px;
+    -moz-box-shadow: 0px 0px 0px 0px;
+    box-shadow: 0px 0px 0px 0px;
+    border-top:2px solid $azuloscuro;
+    border-bottom:2px solid $azuloscuro;
+}
+
+
+.er-box{
+    border-top:2px solid $rojooscuro;
+    border-bottom:2px solid $rojooscuro;
+    border-left:1px solid $grisclaro;
+    border-right:1px solid $grisclaro;
+    margin-bottom: 20px;
+    z-index: 1;
+}
+
+.er-box:hover{
+    border-top:2px solid $azuloscuro;
+    border-bottom:2px solid $azuloscuro;
+}
+
+.er-header{
+    // font-family: "raj";
+    
+    padding: 5px;
+    margin: 2% -5% 4%;
+    text-align: center;
+    background: $header;
+    color: $remo;
+    box-sizing: border-box;
+}
+
+.er-header-card{
+    padding: 5px;
+    margin: 3% 0 4%;
+    text-align: center;
+    background: $header;
+    color: $remo;
+
+}
+
+.box-shadow-card{
+    box-sizing: border-box;
+    box-shadow: 0px 4px 3px 0px rgba(143,139,143,1);
+    transition: .5s;
+}
+
+.box-shadow-card:hover{
+    -webkit-box-shadow: 0px 0 0 0px;
+    -moz-box-shadow: 0px 0px 0px 0px;
+    box-shadow: 0px 0px 0px 0px;
+}

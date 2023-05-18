@@ -1,0 +1,590 @@
+/* CSS Document */
+#filter-bar {
+    margin-right: 10px;
+    
+    margin-bottom: 10px;
+}
+label.filter-by {
+    font-size: 12px;
+    color: #333;
+}
+.search {
+    display: inline-block;
+    height: 22px;
+    width: 228px;
+    border: 1px solid #B3BCC4;
+    background-color: #FFF;
+}
+.search .input-search {
+    border: 0 none;
+    height: 20px;
+    width: 200px;
+    margin: 0px;
+}
+.search-btn {
+    background-image: url(../img/admin/search.png);
+    background-repeat: no-repeat;
+    height: 16px;
+    width: 19px;
+    cursor: pointer;
+    background-color: #FFF;
+    border: 0 none;
+}
+
+#welcome{
+	background-image:url(../img/agencias/1.png);
+	background-repeat:no-repeat;
+	width:auto;
+	height:302px;
+	display:none;
+	padding-bottom:20px;
+}
+
+#login2{
+	background-image:url(../img/agencias/2.png);
+	background-repeat:no-repeat;
+	padding-bottom:7px;
+	width:430px;
+	height:202px;
+}
+
+#login2 table{
+	padding-top:50px;
+	padding-left:10px;
+}
+
+.lbl{
+	font-family:'Istok Web', Sans-Serif;
+	font-size: 11px;
+	color:#FFF;
+	font-weight:bold;
+}
+
+.txt input{
+	height:30px;
+	width:230px;
+	border:none;
+	margin-bottom:7px;
+	font-family:'Istok Web', Sans-Serif;
+	font-size: 18px;
+	color:#333;
+}
+
+#side1{
+	max-width: 550px;
+	float:left;
+	padding-left:8px;
+	padding-right:20px;
+}
+
+#side2{
+	max-width: 100%;
+	float:left;
+}
+
+#info{
+	font-family:'Istok Web', Sans-Serif;
+	font-size: 14px;
+	text-align:justify;
+	color:#333;
+}
+
+#mapmarcohome{
+	width:100%;
+}
+
+#login_options{
+	width:200px;
+	float:left;
+}
+
+#login_options a{
+	text-decoration:none;
+	font-family:'Istok Web', Sans-Serif;
+	font-size: 12px;
+	color:#333;
+	font-stretch:expanded;
+	font-weight:bold;
+}
+
+.mybutton{
+	background-image:url(../img/agencias/4.png);
+	background-repeat:no-repeat;
+	width:93px;
+	height:29px;
+	border:none;
+	margin-right:7px;
+	text-align:center;
+	padding-top:5px;
+	float:left;
+	 color:#FFFFFF;
+}
+
+.mybutton a{
+	text-decoration:none;
+	font-family:'Istok Web', Sans-Serif;
+	font-size: 14px;
+	 color:#FFFFFF;
+}
+
+.mybutton a:hover{
+	font-weight:bold;
+	 color:#FFFFFF;
+}
+#cancelar,#guardar{
+ color:#FFFFFF;
+
+}
+#rewards{
+	padding-top:60px;
+}
+
+#rewards_inforations li{
+	text-decoration:none;
+	font-family:'Istok Web', Sans-Serif;
+	font-size: 13px;
+	color:#333;
+}
+
+#mensage{
+	font-family:Tahoma, Geneva, sans-serif;
+	padding-left:12px;
+    font-size: 13px;
+	color:#333;
+	font-weight:bold;
+}
+
+/*********end login*****************/
+
+/* My Account */
+#myaccount{
+
+	background-image:url(../img/agencias/6.png);
+	background-repeat:no-repeat;
+	width:537px;
+	height:126px;
+	padding-bottom:20px;
+	float:left;
+}
+#trips{
+	background-image:url(../img/agencias/airpor.png);
+	background-repeat:no-repeat;
+	width:380px;
+	height:126px;
+	padding-bottom:20px;
+	padding-top:52px;
+	
+	float:left;
+	margin-left:48px;
+	
+}
+#side1_2{
+	width: 95%;
+	float:left;
+	padding-left:8px;
+	padding-right:20px;
+}
+#reserves{
+   clear:both;
+}
+#side2_2{
+	float:left;
+	margin-top:110px;
+}
+
+#birthday{
+	background-image:url(../img/agencias/7.png);
+	background-repeat:no-repeat;
+	width:378px;
+	height:195px;
+	padding-bottom:5px;
+}
+
+#todays_deals{
+	background-image:url(../img/agencias/10.png);
+	background-repeat:no-repeat;
+	width:317px;
+	height:290px;
+	padding-bottom:5px;
+	margin-top:10px;
+	margin-left:45px;
+	
+}
+
+#user_welcome{
+	font-family:'Istok Web', Sans-Serif;
+	font-size: 17px;
+	color:#393;
+	padding:5px 0px 0px 10px;
+}
+
+#title{
+	font-family:'Istok Web', Sans-Serif;
+	font-size: 17px;
+	color:#333;
+	padding:5px 0px 0px 1px;
+	font-weight:bold;
+}
+
+#fp{
+	font-family:'Istok Web', Sans-Serif;
+	font-size: 12px;
+	color:#333;
+	padding:5px 0px 0px 10px;
+}
+
+#birthday ul{
+	margin-left:84px;
+}
+
+#birthday li{
+	display:inline-table;
+	padding-top:110px;
+	padding-right:43px;
+	color:#333;
+	font-size:16px;
+}
+
+#account{
+	background-color:#F2F2F2;
+}
+
+#rewards_list{
+	width:170px;
+	float:left;
+	padding-right:10px;
+}
+
+#exchange_rewards{
+	display:none;
+	width:auto;
+}
+
+#rewards_ammount{
+	width:34px;
+	float:left;
+}
+
+#exchange{
+	width:auto;
+	float:left;
+}
+#tike{
+	width: 26%;
+	padding-right:10px;
+	float:left;
+	
+	
+}
+#mres{
+	width: 70%;
+	
+	float:left;
+	
+}
+.fila_0 { background-color: #E9E9E9;}
+.table-bordered11 {
+	-moz-border-bottom-colors: none;
+	-moz-border-image: none;
+	-moz-border-left-colors: none;
+	-moz-border-right-colors: none;
+	-moz-border-top-colors: none;
+	border-collapse: separate;
+	
+	border-top-width: 1px;
+	border-right-width: 1px;
+	border-bottom-width: 1px;
+	border-left-width: 0px;
+	border-top-style: solid;
+	border-right-style: solid;
+	border-bottom-style: solid;
+	border-left-style:  none;
+	border-top-color: #DDDDDD;
+	border-right-color: #DDDDDD;
+	border-bottom-color: #DDDDDD;
+	font-size: 13px;
+}
+table-bordered11 {
+    border-collapse: separate;
+    border-style: solid solid solid none;
+}
+.table11 {
+    margin-bottom: 12px;
+    width: 100%;
+	
+}
+.table11 th, .table11 td {
+	border-top: 1px solid #DDDDDD;
+	line-height: 18px;
+	padding: 7px;
+	text-align: left;
+	vertical-align: top;
+}
+.table11 th {
+	font-weight: bold;
+}
+.table-bordered11 th, .table-bordered11 td {
+	border-left: 1px solid #DDDDDD;
+}
+.table11 thead th {
+    vertical-align: bottom;
+}
+
+#horas
+{
+padding-top:5px;
+float:left;
+font:"Times New Roman", Times, serif;
+}
+#minutos{
+padding-top:5px;
+padding-left:5px;
+float:left;
+font:"Times New Roman", Times, serif;
+}
+#segundos{
+padding-top:5px;
+padding-left:5px;
+float:left;
+font:"Times New Roman", Times, serif;
+}
+
+#hour{
+padding-top:5px;
+padding-right:5px;
+float:left;
+font:"Times New Roman", Times, serif;
+}
+#fecha{
+
+font-size:9px;
+
+font:"Times New Roman", Times, serif;
+}
+#ajax{
+padding-top:0px;
+
+}
+
+#lista {
+     
+
+	 
+     list-style-image: url(../img/chilito.gif); list-style-type: armenian;
+     list-style-position: inside;
+    
+   }
+   #lista2 {
+    
+
+	 
+     list-style-image: url(../img/chilito.gif); list-style-type: armenian;
+     list-style-position: inside;
+    
+   }
+#airport
+{
+	padding-top:7px;
+	float:left;
+	border-right-width: 1px;
+	border-right-style: solid;
+	border-right-color: #CCCCCC;
+}
+#airport2
+{    
+	
+padding-top:7px;
+float:left;
+
+}
+#airport2 th, #airport2 td {
+
+
+padding: 5px;
+
+}
+#airport th, #airport td {
+
+
+padding: 5px;
+
+}
+#open
+{    
+   
+	text-align:center;
+	float:left; 
+	width:50%;
+}
+#close
+{   
+   text-align:center;
+    float:left; 
+	width:50%;
+}
+#tiempos{
+padding:10px;
+width:400px;
+
+
+}
+#pagination {
+	margin-top: 5px;
+	text-align: center;
+	clear: both;
+}
+.pagination {
+	padding: 0px;
+	margin-top: 0px;
+	margin-right: auto;
+	margin-bottom: 0px;
+	margin-left: auto;
+}
+
+.paginate, .current, .inactivePrev, .inactiveNext, .prev, .next {
+	font-family: Verdana,Helvetica,Arial,sans-serif;
+	font-size:12px;
+	border:1px solid #D8D8D8;
+	height:20px;
+	line-height:20px;
+	overflow:hidden;
+	text-decoration:none;
+	padding-top: 0;
+	padding-right: 6px;
+	padding-bottom: 0;
+	padding-left: 6px;
+	display: inline-block;
+	
+}
+a:hover .paginate{
+	border-top-color: #F06917;
+	border-right-color: #F06917;
+	border-bottom-color: #F06917;
+	border-left-color: #F06917;
+}
+.current {
+	background-color:#F4F4F4;
+	color:#fff;
+	font-weight:bold;
+	
+}
+.inactivePrev, .inactiveNext{
+    color:#999;
+}
+.error-msg {
+    display:block;
+    font-family: Verdana, Geneva, sans-serif;
+    font-size: 11px;
+    font-weight: normal;
+    color:#EE0000;
+}
+#callcenterr{
+padding-top:90px;
+padding-left:25px;
+
+}
+#activo{
+padding-left:20px;
+float:left;
+}
+#open{
+font-family:Verdana, Arial, Helvetica, sans-serif;
+font-size:12px;
+
+float:left;
+}
+#center-column{
+width:107%;
+
+}
+
+.grid {
+    /*border-spacing:0;
+    border-collapse:collapse;
+    border: thin solid #CCCCCC;*/
+	width: 100%;
+	border-spacing: 1px;
+	background-color: #E7E7E7;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #0A439A;
+}
+
+.grid td {
+    font-family:Verdana, Arial, Helvetica, sans-serif;
+    font-size:11px;
+    color:#000;
+    height:35px;
+
+
+border: 1px solid white;
+
+   /* border-left-width: 1px;
+    border-left-style: solid;
+    border-left-color: #CCC;*/
+	
+}
+
+.grid thead th {
+   /* text-align:left;
+    font-family:Verdana, Arial, Helvetica, sans-serif;
+    font-size:11px;
+    font-weight:bold;
+    color:#333;
+    height: 20px;
+    line-height: 20px;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: #CCC;
+    background-image: url(../img/admin/header.png);*/
+	
+		text-align: center;
+		background: #F0F0F0;
+		color: #0B55C4;
+		border-bottom: 1px solid white;
+		border-left: 1px solid white;
+		font-weight: bold;
+		height:25px;
+		 border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: #666666;
+
+}
+
+.grid tfoot td {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    font-weight: bold;
+    color: #000000;
+    background-color: #EABB00;
+    text-align: left;
+    border-top-style: none;
+    border-right-style: none;
+    border-bottom-style: none;
+    border-left-style: none;
+    height: 22px;
+	
+}
+
+table.grid tr.row0 {
+    background-color:#FFF;
+	
+}
+
+
+table.grid tr.row1 {
+    background-color:#F8F8F8;
+	
+}
+
+table.grid tbody tr.row0:hover td,
+table.grid tbody tr.row1:hover td  {
+    background-color: #ffd;
+    cursor:pointer;
+	
+}
+#datagrid {
+    margin-right: 10px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+}

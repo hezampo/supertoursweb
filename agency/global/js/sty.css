@@ -1,0 +1,45 @@
+li {
+	list-style: none;
+}
+
+.templates {
+	padding: 26px 0 9px;
+}
+
+.templates li {
+	float:left;
+	height:210px;
+	width:252px;
+	margin-left: 20px;
+}
+
+.templates a {
+	display: block;
+	height: 139px;
+	padding: 7px 5px 34px;
+	text-align: center;
+	width: 215px;
+	cursor: pointer;
+	position: relative;
+	
+}
+
+
+
+
+.templates img {
+	width: 234px;
+	height: 191px;
+}
+
+
+/* clear fix */
+.clearfix:after {
+	clear: both;
+	content: "";
+	display: block;
+}
+
+.clearfix {
+	zoom: 1;
+}

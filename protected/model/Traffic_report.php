@@ -1,0 +1,1 @@
+<?phpDoo::loadModel('base/TrafficreportBase');class Traffic_Report extends TrafficreportBase{}

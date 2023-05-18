@@ -1,0 +1,38 @@
+a.er-text-darger,.er-text-darger{
+    color:$rojollamativo;
+    font-style: normal;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-decoration:none;
+    transition: .4s;
+}
+a.er-text-darger,.er-text-darger:hover{
+    color:$rojooscuro;
+}
+
+.er-text-h{
+    font-weight: bold;
+}
+a.er-text-info,.er-text-info{
+    color:$azulinfo;
+    font-style: normal;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-decoration:none;
+    transition: .4s;
+
+}
+a.er-text-info,.er-text-info:hover{
+    color:$azulinfohover;
+}
+
+
+a.er-text-success,.er-text-success{
+    color:$verdesucess;
+    font-style: normal;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-decoration:none;
+    transition: .4s;
+
+}
+a.er-text-success,.er-text-success:hover{
+    color:$verdesucesshover;
+}

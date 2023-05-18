@@ -1,0 +1,80 @@
+.clearfix{
+    margin: 15px 0;
+}
+
+.row-control{
+    display:table-row;
+}
+
+.control{
+    display: table-cell;
+    width:230px;
+}
+
+#pay{
+    background-color: #0b55c4;
+    color: white;
+    padding: 10px 10px;
+    border-radius: 3px;
+}
+
+#pay:hover{
+    background-color: rgb(246, 246, 246);
+    color: #0b55c4;
+    box-shadow: 3px 3px 8px #999999;
+    cursor: pointer;
+}
+
+.ui-tabs-hide{
+    display: none !important;
+}
+
+.pdficon, .details{
+    width:24px;
+    height:24px;
+}
+
+#lightbox{
+    background-color: white;
+    position: absolute;
+    top: 20%;
+    left:20%;
+    min-width: 100px;
+    min-height: 100px;
+    display:none;
+    z-index: 1000;
+}
+
+.close-modal{
+    color: #ff0000;
+    font-size: 16px;
+    float:right;
+    padding: 5px;
+    transition:All 0.5s ease;
+    -webkit-transition:All 0.5s ease;
+    -moz-transition:All 0.5s ease;
+    -o-transition:All 0.5s ease;
+}
+
+.close-modal:hover{
+    color: #fff;
+    background-color: #ff0000;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    float:right;
+}
+
+#btn-statements{
+    margin: 0 10px !important;
+}
+
+.icon-statements{
+    background-image: url(../img/payments/statements.png);
+    background-size: 24px 24px;
+}
+
+.icon-remake{
+    background-image: url(../img/reload.png);
+    background-size: 24px 24px;
+}

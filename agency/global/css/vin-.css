@@ -1,0 +1,34 @@
+.vin {
+	font-family: tahoma;
+	font-size: 12px;
+	font-style: normal;
+	line-height: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	color:#FFFFFF;
+	text-decoration: none;
+}
+#caja1servi{
+	width:370px;
+	height:382px;
+	background-image:url(../images/habitaciones.jpg);
+	float:left;
+}
+#caja2servi{
+	width:370px;
+	height:382px;
+	background-image:url(../images/salon.jpg);
+	float:left;
+	margin-left:20px;
+}
+#cajatexto1{
+	width:340px;
+	height:180px;
+	font-family: "tahoma";
+	font-size: 13px;
+	color:#666666;
+	text-align:justify;
+	margin-top:160px;
+	margin-left:15px;
+}

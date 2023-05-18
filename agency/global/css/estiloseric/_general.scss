@@ -1,0 +1,103 @@
+.imglogo{
+    width: 15%;
+}
+img{
+    width: 35%;
+    margin-top: 10px;
+}
+
+.er-btn-default{
+    padding: 2%;
+    border:none;
+    width: 100%;
+    background-color: $rojollamativo;
+    font-weight : 'bold';
+    color:$blanco;
+    transition: .3s;
+}
+
+.er-btn-default:hover{
+    background-color: $rojoparahover;
+}
+
+.er-btn-success{
+    padding: 6%;
+    border:none;
+    width: 100%;
+    background-color: $verdefresco;
+    font-weight : 'bold';
+    color:$blanco;
+    transition: .3s;
+}
+
+.er-btn-success:hover{
+    background-color: $verdeoscuro;
+}
+
+.er-btn-desabled{
+    padding: 2%;
+    border:none;
+    width: 100%;
+    background-color: $desactivado;
+    font-weight : 'bold';
+    color:$textdesc;
+    cursor:no-drop;
+    transition: .3s;
+}
+
+.er-btn-success:hover{
+    background-color: $desactivadohover;
+}
+
+.er-scroll{
+    overflow:auto;
+}
+
+.er-center-text{
+    text-align: center;
+    text-decoration:none;
+    color: $rojollamativo;
+}
+
+.er-text-upper{
+    text-transform: uppercase;
+}
+.er-text-lower{
+    text-transform: lowercase;
+}
+.er-text-capi{
+    text-transform: capitalize;
+}
+
+.er-modal{
+    background: $rojo;
+    border:2px;
+    display: block;
+    left: -200px;
+    margin-left: 50%;
+    padding: 10px;
+    position: fixed;
+    top: 50%;
+    width: 400px;
+}
+
+#up{
+    display: inline-block;
+    background-color: $rojo;
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    border-radius: 4px;
+}
+
+// .precarga {
+//     background:transparent url(./../../bus.gif) center no-repeat;
+//  }
+
+.areyou{
+    background-color: $blanco;
+    width: 100%;
+    color: $negro;
+    font-weight: bold;
+    // font-size: .60rem;
+}

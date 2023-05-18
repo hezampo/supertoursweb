@@ -1,0 +1,254 @@
+.box-shadow {
+  background-color: #f0eced;
+  -webkit-box-shadow: 7px 12px 12px -8px #8f8b8f;
+  -moz-box-shadow: 7px 12px 12px -8px #8f8b8f;
+  box-shadow: 7px 12px 12px -8px #8f8b8f;
+  transition: 0.4s;
+  margin-bottom: 20px;
+  z-index: 1;
+}
+
+.box-shadow:hover {
+  -webkit-box-shadow: 0px 0 0 0px;
+  -moz-box-shadow: 0px 0px 0px 0px;
+  box-shadow: 0px 0px 0px 0px;
+  border-top: 2px solid #1c99a8;
+  border-bottom: 2px solid #1c99a8;
+}
+
+.er-box {
+  border-top: 2px solid #b3422a;
+  border-bottom: 2px solid #b3422a;
+  border-left: 1px solid #f0eced;
+  border-right: 1px solid #f0eced;
+  margin-bottom: 20px;
+  z-index: 1;
+}
+
+.er-box:hover {
+  border-top: 2px solid #1c99a8;
+  border-bottom: 2px solid #1c99a8;
+}
+
+.er-header {
+  padding: 5px;
+  margin: 2% -5% 4%;
+  text-align: center;
+  background: #F3D7D1;
+  color: #953a5a;
+  box-sizing: border-box;
+}
+
+.er-header-card {
+  padding: 5px;
+  margin: 3% 0 4%;
+  text-align: center;
+  background: #F3D7D1;
+  color: #953a5a;
+}
+
+.box-shadow-card {
+  box-sizing: border-box;
+  box-shadow: 0px 4px 3px 0px #8f8b8f;
+  transition: 0.5s;
+}
+
+.box-shadow-card:hover {
+  -webkit-box-shadow: 0px 0 0 0px;
+  -moz-box-shadow: 0px 0px 0px 0px;
+  box-shadow: 0px 0px 0px 0px;
+}
+
+.decaracion-visit {
+  text-decoration: none;
+}
+
+.er-toroght {
+  position: absolute;
+}
+
+.imglogo {
+  width: 15%;
+}
+
+img {
+  width: 35%;
+  margin-top: 10px;
+}
+
+.er-btn-default {
+  padding: 2%;
+  border: none;
+  width: 100%;
+  background-color: #c82525;
+  font-weight: "bold";
+  color: white;
+  transition: 0.3s;
+}
+
+.er-btn-default:hover {
+  background-color: #630808;
+}
+
+.er-btn-success {
+  padding: 6%;
+  border: none;
+  width: 100%;
+  background-color: #90CB78;
+  font-weight: "bold";
+  color: white;
+  transition: 0.3s;
+}
+
+.er-btn-success:hover {
+  background-color: #5C8949;
+}
+
+.er-btn-desabled {
+  padding: 2%;
+  border: none;
+  width: 100%;
+  background-color: "#C4C4C4";
+  font-weight: "bold";
+  color: #9DA49B;
+  cursor: no-drop;
+  transition: 0.3s;
+}
+
+.er-btn-success:hover {
+  background-color: #949494;
+}
+
+.er-scroll {
+  overflow: auto;
+}
+
+.er-center-text {
+  text-align: center;
+  text-decoration: none;
+  color: #c82525;
+}
+
+.er-text-upper {
+  text-transform: uppercase;
+}
+
+.er-text-lower {
+  text-transform: lowercase;
+}
+
+.er-text-capi {
+  text-transform: capitalize;
+}
+
+.er-modal {
+  background: red;
+  border: 2px;
+  display: block;
+  left: -200px;
+  margin-left: 50%;
+  padding: 10px;
+  position: fixed;
+  top: 50%;
+  width: 400px;
+}
+
+#up {
+  display: inline-block;
+  background-color: red;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  border-radius: 4px;
+}
+
+.areyou {
+  background-color: white;
+  width: 100%;
+  color: black;
+  font-weight: bold;
+}
+
+.header {
+  padding: 25px;
+  text-align: center;
+  color: #5A5353;
+  background: #f0eced;
+  border-bottom: 2px solid #c82525;
+}
+
+.box-float {
+  -webkit-box-shadow: 0px 0px 17px 5px rgba(184, 184, 184, 0.74);
+  -moz-box-shadow: 0px 0px 17px 5px rgba(184, 184, 184, 0.74);
+  box-shadow: 0px 0px 17px 5px rgba(184, 184, 184, 0.74);
+  margin: -5% 0% 2%;
+}
+
+.er-header-home {
+  margin-top: -20px;
+}
+
+.footer {
+  position: relative;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  margin: 3% 0% 0%;
+  padding: 5%;
+  background-color: #f0eced;
+  color: #5A5353;
+  text-align: center;
+  border-top: 2px solid #c82525;
+}
+
+.er-logo-footer {
+  width: 100%;
+  float: left;
+  position: relative;
+}
+
+a.er-text-darger, .er-text-darger {
+  color: #c82525;
+  font-style: normal;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  text-decoration: none;
+  transition: 0.4s;
+}
+
+a.er-text-darger, .er-text-darger:hover {
+  color: #b3422a;
+}
+
+.er-text-h {
+  font-weight: bold;
+}
+
+a.er-text-info, .er-text-info {
+  color: #1DC3B7;
+  font-style: normal;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  text-decoration: none;
+  transition: 0.4s;
+}
+
+a.er-text-info, .er-text-info:hover {
+  color: #158980;
+}
+
+a.er-text-success, .er-text-success {
+  color: #1BCF4C;
+  font-style: normal;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  text-decoration: none;
+  transition: 0.4s;
+}
+
+a.er-text-success, .er-text-success:hover {
+  color: #147E31;
+}
+
+.er-botton-danger {
+  background-color: #c82525;
+}
+
+/*# sourceMappingURL=style.css.map */

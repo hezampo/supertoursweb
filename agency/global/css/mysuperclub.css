@@ -1,0 +1,442 @@
+/* CSS Document */
+
+#welcome{
+	background-image:url('../img/mysuperclub/1.png');
+	background-repeat:no-repeat;
+	width:auto;
+	height:302px;
+	display:none;
+	padding-bottom:20px;
+}
+
+#login2{
+	background-image:url('../img/mysuperclub/2.png');
+	background-repeat:no-repeat;
+	padding-bottom:7px;
+	width:430px;
+	height:202px;
+}
+
+#login2 table{
+	padding-top:50px;
+	padding-left:10px;
+}
+
+.lbl{
+	font-family:"Segoe UI Web Semibold", "Segoe UI Web Regular", "Segoe UI", "Helvetica Neue", Arial;
+	font-size: 11px;
+	color:#FFF;
+	font-weight:bold;
+}
+
+.txt input{
+	height:30px;
+	width:230px;
+	border:none;
+	margin-bottom:7px;
+	font-family:"Segoe UI Web Semibold", "Segoe UI Web Regular", "Segoe UI", "Helvetica Neue", Arial;
+	font-size: 18px;
+	color:#333;
+}
+
+#side1{
+	max-width: 550px;
+	float:left;
+	padding-left:8px;
+	padding-right:20px;
+}
+
+#side2{
+	max-width: 100%;
+	float:left;
+}
+
+#info{
+	font-family:"Segoe UI Web Semibold", "Segoe UI Web Regular", "Segoe UI", "Helvetica Neue", Arial;
+	font-size: 14px;
+	text-align:justify;
+	color:#333;
+}
+
+#mapmarcohome{
+	width:100%;
+}
+
+#login_options{
+	width:200px;
+	float:left;
+}
+
+#login_options a{
+	text-decoration:none;
+	font-family:"Segoe UI Web Semibold", "Segoe UI Web Regular", "Segoe UI", "Helvetica Neue", Arial;
+	font-size: 12px;
+	color:#333;
+	font-stretch:expanded;
+	font-weight:bold;
+}
+
+.mybutton{
+	background-image:url('../img/mysuperclub/4.png');
+	background-repeat:no-repeat;
+	width:93px;
+	height:29px;
+	float:right;
+	margin-right:7px;
+	text-align:center;
+	padding-top:5px;
+	clear:right;
+	color:#FFF;
+}
+
+.mybutton a{
+	font-family:"Segoe UI Web Semibold", "Segoe UI Web Regular", "Segoe UI", "Helvetica Neue", Arial;
+	font-size: 14px;
+	font-style:normal;
+	text-decoration:none;
+	color:#FFF;
+}
+
+.mybutton a:hover{
+	font-weight:bold;
+}
+
+.mybutton2{
+	background-image:url('../img/mysuperclub/4.png');
+	background-repeat:no-repeat;
+	width:93px;
+	height:29px;
+	float:left;
+	margin-right:7px;
+	text-align:center;
+	padding-top:5px;
+	color:#FFF;
+	cursor:pointer;
+}
+
+.mybutton3{
+	background-image:url('../img/mysuperclub/4.png');
+	background-repeat:no-repeat;
+	width:93px;
+	height:29px;
+	margin-right:7px;
+	text-align:center;
+	padding-top:5px;
+	color:#FFF;
+	z-index:99;
+}
+
+.mybutton2 a{
+	font-family:"Segoe UI Web Semibold", "Segoe UI Web Regular", "Segoe UI", "Helvetica Neue", Arial;
+	font-size: 14px;
+	color:#FFF;
+	text-decoration:none;
+}
+
+.mybutton3 a{
+	font-family:"Segoe UI Web Semibold", "Segoe UI Web Regular", "Segoe UI", "Helvetica Neue", Arial;
+	font-size: 14px;
+	color:#FFF;
+	text-decoration:none;
+}
+
+.mybutton2 a:hover{
+	font-weight:bold;
+}
+
+.mybutton3 a:hover{
+	font-weight:bold;
+}
+
+#d_exchange{
+	margin-left:240px;
+}
+
+#btn_save,#btn_cancel,#btn_exchange{
+	color:#FFF;
+}
+
+#buttons{
+	margin-top:10px;
+	margin-left:170px;
+}
+
+#rewards{
+	padding-top:60px;
+}
+
+#rewards_inforations li{
+	text-decoration:none;
+	font-family:"Segoe UI Web Semibold", "Segoe UI Web Regular", "Segoe UI", "Helvetica Neue", Arial;
+	font-size: 13px;
+	color:#333;
+}
+
+#mensage{
+	font-family:Tahoma, Geneva, sans-serif;
+	padding-left:12px;
+    font-size: 13px;
+	color:#333;
+	font-weight:bold;
+}
+
+/*********end login*****************/
+
+/* My Account */
+#myaccount{
+	background-image:url(../img/mysuperclub/6.png);
+	background-repeat:no-repeat;
+	width:537px;
+	height:126px;
+	padding-bottom:20px;
+}
+
+#side1_2{
+	width: 600px;
+	float:left;
+	padding-left:8px;
+	padding-right:20px;
+}
+
+#side2_2{
+	float:left;
+	margin-top:110px;
+}
+
+#birthday{
+	background-image:url(../img/mysuperclub/7.png);
+	background-repeat:no-repeat;
+	width:378px;
+	height:195px;
+	padding-bottom:5px;
+}
+
+#todays_deals{
+	background-image:url(../img/mysuperclub/10.png);
+	background-repeat:no-repeat;
+	width:317px;
+	height:290px;
+	padding-bottom:5px;
+	margin-top:10px;
+	margin-left:45px;
+}
+
+#todays_deals{
+	
+}
+
+#user_welcome{
+	font-family:font-family:"Segoe UI Web Semibold", "Segoe UI Web Regular", "Segoe UI", "Helvetica Neue", Arial;
+	font-size: 17px;
+	color:#393;
+	padding:5px 0px 0px 10px;
+}
+
+#title{
+	font-family:font-family:"Segoe UI Web Semibold", "Segoe UI Web Regular", "Segoe UI", "Helvetica Neue", Arial;
+	font-size: 17px;
+	color:#333;
+	padding:5px 0px 0px 10px;
+	font-weight:bold;
+}
+
+#fp{
+	font-family:"Segoe UI Web Semibold", "Segoe UI Web Regular", "Segoe UI", "Helvetica Neue", Arial;
+	font-size: 12px;
+	color:#333;
+	padding:5px 0px 0px 10px;
+}
+
+#birthday ul{
+	margin-left:84px;
+}
+
+#birthday li{
+	display:inline-table;
+	padding-top:110px;
+	padding-right:33px;
+	color:#333;
+	font-size:16px;
+}
+
+#birthday li div{
+	font-family:Tahoma, Geneva, sans-serif;
+	font-size:20px;
+	color:#FFF;
+	font-weight:bold;
+}
+
+#account{
+	margin:5px;
+	font-family:Tahoma, Geneva, sans-serif;
+	width:inherit;
+}
+
+#account_owner_info{
+	padding-bottom:15px;
+	color:#000;
+	font-weight:bold;
+	font-size:16px;
+}
+
+#form1{
+	
+}
+
+#form1 td{
+	padding-bottom:5px;
+}
+
+#rewards_list{
+	width:180px;
+	float:left;
+	padding-right:10px;
+}
+
+#exchange_rewards{
+	display:none;
+	width:auto;
+	
+}
+
+#rewards_ammount{
+	width:34px;
+	float:left;
+	clear:right;
+}
+
+.mybono{
+	width:inherit;
+	clear:both;
+	color:#F00;
+	font-family:font-family:"Segoe UI Web Semibold", "Segoe UI Web Regular", "Segoe UI", "Helvetica Neue", Arial;
+	font-size:14px;
+	width:inherit;
+}
+
+#bonos{
+	font-family:font-family:"Segoe UI Web Semibold", "Segoe UI Web Regular", "Segoe UI", "Helvetica Neue", Arial;
+	clear:both;
+	width:350px;
+	margin-left:40px;
+}
+
+#bonos div{
+	font-size:16px;
+	color:#06C;
+	padding-bottom:5px;
+}
+
+#bonos a{
+	text-decoration:none;
+	color:#000;
+}
+
+#bonos a:hover{
+	text-decoration:none;
+	color:#E23632;
+	font-weight:bold;
+}
+
+#redeem_all{
+	font-family:font-family:"Segoe UI Web Semibold", "Segoe UI Web Regular", "Segoe UI", "Helvetica Neue", Arial;
+	clear:both;
+	width:inherit;
+	margin-left:40px;
+}
+
+#redeem_all a{
+	text-decoration:none;
+	color:#000;
+}
+
+#redeem_all a:hover{
+	font-weight:bold;
+}
+
+#reservations{
+	font-family:Tahoma, Geneva, sans-serif;
+	font-stretch:semi-expanded;
+}
+
+.row_color{
+	background-color:#E6E1EA;
+}
+
+
+.trips{
+	border:solid 3px #F0F0F0;
+	-moz-border-radius: 13px;
+	-webkit-border-radius: 13px;
+	border-radius: 13px;
+	margin-top:8px;
+	padding:5px;
+	margin-bottom:8px;
+	color:#333;
+}
+
+#bonos_info{
+	display:none;
+}
+
+#bonos_list{
+	width:220px;
+}
+
+#bonos_list ul li{
+	font-family:"Segoe UI Web Semibold", "Segoe UI Web Regular", "Segoe UI", "Helvetica Neue", Tahoma;
+	font-size:14px;
+	text-decoration:none;
+	display:inline-table;
+}
+
+#btn_redeem{
+	color:#333;
+}
+
+#btn_redeem:hover{
+	color:#F00;
+	font-size:16px;
+	cursor:pointer;
+	font-weight:600;
+}
+
+
+.deals_tittle{
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size:16px;
+	color:#06C;
+	font-weight:600;
+	padding-left:15px;
+}
+
+#first{
+	padding-top:34px;
+}
+
+
+#ofertas{
+	padding-top:40px;
+	width:300px;
+}
+
+#ofertas a{
+	width: 270px;
+	/*border-bottom:#CCC solid thin;*/
+	font-family:"Segoe UI Web Semibold", "Segoe UI Web Regular", "Segoe UI", "Helvetica Neue", Tahoma;
+	font-size:12px;
+	color:#09F;
+	margin-left:20px;
+	margin-bottom:30px;
+	text-align-last:none;
+}
+
+#rew{
+	width:178px;
+}
+
+
+#users{
+	font-family:"Segoe UI Web Semibold", "Segoe UI Web Regular", "Segoe UI", "Helvetica Neue", Arial;
+	font-size:14px;
+}

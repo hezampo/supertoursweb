@@ -1,0 +1,5 @@
+[01-Jul-2012 13:21:08 UTC] PHP Warning:  Module 'pdo_sqlite' already loaded in Unknown on line 0
+[01-Jul-2012 13:21:08 UTC] PHP Warning:  Module 'pdo_mysql' already loaded in Unknown on line 0
+[02-Jul-2012 07:42:29 UTC] PHP Warning:  Module 'pdo_sqlite' already loaded in Unknown on line 0
+[02-Jul-2012 07:42:29 UTC] PHP Warning:  Module 'pdo_mysql' already loaded in Unknown on line 0
+[02-Jul-2012 07:42:29 UTC] PHP Fatal error:  Class 'Doo' not found in /home/carlos/public_html/super/dooframework/controller/DooCliController.php on line 17

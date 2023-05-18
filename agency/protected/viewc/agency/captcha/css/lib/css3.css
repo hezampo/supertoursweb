@@ -1,0 +1,79 @@
+/* CSS 3 Specific Styles
+
+	This will be ignored by older browsers.
+	Current support includes Safari 4 and FF 3.5
+	
+*/
+
+/* Custom Fonts ------------------------------------- */
+@font-face {
+	font-family: "Rockwell Extra Bold";
+	src: local("Rockwell Extra Bold"), url(http://sandbox.smullinstudios.com/css/lib/fonts/Rockwell%20Extra%20Bold.ttf);
+	font-weight: bold;
+}
+
+@font-face {
+	font-family: "Rockwell";
+	src: local("Rockwell"), url(http://sandbox.smullinstudios.com/css/lib/fonts/Rockwell.ttf);
+}
+
+
+/* Border Radius ------------------------------------ */
+#center, #message, #modal-window img { border-radius: 10px; -moz-border-radius: 10px; -webkit-border-radius: 10px; }
+#thumbs li { border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; }
+
+
+/* RGBa Colors, Shadows and Transitions ---------------------- */
+#center { 
+	box-shadow: inset 0px 0px 3px rgba(0,1,13,.65);
+	-moz-box-shadow: inset 0px 0px 3px rgba(0,1,13,.65);
+	-webkit-box-shadow: inset 0px 0px 3px rgba(0,1,13,.65); 
+}
+#globalNav a, #subNav a { 
+	color: rgba(83,84,78,.85); 
+	-webkit-transition: all .25s linear;	
+}
+#globalNav a:hover, #subNav a:hover { color: rgba(95, 104, 69, 0.9); font-weight: bold; }
+
+#prevPage, #nextPage { 
+	color: rgba(83,84,78,0.45); 
+	text-shadow: 0px 0px 3px rgba(0,1,13,0.45);
+	-webkit-transition: color .25s linear;
+}
+#prevPage:hover, #nextPage:hover { color: rgba(95,104,69,0.9); }
+
+#prevImage, #nextImage {
+	color: rgba(134,170,182, 0.75);
+	text-shadow: 0px 0px 2px rgba(0,1,13,0.45);
+	-webkit-transition: color .25s linear;
+}
+#prevImage:hover, #nextImage:hover { color: rgba(0,1,13,0.9); }
+
+.disabled:hover { color: rgba(83,84,78,.25); }
+
+#thumbs li, #center { background: rgba(83,84,78, 0.85); -webkit-transition: background .125s linear; }
+#thumbs li:hover { background: rgba(83,84,78,1); }
+
+#thumbs li img, #center img {
+	box-shadow: 0px 0px 3px rgba(0,1,13,0.65);
+	-moz-box-shadow: 0px 0px 3px rgba(0,1,13,0.65);
+	-webkit-box-shadow: 0px 0px 3px rgba(0,1,13,0.65);
+}
+
+#message { 
+	background: rgba(217,217,215, .95); 
+	box-shadow: 2px 2px 10px rgba(0,1,13,.75);
+	-moz-box-shadow: 2px 2px 10px rgba(0,1,13,.75);
+	-webit-box-shadow: 2px 2px 10px rgba(0,1,13,.75);	
+}
+
+#modal-window img { 
+	border: 10px solid rgba(0,0,0,.45); 
+	box-shadow: 0px 0px 10px rgba(0,0,0,.65);
+	-moz-box-shadow: 0px 0px 10px rgba(0,0,0,.65);
+	-webkit-box-shadow: 0px 0px 10px rgba(0,0,0,.65);	
+}
+
+
+/* Special Formatting - Columns, nth margins, etc. ------------ */
+#thumbs li:first-child { margin-right: 60px; }

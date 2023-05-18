@@ -1,0 +1,298 @@
+<?php
+
+/**
+ * Description of RatesroomController
+ *
+ * @author Angel Valencia.
+ */
+
+Doo::loadController('I18nController');
+class RatesroomController extends I18nController{
+   
+    public function beforeRun($resource, $action) {
+       if (!isset($_SESSION['login'])) {
+            return Doo::conf()->APP_URL;
+        }
+    }
+    
+    public function index(){
+        
+         // Cargamos el paginador
+        Doo::loadHelper('DooPager'); 
+        $filtro = "";
+       if (!isset($this->params['type_rate'])) {
+          $type_rate = "0";
+       } else {
+          $type_rate = $this->params['type_rate'];
+       }
+        
+        if (!isset($_POST["filtro"])) {
+            if (!isset($this->params['filtro'])) {
+                $filtro = "";
+            } else {
+                $filtro = $this->params['filtro'];
+            }
+        }else{
+            $filtro = $_POST["filtro"];
+        }
+       
+        if (!isset($_POST["texto"])) {
+           if (!isset($this->params['texto'])) {
+                $texto = "";
+            } else {
+                $texto = $this->params['texto'];
+            }
+        } else {
+            $texto = $_POST["texto"];
+        }
+
+        $rtval = 0;
+        $fi = "";
+        if ($filtro == "codigo"){
+            $fi = "codigo";
+            $filtro = " and t2.codigo like '%".$texto."%'";
+            $rtval = 1;
+        }
+        if($filtro == "nombre"){
+            $fi = "nombre";
+            $filtro = "and t2.nombre like '%".$texto."%'";
+            $rtval = 2;
+        }
+
+        $sql = "select count(*) as total  from (SELECT t1.id,t1.id_hotel,t1.fecha_ini,t1.fecha_fin, t1.sgl, t1.dbl, t1.tpl,
+     									  t1.qua,t1.resortprice,t1.brackfast,t2.nombre,type_rate
+      									 FROM ratesvalid t1
+										 LEFT JOIN hoteles t2 ON (t1.id_hotel = t2.id)
+                                where type_rate = ? $filtro order by t1.id) as result";
+        $qset = Doo::db()->query($sql,array($type_rate));
+        $rs = $qset->fetchAll();
+        $total = $rs[0]['total'];
+
+         if ($total == 0)
+           $total = 1;
+        // iniciamos el paginador
+
+        $pager = new DooPager(Doo::conf()->APP_URL."admin/tours/room-rates/$fi/$texto/$type_rate/page", $total, 10, 5);
+
+        if(isset($this->params['pindex']))
+            $pager->paginate(intval($this->params['pindex']));
+        else
+            $pager->paginate(1);
+
+        $rs = Doo::db()->query("SELECT t1.id,t1.id_hotel,t1.fecha_ini,t1.fecha_fin, t1.sgl, t1.dbl, t1.tpl,
+     									  t1.qua,t1.resortprice,t1.brackfast,t2.nombre,type_rate
+      									 FROM ratesvalid t1
+										 LEFT JOIN hoteles t2 ON (t1.id_hotel = t2.id)
+                                where type_rate = ? $filtro order by t1.id limit $pager->limit ",
+                                array($type_rate));
+
+        $ratesroom = $rs->fetchAll();
+
+        if($rtval == 0){
+            $filtro = "";
+        }
+        if($rtval == 1){
+            $fitro = "codigo";
+        }
+        if($rtval == 2){
+            $filtro = "nombre";
+        }
+
+        $this->data['rootUrl'] = Doo::conf()->APP_URL;
+        $this->data['content'] = 'configuracion/roomrates.php';
+        $this->data['filtro']  = $filtro;
+        $this->data['texto']   = $texto;
+        $this->data['ratesroom']   = $ratesroom;
+        $this->data['pager']   = $pager->output;
+        $this->renderc('admin/index', $this->data,true);
+
+    }
+    
+     public function add(){
+        Doo::loadModel("Ratesroom");
+        $ratesroom = new Ratesroom();
+        $this->data['rootUrl']     = Doo::conf()->APP_URL;
+        $this->data['ratesroom']        = $ratesroom;
+	    $this->data['hotel']  = Doo::db()->find("Hoteles",array("select id,nombre from hoteles" ,"asArray" => true)); 
+        $this->data['content'] = 'configuracion/frm_rrates.php';
+		 $this->data['dato'] = "New";
+        $this->renderc('admin/index', $this->data);
+    }
+   
+    public function save(){
+      
+        Doo::loadModel("Ratesroom");
+       
+        $ratesroom = new Ratesroom($_POST);
+		
+		
+		
+        list($mes,$dia,$anyo) = explode("-",$ratesroom->fecha_ini);
+		
+		
+		$fecha_ini = $anyo."-".$mes."-".$dia;
+				
+		$ratesroom->fecha_ini = strtotime($fecha_ini);
+		
+		
+		if(isset($ratesroom->fecha_fin)){
+		
+		list($mes2,$dia2,$anyo2) = explode("-",$ratesroom->fecha_fin);
+		
+		$fecha_fin = $anyo2."-".$mes2."-".$dia2;
+		$ratesroom->fecha_fin = strtotime($fecha_fin);
+		
+		}
+		
+		
+		
+		$rs = Doo::db()->query("SELECT tax,stoproft,maximo 
+		                                  FROM hoteles 
+		
+			                               WHERE id = ?",array($ratesroom->id_hotel));
+										   
+		
+		$porcentajes = $rs->fetch();
+		
+		
+	
+	
+	
+        $new = false;
+        
+		
+        if ($_POST['id'] == "") {
+            $ratesroom->id = Null;
+            $new = true;
+        }
+
+        $this->data['rootUrl'] = Doo::conf()->APP_URL;
+        
+        if ($new){
+            Doo::db()->insert($ratesroom);
+			
+			$id = Doo::db()->lastInsertId();
+			
+		$sgltax = round(($porcentajes['tax']/100) * $ratesroom->sgl+$ratesroom->sgl);
+		$dbltax = round(($porcentajes['tax']/100) * $ratesroom->sgl+$ratesroom->dbl);
+		$tpltax = round(($porcentajes['tax']/100) * $ratesroom->sgl+$ratesroom->tpl);
+		$quatax = round(($porcentajes['tax']/100) * $ratesroom->sgl+$ratesroom->qua);
+		
+		$desayunotax = $ratesroom->brackfast;
+		
+		Doo::db()->query("INSERT INTO comifijas
+                       (id_hotel,sgl,dbl,tpl,qua,costax,netax,comtax,id_ratesvalid,breackfast,fecha_ini,fecha_fin)
+            VALUES ('$ratesroom->id_hotel','$sgltax','$dbltax','$tpltax','$quatax','1','0','0','$id','$desayunotax','$ratesroom->fecha_ini','$ratesroom->fecha_fin');");
+		
+		
+		
+		
+		
+		$sglsto = round(($porcentajes['stoproft']/100) * $ratesroom->sgl+$sgltax);
+		$dblsto = round(($porcentajes['stoproft']/100) * $ratesroom->sgl+$dbltax);
+		$tplsto = round(($porcentajes['stoproft']/100) * $ratesroom->sgl+$tpltax);
+		$quasto = round(($porcentajes['stoproft']/100) * $ratesroom->sgl+$quatax);
+		
+		$desayunosto = round(($porcentajes['stoproft']/100) * $ratesroom->brackfast+$desayunotax);
+		
+			Doo::db()->query("INSERT INTO comifijas
+                       (id_hotel,sgl,dbl,tpl,qua,costax,netax,comtax,id_ratesvalid,breackfast,fecha_ini,fecha_fin)
+            VALUES ('$ratesroom->id_hotel','$sglsto','$dblsto','$tplsto','$quasto','0','1','0','$id','$desayunosto','$ratesroom->fecha_ini','$ratesroom->fecha_fin');");
+			
+		 $variable = (100 - $porcentajes['maximo'])/100;
+		 	
+		$sglmaximo = round( $sglsto / $variable  );
+		$dblmaximo = round( $dblsto / $variable);
+		$tplmaximo = round( $tplsto / $variable);
+		$quamaximo = round( $quasto / $variable);
+		
+		$desayunomaxi = round( $desayunosto / $variable);
+			Doo::db()->query("INSERT INTO comifijas
+                       (id_hotel,sgl,dbl,tpl,qua,costax,netax,comtax,id_ratesvalid,breackfast,fecha_ini,fecha_fin)
+            VALUES ('$ratesroom->id_hotel','$sglmaximo','$dblmaximo','$tplmaximo','$quamaximo','0','0','1','$id','$desayunomaxi','$ratesroom->fecha_ini','$ratesroom->fecha_fin');");
+			
+        }else{
+           Doo::db()->update($ratesroom);
+		   
+		   $borrado = Doo::db()->query("DELETE FROM  comifijas
+								WHERE id_hotel = '$ratesroom->id_hotel'");
+								
+			if($borrado){					
+			 $rs =  Doo::db()->query("SELECT  id
+							FROM ratesvalid 
+							 where id = '$ratesroom->id'");
+							 
+				$dato = $rs->fetch();
+				$id =$dato['id'];
+			  
+		$sgltax = round(($porcentajes['tax']/100) * $ratesroom->sgl+$ratesroom->sgl);
+		$dbltax = round(($porcentajes['tax']/100) * $ratesroom->sgl+$ratesroom->dbl);
+		$tpltax = round(($porcentajes['tax']/100) * $ratesroom->sgl+$ratesroom->tpl);
+		$quatax = round(($porcentajes['tax']/100) * $ratesroom->sgl+$ratesroom->qua);
+		
+		$desayunotax = $ratesroom->brackfast;
+		
+		Doo::db()->query("INSERT INTO comifijas
+                       (id_hotel,sgl,dbl,tpl,qua,costax,netax,comtax,id_ratesvalid,breackfast,fecha_ini,fecha_fin)
+            VALUES ('$ratesroom->id_hotel','$sgltax','$dbltax','$tpltax','$quatax','1','0','0','$id','$desayunotax','$ratesroom->fecha_ini','$ratesroom->fecha_fin');");
+		
+		
+		
+		
+		
+		$sglsto = round(($porcentajes['stoproft']/100) * $ratesroom->sgl+$sgltax);
+		$dblsto = round(($porcentajes['stoproft']/100) * $ratesroom->sgl+$dbltax);
+		$tplsto = round(($porcentajes['stoproft']/100) * $ratesroom->sgl+$tpltax);
+		$quasto = round(($porcentajes['stoproft']/100) * $ratesroom->sgl+$quatax);
+		
+		$desayunosto = round(($porcentajes['stoproft']/100) * $ratesroom->brackfast+$desayunotax);
+		
+			Doo::db()->query("INSERT INTO comifijas
+                       (id_hotel,sgl,dbl,tpl,qua,costax,netax,comtax,id_ratesvalid,breackfast,fecha_ini,fecha_fin)
+            VALUES ('$ratesroom->id_hotel','$sglsto','$dblsto','$tplsto','$quasto','0','1','0','$id','$desayunosto','$ratesroom->fecha_ini','$ratesroom->fecha_fin');");
+			
+		 $variable = (100 - $porcentajes['maximo'])/100;
+		 	
+		$sglmaximo = round( $sglsto / $variable  );
+		$dblmaximo = round( $dblsto / $variable);
+		$tplmaximo = round( $tplsto / $variable);
+		$quamaximo = round( $quasto / $variable);
+		
+		$desayunomaxi = round( $desayunosto / $variable);
+			Doo::db()->query("INSERT INTO comifijas
+                       (id_hotel,sgl,dbl,tpl,qua,costax,netax,comtax,id_ratesvalid,breackfast,fecha_ini,fecha_fin)
+            VALUES ('$ratesroom->id_hotel','$sglmaximo','$dblmaximo','$tplmaximo','$quamaximo','0','0','1','$id','$desayunomaxi','$ratesroom->fecha_ini','$ratesroom->fecha_fin');");	 				
+		    }
+		   
+		   
+          }
+         return Doo::conf()->APP_URL . "admin/tours/room-rates";
+                
+    }
+    
+    public function edit() {
+        Doo::loadModel("Ratesroom");
+        $ratesroom = new Ratesroom();
+        $ratesroom->id = $this->params["pindex"];
+        $this->data['rootUrl'] = Doo::conf()->APP_URL;
+        $this->data['ratesroom']        = Doo::db()->find($ratesroom, array('limit' => 1));
+		$this->data['hotel']  = Doo::db()->find("Hoteles",array("select id,nombre from hoteles" ,"asArray" => true)); 
+        $this->data['content'] = 'configuracion/frm_rrates.php';
+		 $this->data['dato'] = "edit";
+        $this->view()->renderc('admin/index', $this->data);
+    }
+	
+	
+
+    public function delete() {
+        Doo::loadModel("Ratesroom");
+        $ratesroom = new Ratesroom();
+        $ratesroom->id = $_REQUEST['item'];
+        Doo::db()->delete($ratesroom);
+        return Doo::conf()->APP_URL . "admin/tours/room-rates";
+    }
+
+    
+}
+
+?>

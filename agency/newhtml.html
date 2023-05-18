@@ -1,0 +1,217 @@
+<title>Reservations Super Tours OF Orlando�?</title>
+<style type='text/css'>
+    #clearTable {
+        width: 1024px;
+        font-size: 13px;
+        font-family: Verdana, Geneva, sans-serif;
+        margin: 0 auto;
+    }
+    #clearTable tr #titletd3 {
+        font-family: Verdana, Geneva, sans-serif;
+    }
+    #clearTable tr #titletd2 {
+        font-size: 20px;
+    }
+    #clearTable tr td p {
+        text-align: center;
+    }
+
+    #content #center-column #tdgris {
+        background-color: #F0F0F0;
+    }
+    #content #center-column #tdrojo {
+        background-color: #FFE6E6;
+    }
+    #content #center-column1 #titletd {
+        background-color: #F5EDEB;
+        padding-left: 5px;
+        font-size: 12px;
+    }
+    #titlett {
+        background-color: #E8E8E8;
+        
+        font-size: 12px;
+        height: 30px;
+        padding: 5px;
+    }
+    #titlell {
+        padding-left: 5px;
+        font-size: 12px;
+        border-bottom-width: 1px;
+        border-left-width: 1px;
+        border-bottom-style: solid;
+        border-left-style: solid;
+        border-bottom-color: #E6E6E6;
+        border-left-color: #E6E6E6;
+    }
+    #titlelp {
+        padding-left: 5px;
+        font-size: 12px;
+        border-bottom-width: 1px;
+        border-bottom-style: solid;
+        border-bottom-color: #E6E6E6;
+    }
+    #titlelr {
+        padding-left: 5px;
+        font-size: 12px;
+        border-top-width: 1px;
+        border-top-style: solid;
+        border-top-color: #CE0000;
+        color: #CE0000;
+    }
+    #tdgristable {
+        background-color: #FFF;
+        padding-left: 5px;
+    }
+
+
+
+    .Estilo1 {color: #FF0000}
+</style>
+</head>
+<div align='center'>
+    <table   id='clearTable'> 
+        <tr>
+            <td width='316' height='33' rowspan='2' id='titletd3'><img src='http://localhost/supertours/Logo-Supertours-mail.jpg' width='316' height='88' /></td>
+            <td colspan='3' align='center' id='titletd3'>Supertours.com</td>
+        </tr>
+        <tr>
+            <td height='35' colspan='3' id='titletd4'>Date:" . date("M-d-Y") . " / Hora:" . date("g:i A") . " </td>
+        </tr>
+        <tr>
+            <td align='center' height='33' colspan='4' id='titletd2'> <h3>" . $titulo . "</h3></td>
+        </tr>
+        <tr>
+            <td height='15' id='titletd6'>LEAD TRAVELER:
+                <br/><br/>
+                <strong>User Name: </strong>" . $datos['username'] . "
+                <br/><br/>
+                <strong>First Name: </strong>" . $datos['firstname'] . "
+                <br/><br/>
+                <strong>Last Name: </strong>" . $datos['lastname'] . "
+                <br/><br/>
+                <strong>Phone: </strong>" . $datos['phone'] . "
+                <br/><br/>
+                <strong>Cellphone: </strong>" . $datos['celphone'] . "    
+
+            </td>
+            <td width='145' height='15' id='titletd6'>&nbsp;</td>
+            <td colspan='2' id='titletd6'><strong>AD :</strong>" . $datos["adult"] . " <strong>CHD :</strong>" . $datos["child"] . "  <strong> TOTAL :</strong>" . $totalpax . "<br/><br/><strong>Status :</strong> " . $datos["estado"] . "<br/><br/><strong> Code Quotation :</Strong> " . $datos['code_conf'] . "</td>
+        </tr>
+        <tr>
+            <td height='45' colspan='4' id='titletd'> <p><strong>ORDER&nbsp;  QUOTATION</strong></p></td>
+        </tr>
+        <tr><td colspan='3'>Your trip will include:
+                <table width='96%' height='90' id='tableorder'>
+                    <tr>
+                        <td height='35' colspan='3' id='titlett'  ><strong ><div align=\"left\" > ITINERARY ARRIVAL</div></strong></td>
+                    </tr>
+                    <tr>
+                        <td height='47' colspan='3'><br/><p>"
+                                . (($s_arrival == 1) ? " Bus Transportation on Trip <strong>" . $datos_reserva["trip_no"] . "</strong>, <strong>" . date("M-d-Y", strtotime($datos_reserva['fecha_salida'])) . "</strong> &#45; Pick up time <strong>" . date("g:i A", strtotime($datos_reserva['deptime1'])) . "</strong> &#45; from <strong>" . $datos_reserva["de"] . '-' . $datos_reserva["placepo1"] . " - " . "</strong>, arriving at <strong>" . date("h:s A", strtotime($datos_reserva['arrtime1'])) . "</strong> , you will be greeted by your tour guide/driver in Orlando.
+                            
+                            <br>
+                            <strong > <div align='left' id='titlett'> ACCOMMODATION</div></strong>
+                            <br>
+                            <p>Hotel <strong>" . $datos_hotel['hotel'] . "</strong> or SIMILAR: <strong><span style='color:red;'>REQUESTED/PENDING</span></strong></p>
+                            <p>You will receive a final confirmation of the hotel or similar in less than 24 hours by e-mail.</p>
+
+                            Hotel accommodation at the <strong>" . $datos_hotel['hotel'] . "</strong> in <strong>" . $datos_hotel['roooms'] . "</strong> room(s). for <strong>" . $datos_hotel['nights'] . "</strong> night(s) from <strong>" . date("M-d-Y", strtotime($datos_hotel['starting_date'])) . "</strong> Check In Time is 4:00pm . To
+                            <strong>" . date("M-d-Y", strtotime($datos_hotel['ending_date'])) . "</strong> Check Out Time is 11:00am." . (( $datos_hotel["breakfast"] != 0) ? " FREE DAILY CONTINENTAL BREKFAST " : "") . " Taxes are Included.
+                            <br>" . (($datos_hotel["buffet"] == 1 ) ? "<br><br>Daily SUPER BREKFAST BUFFET at your hotel." : "") . "<br>
+                            
+                            <br>
+                            <strong > <div align='left' style='text-decoration: underline' id='titlett'> TRANSFERS & THEME PARKS INCLUDED ARE:</div></strong>
+                            Round trip daily transportation from your Hotel to
+                            <ul>" . $npark . "</ul>" . (($admision == 1) ? "<strong>Admissions to Theme Parks ARE INCLUDED.</strong>" : "<strong>Admissions to Theme Parks are NOT INCLUDED.</strong>") . "<hr>" : "")
+                            . (($s_arrival == 2) ? "Date Arrival <strong>" . date("M-d-Y", strtotime($datos_hotel['starting_date'])) . "</strong> &#45;you have choosen <strong>" . date("h:s A", strtotime($datos_in["arrival_time"])) . "</strong>, on a luxury private transportation from <strong>" . $datos_in['city'] . "</strong>, <strong>" . $datos_in['address'] . "</strong> ,<strong></strong> to <strong>" . $datos_hotel['hotel'] . "</strong><hr><strong > <div align=\"left\" > ACCOMMODATION</div></strong><br>Hotel accommodation at the <strong>" . $datos_hotel['hotel'] . "</strong> in <strong>" . $datos_hotel['roooms'] . "</strong> room(s). for <strong>" . $datos_hotel['nights'] . "</strong> night(s) from <strong>" . date("M-d-Y", strtotime($datos_hotel['starting_date'])) . "</strong> Check In Time is 4:00pm . To<strong>" . date("M-d-Y", strtotime($datos_hotel['ending_date'])) . "</strong> Check Out Time is 11:00am." . (($datos_hotel["breakfast"] != 0) ? " FREE DAILY CONTINENTAL BREKFAST. " : "") . "Taxes are Included.<br>" . (($datos_hotel["buffet"] == 1 ) ? "<br><br>Daily SUPER BREKFAST BUFFET at your hotel." : "") . "<br><hr><br><strong > <div align=\"left\" > LOCAL TRANSFERS TO PARKS</div></strong>
+                            <strong>" . date("M-d-Y", strtotime($datos_hotel['starting_date'])) . "</strong> Check Out Time is 11:00am." . (($datos_hotel["breakfast"] != 0) ? " FREE DAILY CONTINENTAL BREKFAST. " : "") . "Taxes are Included.<br>" . (($datos_hotel["buffet"] == 1 ) ? "<br><br>Daily SUPER BREKFAST BUFFET at your hotel." : "") . "<br><hr><br><strong > <div align=\"left\" > LOCAL TRANSFERS TO PARKS</div></strong>
+                            Round trip daily transportation from your Hotel to
+                            <ul>" . $npark . "</ul>" . (($admision == 1) ? "<strong>Admissions to Theme Parks ARE INCLUDED.</strong>" : "<strong>Admissions to Theme Parks are NOT INCLUDED.</strong>") . "<hr>
+                            " : "")
+                            . (($s_arrival == 3) ? "<br />Date Arrival <strong>" . $datos_hotel['starting_date'] . "</strong> &#45; Arriving: By plane  at Orlando International Airport 
+                            Data Transfer In  :   Airline: <strong>" . $datos_in["airlie"] . "</strong>   Flight #:   <strong>" . $datos_in["flight"] . "</strong> Arrival Time:<strong>" . date("h:s A", strtotime($datos_in['arrival_time'])) . "</strong>
+                            . You will be greeted by your tour guide/driver in orlando to take you to  <strong>" . $datos_hotel['hotel'] . "
+                                <strong > <div align='left' id=\"titlett\"> ACCOMMODATION</div></strong><br>
+                                Hotel accommodation at the <strong>" . $datos_hotel['hotel'] . "</strong> in <strong>" . $datos_hotel['roooms'] . "</strong> room(s). for <strong>" . $datos_hotel['nights'] . "</strong> night(s) from <strong>" . date("M-d-Y", strtotime($datos_hotel['starting_date'])) . "</strong> Check In Time is 4:00pm . To
+                                <strong>" . date("M-d-Y", strtotime($datos_hotel['ending_date'])) . "</strong> Check Out Time is 11:00am." . (( $datos_hotel["breakfast"] != 0) ? " FREE DAILY CONTINENTAL BREKFAST. " : "") . " Taxes are Included.
+                                <br>" . (($datos_hotel["buffet"] == 1 ) ? "<br><br>Daily SUPER BREKFAST BUFFET at your hotel." : "") . "<br>
+                                <br>
+                                <strong > <div align='left' style='text-decoration: underline' id='titlett'> TRANSFERS & THEME PARKS INCLUDED ARE:</div></strong>
+                                Round trip daily transportation from your Hotel to<ul>" . $npark . "</ul>" . (($admision == 1) ? "<strong>Admissions to Theme Parks ARE INCLUDED.</strong>" : "<strong>Admissions to Theme Parks are NOT INCLUDED.</strong>") . "<hr>" : "")
+                                . (($s_arrival == 4) ? "<br />
+                                Date Arrival <strong>" . date("M-d-Y", strtotime($datos_hotel['starting_date'])) . "</strong> PLEASE, LET US KNOW ABOUT YOUR ARRIVAL TO ORLANDO BY  DIALING  OUR TOLL FREE 1800-251-4206, TO PLACE YOUR TICKETS AT  <strong>" . $datos_hotel['hotel'] . "</strong> OR FIGURE OUT ABOUT OTHER SERVICES. WE WILL PLEASED TO ASSIST YOU. 
+                                
+                                <strong > <div align='left' id='titlett'> ACCOMMODATION</div></strong><br>
+
+                                Hotel accommodation at the <strong>" . $datos_hotel['hotel'] . "</strong> in <strong>" . $datos_hotel['roooms'] . "</strong> room(s). for <strong>" . $datos_hotel['nights'] . "</strong> night(s) from <strong>" . date("M-d-Y", strtotime($datos_hotel['starting_date'])) . "</strong> Check In Time is 4:00pm . To
+                                <strong>" . date("M-d-Y", strtotime($datos_hotel['ending_date'])) . "</strong> Check Out Time is 11:00am." . (( $datos_hotel["breakfast"] != 0) ? " FREE DAILY CONTINENTAL BREKFAST. " : "") . " Taxes are Included.
+                                <br>" . (($datos_hotel["buffet"] == 1 ) ? "<br><br>Daily SUPER BREKFAST BUFFET at your hotel." : "") . "<br>
+                                <br>
+                                <strong > <div align='left' style='text-decoration: underline' > TRANSFERS & THEME PARKS INCLUDED ARE:</div></strong>
+                                <ul>" . $npark . "</ul>" . (($admision == 1) ? "<strong>Admissions to Theme Parks ARE INCLUDED.</strong>" : "<strong>Admissions to Theme Parks are NOT INCLUDED.</strong>") . "<hr>" : "") . "
+                                </p>
+
+
+                                <p>" . (($s_departure == 1) ? "<strong > <div align=\"left\" id=\"titlett\"> ITINERARY DEPARTURE</div></strong><br>
+                                    Bus Transportation  on Trip <strong>" . $datos_reserva["trip_no2"] . "</strong>, <strong>" . date("M-d-Y", strtotime($datos_reserva['fecha_retorno'])) . "</strong> &#45; <strong>" . date("h:s A", strtotime($datos_reserva['deptime2'])) . "</strong> &#45;  from Orlando Super Tours Terminal to <strong>  </strong> arriving at <strong>" . date("h:s A", strtotime($datos_reserva ['arrtime2'])) . "</strong>  <br />
+                                    " : "") . (($s_departure == 2) ? "<strong > <div align=\"left\" id=\"titlett\"> ITINERARY DEPARTURE</div></strong>
+                                    <br>Date departure <strong>" . $datos_hotel['ending_date'] . "</strong> &#45; Drop Off Time:  <strong>" . date("h:s A", strtotime($datos_out['arrival_time'])) . "</strong>, on a luxury private transportation from <strong>" . $datos_out['city'] . "</strong>, <strong>" . $datos_out['address'] . "</strong>, to MIAMI 
+                                    <br />
+                                    " : "") . (($s_departure == 3) ? "<strong > <div align=\"left\" id=\"titlett\"> ITINERARY DEPARTURE</div></strong>
+                                    <br>
+                                    Date departure <strong>" . date("M-d-Y", strtotime($datos_hotel['ending_date'])) . "</strong>  &#45; Departure: By Plane at Orlando International Airport 
+                                    Data Transfer Out:   Airline: <strong>" . $datos_out['airlie'] . "</strong>   Flight #:   <strong>" . $datos_out['flight'] . "</strong> Arrival Time: <strong>" . date("h:s A", strtotime($datos_out['arrival_time'])) . "</strong>
+
+
+
+                                    <br />
+                                    " : "") . (($s_departure == 4) ? "<strong > <div align=\"left\" id=\"titlett\"> ITINERARY DEPARTURE</div></strong>
+                                    <br>
+                                    Date departure <strong>" . date("M-d-Y", strtotime($datos_hotel['ending_date'])) . "</strong> <br> Departure: By Car   
+
+                                    <br />
+                                    " : "") . "
+
+                                    <br />
+                                    <br />
+                                </p></td>
+                    </tr>
+                </table>
+
+            </td>
+        </tr>
+        <tr>
+            <td height='33' colspan='4' id='titletd' ><strong style='text-decoration: underline'>PRICE</strong></td>
+        </tr>
+        <tr>
+            <td colspan='4'><table width='90%' border='0'>
+                    <tr>
+                        <td height='32' align='center'><strong>The total amount for your tour is:</strong> <span id='tqprice' >$" .
+                                (($datos["otheramount"] == 0) ? ( ($datos ['total'] )) : $datos["otheramount"])
+                                . "</span> </td>
+                    </tr>
+                    <tr>
+                        <td height='40' align='center' ><span class='Estilo1'>VERIFY YOUR TOUR BEFORE PROCEEDING CLICKING ON PAY TOUR</span></td>
+                    </tr>
+                    <tr>
+                        <td align='center'>Once you click on PAY TOUR, you can no longer make any changes or modifications.  For questions or assistance you may call (407) 370-3001 and speak with one of our Call Center Representative.<br /></td>
+                    </tr>
+                </table>
+                <p>&nbsp;</p>
+                <p>Any or all unused services are Non-Refundable - Non-Transferable - Modification in Travel Dates are not permitted. <br />
+                <p>Luggage restrictions apply - Please read the terms of transportation at <a href='https://www.supertours.com'>www.supertours.com</a> <br />
+                    <span style='text-align:center;'> 
+                        <p>THANK YOU FOR CHOOSING SUPER TOURS OF ORLANDO! HAVE A SUPER TRIP!</p>
+                        <p><strong>SUPER TOURS OF ORLANDO, Inc.</strong> </p>
+                        <p> 5419 International Drive, Orlando Fl. 32819</p>
+                        <p>Phone: (407) 370-3001 / U.S.A. TOLL FREE 1-800-251-4206 </p>
+                        <p style='text-decoration: underline'>reservations@supertours.com</p>
+                    </span>
+                </p></td>
+        </tr>
+        <tr>
+            <td height='18' colspan='4' align='center'> <p align='center' class='titulopago'></p></td>
+        </tr>
+    </table>
+</div>

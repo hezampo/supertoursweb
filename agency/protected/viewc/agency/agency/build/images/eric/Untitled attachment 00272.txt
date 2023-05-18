@@ -1,0 +1,22 @@
+Received: from DESKTOP0AA1O1N ([190.69.127.57])
+	by :SMTPAUTH: with ESMTPSA
+	id Xz3Uh416T2jNvXz3VhPRWS; Mon, 03 Jun 2019 19:20:06 -0700
+From: <websales@supertours.com>
+To: <internetproductsupport@convergepay.com>
+References: <1313159512.42177.1559608461019.JavaMail.jbossadmin@svplknxcnvrgapp02.servers.global.prv>
+In-Reply-To: <1313159512.42177.1559608461019.JavaMail.jbossadmin@svplknxcnvrgapp02.servers.global.prv>
+Subject: RE: Order Confirmation
+Date: Mon, 3 Jun 2019 22:20:05 -0400
+Message-ID: <010601d51a7c$071bb1a0$155314e0$@supertours.com>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0107_01D51A5A.800DBB20"
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQHm1G0voQ4HFXesqLJy34Uo/A6OdKZnTyGg
+Content-Language: en-us
+X-Antivirus: Avast (VPS 190603-6, 06/03/2019), Outbound message
+X-Antivirus-Status: Clean
+X-CMAE-Envelope: MS4wfIg8wIpyqBA2PWF+aL7ynwLjshp1YHtXayDiYZGsIjXFTMtM5SA07qQYeAkYm86MVP/uh+lMmGCAZUTR/lCqZAiyMpSOOEHIhrm0fZ9lbYUVHd26g0t7
+ zMWMLw22kjPLQrxXyvEXx/SSQjsfU9Q8+QFL/Yv54viGJTOZcUcQ5myw31PVizQ99j0fJXsEbGmWg4vNPMZdQht4nAdBtEmVSXE654bR3Nrq0o/hA1cpkvwF
+
+

@@ -1,0 +1,82 @@
+/* -------------------------------------------------------------- 
+   
+   Boilerplate typography.css
+   * Sets up some sensible default typography.
+  
+-------------------------------------------------------------- */
+
+/* This is where you set your desired font size. The line-heights 
+   and vertical margins are automatically calculated from this. 
+   The percentage is of 16px (0.75 * 16px = 12px). */
+body { font-size: 75%; }
+
+
+/* Default fonts and colors. */
+h1, h2, legend, label { font-family: "Rockwell", "Courier New", Courier, monospace; }
+h3, h4, p, ul, ol, dl { font-family: Georgia, "Times New Roman", Times, serif; } 
+
+
+/* Headings
+-------------------------------------------------------------- */
+
+h1,h2,h3,h4 { font-weight: bold; width: 100%; margin: 0 0 0.5em 0; }
+
+h1 { font-size: 3em; line-height: 1; }
+h2 { font-family: "Rockwell", "Courier New", Courier, monospace; font-size: 36px; color: #5f6845;  float: left; }
+h3 { font-size: 18px; line-height: 1; color: #53544e; }
+h4 { font-size: 1.5em; line-height: 1.25; color: #53544e;  font-style: italic; }
+
+
+/* Text elements
+-------------------------------------------------------------- */
+
+p { margin: 0 0 1.5em; color: #53544e; }
+
+ul, ol { margin: 0 1.5em 1.5em 1.5em; }
+ul { list-style-type: circle; }
+ol { list-style-type: decimal; }
+
+dl { margin: 0 0 1.5em 0; }
+dl dt { font-weight: bold; }
+dl dd { margin-left: 1.5em; }
+
+abbr, acronym { border-bottom: 1px dotted #000; }
+address { margin-top: 1.5em; font-style: italic; }
+del { color: #000; }
+
+a { color: #86aab6; text-decoration: none; font-weight: bold; }
+p a { border-bottom: 1px dotted #d9d9d7; }
+a:hover { color: #5f6845; text-decoration: none; }
+
+blockquote { margin: 1.5em; }
+strong { font-weight: bold; }
+em, dfn { font-style: italic; }
+dfn { font-weight: bold; }
+pre, code { margin: 1.5em 0; white-space: pre; }
+pre, code, tt { font: 1em monospace; line-height: 1.5; } 
+tt { display: block; margin: 1.5em 0; line-height: 1.5; }
+
+
+/* Tables
+-------------------------------------------------------------- */
+
+table { margin-bottom: 1.4em; }
+th { border-bottom: 2px solid #ddd; font-weight: bold; }
+td { border-bottom: 1px solid #ddd; }
+th,td { padding: 4px 10px 4px 0; }
+tfoot { font-style: italic; }
+caption { background: #ffc; }
+
+
+/* Some default classes
+-------------------------------------------------------------- */
+
+.small { font-size: .8em; margin-bottom: 1.875em; line-height: 1.875em; }
+.large { font-size: 1.2em; line-height: 2.5em; margin-bottom: 1.25em; }
+.quiet { color: #999; }
+
+.hide { display: none; }
+.highlight { background: #ffc; }
+
+.top { margin-top: 0; padding-top: 0; }
+.bottom { margin-bottom: 0; padding-bottom: 0; }

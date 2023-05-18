@@ -1,0 +1,62 @@
+[03-Mar-2021 11:24:39 America/New_York] PHP Fatal error:  Uncaught exception 'SqlMagicException' with message 'Failed to open the DB connection' in /home/arturo/public_html/agency/dooframework/db/DooSqlMagic.php:478
+Stack trace:
+#0 /home/arturo/public_html/agency/dooframework/Doo.php(412): DooSqlMagic->connect()
+#1 /home/arturo/public_html/agency/index.php(30): Doo::db()
+#2 {main}
+  thrown in /home/arturo/public_html/agency/dooframework/db/DooSqlMagic.php on line 478
+[03-Mar-2021 11:25:08 America/New_York] PHP Fatal error:  Uncaught exception 'SqlMagicException' with message 'Failed to open the DB connection' in /home/arturo/public_html/agency/dooframework/db/DooSqlMagic.php:478
+Stack trace:
+#0 /home/arturo/public_html/agency/dooframework/Doo.php(412): DooSqlMagic->connect()
+#1 /home/arturo/public_html/agency/index.php(30): Doo::db()
+#2 {main}
+  thrown in /home/arturo/public_html/agency/dooframework/db/DooSqlMagic.php on line 478
+[09-Sep-2021 19:31:35 America/New_York] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/arturo/public_html/agency/protected/controller/RecaptController.php:555) in /home/arturo/public_html/agency/protected/controller/ToursControllerWeb.php on line 35
+[09-Sep-2021 19:33:16 America/New_York] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/arturo/public_html/agency/protected/controller/RecaptController.php:555) in /home/arturo/public_html/agency/protected/controller/ToursControllerWeb.php on line 35
+[09-Sep-2021 19:33:16 America/New_York] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/arturo/public_html/agency/protected/controller/RecaptController.php:555) in /home/arturo/public_html/agency/protected/controller/ToursControllerWeb.php on line 35
+[09-Sep-2021 19:33:33 America/New_York] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/arturo/public_html/agency/protected/controller/RecaptController.php:555) in /home/arturo/public_html/agency/protected/controller/ToursControllerWeb.php on line 35
+[09-Sep-2021 19:33:46 America/New_York] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/arturo/public_html/agency/protected/controller/RecaptController.php:555) in /home/arturo/public_html/agency/protected/controller/ToursControllerWeb.php on line 35
+[09-Sep-2021 19:36:18 America/New_York] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/arturo/public_html/agency/protected/controller/RecaptController.php:555) in /home/arturo/public_html/agency/protected/controller/ToursControllerWeb.php on line 35
+[09-Sep-2021 19:36:31 America/New_York] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/arturo/public_html/agency/protected/controller/RecaptController.php:555) in /home/arturo/public_html/agency/protected/controller/ToursControllerWeb.php on line 35
+[09-Sep-2021 19:38:59 America/New_York] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/arturo/public_html/agency/protected/controller/RecaptController.php:555) in /home/arturo/public_html/agency/protected/controller/ToursControllerWeb.php on line 35
+[09-Sep-2021 19:39:12 America/New_York] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/arturo/public_html/agency/protected/controller/RecaptController.php:555) in /home/arturo/public_html/agency/protected/controller/ToursControllerWeb.php on line 35
+[09-Sep-2021 19:47:24 America/New_York] PHP Fatal error:  Uncaught exception 'PDOException' with message 'SQLSTATE[HY000]: General error: 1267 Illegal mix of collations (latin1_swedish_ci,IMPLICIT) and (utf8_unicode_ci,COERCIBLE) for operation '='' in /home/arturo/public_html/agency/dooframework/db/DooSqlMagic.php:838
+Stack trace:
+#0 /home/arturo/public_html/agency/dooframework/db/DooSqlMagic.php(838): PDOStatement->execute(Array)
+#1 /home/arturo/public_html/agency/protected/controller/admin/AdminController.php(771): DooSqlMagic->query('SELECT ua.id,ua...', Array)
+#2 /home/arturo/public_html/agency/dooframework/app/DooWebApp.php(341): AdminController->login()
+#3 /home/arturo/public_html/agency/dooframework/app/DooWebApp.php(100): DooWebApp->routeTo()
+#4 /home/arturo/public_html/agency/index.php(34): DooWebApp->run()
+#5 {main}
+  thrown in /home/arturo/public_html/agency/dooframework/db/DooSqlMagic.php on line 838
+[09-Sep-2021 19:47:24 America/New_York] PHP Fatal error:  Uncaught exception 'PDOException' with message 'SQLSTATE[HY000]: General error: 1267 Illegal mix of collations (latin1_swedish_ci,IMPLICIT) and (utf8_unicode_ci,COERCIBLE) for operation '='' in /home/arturo/public_html/agency/dooframework/db/DooSqlMagic.php:838
+Stack trace:
+#0 /home/arturo/public_html/agency/dooframework/db/DooSqlMagic.php(838): PDOStatement->execute(Array)
+#1 /home/arturo/public_html/agency/dooframework/db/DooSqlMagic.php(1942): DooSqlMagic->query('SELECT id,usern...', Array)
+#2 /home/arturo/public_html/agency/protected/controller/MainController.php(8317): DooSqlMagic->find('Clientes', Array)
+#3 /home/arturo/public_html/agency/dooframework/app/DooWebApp.php(341): MainController->loginuser()
+#4 /home/arturo/public_html/agency/dooframework/app/DooWebApp.php(100): DooWebApp->routeTo()
+#5 /home/arturo/public_html/agency/index.php(34): DooWebApp->run()
+#6 {main}
+  thrown in /home/arturo/public_html/agency/dooframework/db/DooSqlMagic.php on line 838
+[09-Sep-2021 19:49:33 America/New_York] PHP Fatal error:  Uncaught exception 'PDOException' with message 'SQLSTATE[HY000]: General error: 1267 Illegal mix of collations (latin1_swedish_ci,IMPLICIT) and (utf8_unicode_ci,COERCIBLE) for operation '='' in /home/arturo/public_html/agency/dooframework/db/DooSqlMagic.php:838
+Stack trace:
+#0 /home/arturo/public_html/agency/dooframework/db/DooSqlMagic.php(838): PDOStatement->execute(Array)
+#1 /home/arturo/public_html/agency/dooframework/db/DooSqlMagic.php(1942): DooSqlMagic->query('SELECT id,usern...', Array)
+#2 /home/arturo/public_html/agency/protected/controller/MainController.php(8317): DooSqlMagic->find('Clientes', Array)
+#3 /home/arturo/public_html/agency/dooframework/app/DooWebApp.php(341): MainController->loginuser()
+#4 /home/arturo/public_html/agency/dooframework/app/DooWebApp.php(100): DooWebApp->routeTo()
+#5 /home/arturo/public_html/agency/index.php(34): DooWebApp->run()
+#6 {main}
+  thrown in /home/arturo/public_html/agency/dooframework/db/DooSqlMagic.php on line 838
+[09-Sep-2021 20:02:17 America/New_York] PHP Fatal error:  Uncaught exception 'PDOException' with message 'SQLSTATE[HY000]: General error: 1267 Illegal mix of collations (latin1_swedish_ci,IMPLICIT) and (utf8_unicode_ci,COERCIBLE) for operation '='' in /home/arturo/public_html/agency/dooframework/db/DooSqlMagic.php:838
+Stack trace:
+#0 /home/arturo/public_html/agency/dooframework/db/DooSqlMagic.php(838): PDOStatement->execute(Array)
+#1 /home/arturo/public_html/agency/protected/controller/admin/AdminController.php(771): DooSqlMagic->query('SELECT ua.id,ua...', Array)
+#2 /home/arturo/public_html/agency/dooframework/app/DooWebApp.php(341): AdminController->login()
+#3 /home/arturo/public_html/agency/dooframework/app/DooWebApp.php(100): DooWebApp->routeTo()
+#4 /home/arturo/public_html/agency/index.php(34): DooWebApp->run()
+#5 {main}
+  thrown in /home/arturo/public_html/agency/dooframework/db/DooSqlMagic.php on line 838
+[09-Sep-2021 20:44:32 America/New_York] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/arturo/public_html/agency/protected/controller/RecaptController.php:555) in /home/arturo/public_html/agency/protected/controller/ToursControllerWeb.php on line 35
+[09-Sep-2021 21:40:07 America/New_York] PHP Fatal error:  Class 'SMTP' not found in /home/arturo/public_html/agency/dooframework/helper/class.phpmailer.php on line 1160
+[09-Sep-2021 21:40:08 America/New_York] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/arturo/public_html/agency/protected/controller/RecaptController.php:555) in /home/arturo/public_html/agency/protected/controller/ToursControllerWeb.php on line 35

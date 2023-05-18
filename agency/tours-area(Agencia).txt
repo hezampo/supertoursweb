@@ -1,0 +1,185 @@
+public function area()
+    {
+
+            Doo::loadModel("Agency");
+	    $dat = new Agency($_SESSION['data_agency']);
+            $type = $dat->type_rate; 
+            
+         $id = $this->params ['id'];
+        $sql = "SELECT DISTINCT t1.trip_to, t2.nombre  FROM routes t1
+                LEFT JOIN areas t2 ON (t1.trip_to = t2.id)
+                WHERE t1.type_rate = ? and t1.trip_from = 1 ";
+        $sql2 = "SELECT id,place,address
+FROM pickup_dropoff
+WHERE id_area = ?";
+
+        $rs = Doo::db()->query($sql);
+        $rs2 = Doo::db()->query($sql2, array(
+            $type,9
+        ));
+        $rs3 = Doo::db()->query($sql2, array(
+            $type,1
+        ));
+        $pickupdropof = $rs2->fetchAll();
+        $areas = $rs->fetchAll();
+        $pikuporlando = $rs3->fetchAll();
+        if ($id == 0) {
+		
+
+            echo '<script> $("#conte").css("display", "none");$("#pickups").css("display", "block"); </script>';
+            echo "<table width='80%' border='0' cellspacing='1' aling='center'>
+  <tr>
+    <td width='20%'>Area:</td>
+    <td width='20%'>";
+            echo "<select name='area' id='area'>";
+            foreach ($areas as $e) {
+                echo '<option value="' . $e ['trip_to'] . '" ' . ($e ["nombre"] == trim("MIAMI BEACH (CENTRAL)") ? 'selected' : '') . ' >' . $e ['nombre'] . '</option>';
+            }
+
+            echo "</select>";
+            echo "</td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Pickup Point:</td>
+    <td>";
+            echo "<select name='pickup' id='pickup' style='width:195px;'>";
+            foreach ($pickupdropof as $e) {
+                echo '<option value="' . $e ['id'] . '"  >' . $e ['place'] . '  ' . $e ['address'] . '</option>';
+            }
+
+            echo "</select>";
+            echo "</td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <!--tr>
+    <td>Drop Off Point: </td>
+    <td>";
+
+            // gropoff orlando
+            echo "<select name='pickup' id='pickup' style='width:195px;'>";
+            foreach ($pikuporlando as $e) {
+                echo '<option value="' . $e ['id'] . '"  >' . $e ['place'] . '  ' . $e ['address'] . '</option>';
+            }
+
+            echo "</select>";
+            echo "</td>
+  </tr-->
+</table>";
+            echo "<div id='regreso'><a href='#' id='back'>Back to trip</a></div>";
+
+            $url = Doo::conf()->APP_URL;
+
+echo '<script>
+	
+$("#area").change(function() {			
+
+	var id = $(this).val();	  
+	$("#area2").attr("value",id);
+				
+	$("#pickup").load("' . $url . 'tours/question15/" + id );
+	$("#pickup2").load("' . $url . 'tours/question15/" + id );
+			
+});
+
+
+$("#back").click(function() {
+
+
+  $( ".trip1:radio").attr("checked", false);
+  $("#pickups").css("display", "none");
+  $("#conte").css("display", "block");
+
+  return false;
+   
+});
+
+</script>';
+	  
+
+$variablephp = "<script> document.write(idArea) </script>";
+echo $variablephp;
+  
+        } else {
+            echo '<script>$("#conte2").css("display", "none");$("#pickups2").css("display", "block"); </script>';
+
+            // ////////////
+
+            echo "<table width='80%' border='0' cellspacing='1' aling='center'>
+  <tr>
+    <td width='20%'>Area:</td>
+    <td width='20%'>";
+            echo "<select name='area2' id='area2'>";
+            foreach ($areas as $e) {
+                echo '<option value="' . $e ['trip_to'] . '" ' . ($e ["nombre"] == trim("MIAMI BEACH (CENTRAL)") ? 'selected' : '') . ' >' . $e ['nombre'] . '</option>';
+            }
+
+            echo "</select>";
+            echo "</td>
+  </tr>
+  <!--tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr-->
+  <!--tr>
+    <td>Pickup Point:</td>
+    <td>";
+            echo "<select name='pickup2' id='pickup' style='width:195px;'>";
+            foreach ($pikuporlando as $e) {
+                echo '<option value="' . $e ['id'] . '"  >' . $e ['place'] . '  ' . $e ['address'] . '</option>';
+            }
+
+            echo "</select>";
+            echo "</td>
+  </tr-->
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Drop Off Point:</td>
+    <td>";
+
+            // gropoff area escogida
+            echo "<select name='pickup2' id='pickup2' style='width:195px;'>";
+            foreach ($pickupdropof as $e) {
+                echo '<option value="' . $e ['id'] . '"  >' . $e ['place'] . '  ' . $e ['address'] . '</option>';
+            }
+
+            echo "</select>";
+            echo "</td>
+  </tr>
+</table>";
+            echo "<div id='regreso'><a href='#' id='back2'>Back to trip</a></div>";
+
+            $url = Doo::conf()->APP_URL;
+            echo '<script>
+	
+			$("#area2").change(function() {
+			
+			    var id = $(this).val();
+			   $("#pickup2").load("' . $url . 'tours/question15/" + id );
+			
+			});
+
+
+$("#back2").click(function() {
+
+
+  $(".trip2:radio").attr("checked", false); 
+  $("#pickups2").css("display", "none");
+  $("#conte2").css("display", "block");
+
+  return false;
+  
+});
+
+</script>';
+        }
+    }

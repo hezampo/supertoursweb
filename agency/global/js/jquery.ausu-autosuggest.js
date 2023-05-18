@@ -1,0 +1,332 @@
+/*
+
+ * AUSU jQuery-Ajax Auto Suggest
+
+ * http://www.oslund.ca/
+
+ *
+
+ * @version
+
+ * 1.0.1 (Jan 28 2011)
+
+ *
+
+ * @copyright
+
+ * Copyright (C) 2011 Isaac Oslund
+
+ * Dual licensed under the MIT and GPL licenses.
+
+ * http://www.opensource.org/licenses/mit-license.php
+
+ * http://www.opensource.org/licenses/gpl-license.php
+
+ */
+
+
+
+(function($){
+
+    $.fn.autosugguest = function(config) {
+
+
+
+        var defaults = {
+
+            className: 'suggest',
+
+            methodType: 'POST',
+
+            addParams: null,
+
+            rtnIDs: false,
+
+            dataFile: 'data.php',
+
+            minChars:  4,
+
+            fadeTime:  100
+
+        };
+
+
+            //  debugger;
+
+        var config = $.extend(defaults, config);
+
+        var pertenece;
+
+        config.addParams = (config.addParams != '') ? '&' + config.addParams : '';
+
+
+
+        $('<div  class="ausu-suggestionsBox"></div>').appendTo('.' + config.className);
+
+        $(".ausu-suggestionsBox > ul li").live('mouseover', function()
+
+        {
+
+            var sel = $(this).parent().find("li[class='selected']").removeClass('selected');
+
+            $(this).addClass('selected');
+
+        });
+
+
+
+        $("." + config.className + " > input").keyup(function(event)
+
+        {
+
+            var fieldParent = $(this).parents('div.' + config.className);
+
+
+
+            if (event.which != 39 && event.which != 37 && event.which != 38 && event.which != 40 && event.which != 13 && event.which != 9 ) {
+
+
+
+                fieldVal = fieldParent.find('input:eq(0)').val();
+
+                suggest(fieldVal,this.id);
+
+                pertenece = this.id;
+
+
+
+            } else {
+
+
+
+                var fieldChild  = fieldParent.find('.ausu-suggestionsBox > ul');
+
+
+
+                switch (event.which)
+
+                {
+
+                    case 40: { keyEvent(fieldChild,'next');break; }
+
+                    case 38: { keyEvent(fieldChild,'prev');break; }
+
+                    case 13:
+
+                    {
+
+                        fieldParent.children('input:eq(0)').val($("li[class='selected'] a").text());
+
+                        if (config.rtnIDs==true) fieldParent.children('input:eq(1)').val($("li[class='selected']").attr("id"));
+
+                        fieldParent.children('div.ausu-suggestionsBox').hide();
+
+                        var id = fieldParent.children('input:eq(1)').val();
+
+                        poner(id,this.id);
+
+
+
+                        return false;
+
+                        break;
+
+                    }
+
+                    case 9:
+
+                    {
+
+                        offFocus(this); $("li").removeClass("selected");
+
+                        break;
+
+                    }
+
+                }
+
+            }
+
+        });
+
+
+
+
+
+
+
+        $("." + config.className + " > input").live("blur", function(){ offFocus(this); $("li").removeClass("selected"); });
+
+
+
+        function suggest(dataInput, id)
+
+        {
+
+            if(dataInput.length < config.minChars) {
+
+                $('#'+id).parent('.' + config.className).children('div.ausu-suggestionsBox').fadeOut();
+
+            } else {
+
+                $('#' + id + ":eq(0)").addClass('ausu-load');
+
+                if ($('#id_agency').length!=0){ var  id_a =  $('#id_agency').val(); }else{ var  id_a =  0; }
+                
+                if ($('#trip_no').length!=0){ var  id_trip_no =  $('#trip_no').val(); }else{ var id_trip_no =  0; }
+                
+                if ($('#trip_no2').length!=0){ var  id_trip_no2 =  $('#trip_no2').val(); }else{ var  id_trip_no2 =  0; }
+                
+                if ($('#from').length!=0){ var  id_from1 =  $('#from').val(); }else{ var  id_from1 =  0; }
+
+                if ($('#to').length!=0){ var  id_to1 =  $('#to').val(); }else{ var  id_to1 =  0; }
+
+                if ($('#from2').length!=0){ var  id_from2 =  $('#from2').val(); }else{ var  id_from2 =  0; }
+
+                if ($('#to2').length!=0){ var  id_to2 =  $('#to2').val(); }else{ var  id_to2 =  0; }
+
+                if ($('#ext_from1').length!=0){ var  id_exten1 =  $('#ext_from1').val(); }else{ var  id_exten1 =  0; }
+
+                if ($('#ext_to1').length!=0){ var  id_exten2 =  $('#ext_to1').val(); }else{ var  id_exten2 =  0; }
+
+                if ($('#ext_from2').length!=0){ var  id_exten3 =  $('#ext_from2').val(); }else{ var  id_exten3 =  0; }
+
+                if ($('#ext_to2').length!=0){ var  id_exten4 =  $('#ext_to2').val(); }else{ var  id_exten4 =  0; }
+
+                if ($('#fecha_salida').length!=0){ var  fecha_salida =  $('#fecha_salida').val(); }else{ var  fecha_salida =  0; }
+
+                if ($('#fecha_retorno').length!=0){ var  fecha_retorno =  $('#fecha_retorno').val(); }else{ var  fecha_retorno =  0; }
+
+                if ($('#categoria_park').length!=0){ var  categoria_park =  $('#categoria_park').val(); }else{ var  categoria_park =  0; }
+
+
+
+				
+
+                $.ajax({
+
+                    type: config.methodType,
+
+                    url: config.dataFile,
+
+                    dataType: "html",
+
+                    data: "data=" + dataInput + "&id=" + id + "&id_a=" + id_a + "&id_trip_no=" + id_trip_no + "&id_trip_no2=" + id_trip_no2 + "&id_from1=" + id_from1  + "&id_to1=" + id_to1  + "&id_exten1=" + id_exten1 + "&id_exten2=" + id_exten2 + "&id_from2=" + id_from2  + "&id_to2=" + id_to2  + "&id_exten3=" + id_exten3 + "&id_exten4=" + id_exten4 + "&fecha_salida=" + fecha_salida + "&fecha_retorno=" + fecha_retorno +  "&categoria_park=" + categoria_park + config.addParams,
+
+                    success: function(data){
+
+                        if(data.length >0)
+
+                        {
+
+                            $('#'+id).parent('div.' + config.className).children('div.ausu-suggestionsBox').fadeIn();
+
+                            $('#'+id).parent('div.' + config.className).find('.ausu-suggestionsBox ').html(data);
+
+                            $('#'+ id + ":eq(0)").removeClass('ausu-load');
+
+                        }
+
+                        else
+
+                        {
+
+                            $('#' + id + ":eq(0)").removeClass('ausu-load');
+
+                            $('#estilos').html('');
+
+                        }
+
+
+
+                    }
+
+                });
+
+            }
+
+        }
+
+
+
+        function keyEvent (fieldChild,action)
+
+        {
+
+            yx = 0;
+
+            fieldChild.find("li").each(function(){
+
+                if($(this).attr("class") == "selected")
+
+                    yx = 1;
+
+            });
+
+
+
+            if(yx == 1)
+
+            {
+
+                var sel = fieldChild.find("li[class='selected']");
+
+                (action=='next') ? sel.next().addClass("selected") : sel.prev().addClass("selected");
+
+                sel.removeClass("selected");
+
+            }
+
+            else
+
+            {
+
+                (action=='next') ? fieldChild.find("li:first").addClass("selected") : fieldChild.find("li:last").addClass("selected");
+
+            }
+
+        }
+
+
+
+        function offFocus(fieldChild)
+
+        {
+
+            var fieldParent =  $(fieldChild).parents('div.' + config.className);
+
+            fieldParent.children('div.ausu-suggestionsBox').delay(config.fadeTime).fadeOut();
+
+        }
+
+
+
+
+
+
+
+
+
+        $(".ausu-suggestionsBox > ul li").live("click", function(){
+
+            var fieldParent = $(this).parents('div.' + config.className);
+
+            fieldParent.children('input:eq(0)').val($(this).text());
+
+            if (config.rtnIDs==true) {fieldParent.children('input:eq(1)').val($(this).attr("id"));
+
+                fieldParent.children('div.ausu-suggestionsBox').hide();}
+
+
+
+            var id = fieldParent.children('input:eq(1)').val();
+
+            poner(id,pertenece);
+
+        });
+
+
+
+    };
+
+})(jQuery);

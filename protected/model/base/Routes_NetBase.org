@@ -1,0 +1,51 @@
+<?php
+Doo::loadCore('db/DooModel');
+
+class Routes_NetBase extends DooModel{
+
+    /**
+     * @var int Max length is 10.
+     */
+    public $id;
+
+    /**
+     * @var varchar Max length is 40.
+     */
+    public $trip_from;
+
+    /**
+     * @var varchar Max length is 40.
+     */
+    public $trip_to;
+    
+    public $price;
+    
+    public $price2;
+	
+    public $price3;
+	
+    public $price4;
+    /**
+     * @var char Max length is 4.
+     */
+    public $trip_no;
+
+    /**
+     * @var varchar Max length is 7.
+     */
+    public $trip_departure;
+
+    /**
+     * @var varchar Max length is 7.
+     */
+    public $trip_arrival;
+    
+    public $anno;
+    public $type_rate;
+    public $id_agency; 
+
+    public $_table = 'routes_net';
+    public $_primarykey = 'id';
+    public $_fields = array('id','trip_from','trip_to','trip_no','price', 'price2','price3','price4','trip_departure','trip_arrival','anno','type_rate','id_agency');
+    
+}

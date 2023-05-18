@@ -1,0 +1,124 @@
+#search{
+    cursor:pointer;
+    float:right;
+    background-color:#0b55c4;
+    color:white;
+    padding:5px 10px 5px 10px;
+    border-radius: 4px
+}
+#search:hover{
+    background-color: rgb(246, 246, 246);
+    box-shadow: 3px 3px 8px #999999;
+    color: #0b55c4;
+}
+
+#cancel{
+    cursor:pointer;
+    float:right;
+    background-color:#ce0909;
+    color:white;
+    padding:5px 10px 5px 10px;
+    border-radius: 4px
+}
+#cancel:hover{
+    background-color: rgb(246, 246, 246);
+    box-shadow: 3px 3px 8px #999999;
+    color: #ce0909;
+}
+
+.invoice{
+    width:48px;
+    height:48px;
+    background-image: url("../img/invoice/invoice-32x32.png");
+}
+
+.cancel-invoice{
+    width:48px;
+    height:48px;
+    background-size: 24px 24px;
+    background-image: url("../img/cancel-invoice-32x32.png");
+}
+
+.add-stock{
+    width:48px;
+    height:48px;
+    background-size: 24px 24px;
+    background-image: url("../img/stock-22x22.png");
+}
+
+.pdficon{
+    width:24px;
+    height:24px;
+}
+
+.modal{
+    position:absolute;
+    top:200px;
+    left:20%;
+    z-index: 1000;
+    min-width: 50%;
+    padding: 0 !important;
+    background-color: rgba(255,255,255,0.9);
+}
+
+.close-modal{
+    color: #ff0000;
+    font-size: 16px;
+    float:right;
+    padding: 5px;
+    transition:All 0.5s ease;
+    -webkit-transition:All 0.5s ease;
+    -moz-transition:All 0.5s ease;
+    -o-transition:All 0.5s ease;
+}
+
+.close-modal:hover{
+    color: #fff;
+    background-color: #ff0000;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    float:right;
+}
+
+
+
+.invoice-info{
+    top: 30%;
+    right: 80px;
+    border: 1px #00002C solid;
+    padding: 5px 40px 5px 10px;
+    border-radius:10px;
+}
+
+.invoice-number{
+    border-bottom: 1px solid #000066;
+}
+
+.title-ninvoice{
+    color: #000066;
+    font-size: 18px;
+    font-style: italic;
+    font-weight: bold;
+}
+
+.other-info{
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.ninvoice{
+    color: #EE0000;
+    font-size: 18px;
+    font-style: italic;
+    font-weight: bold;
+}
+
+.pretitle{
+    min-width:98%;
+    border: 1px solid #000000;
+    padding: 5px 0 5px 10px;
+}
+*{
+
+}

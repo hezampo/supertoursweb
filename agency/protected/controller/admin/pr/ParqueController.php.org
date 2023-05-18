@@ -1,0 +1,198 @@
+<?php
+
+/**
+ * Description of ParqueController
+ *
+ *  @author Angel Valencia.
+ */
+  
+Doo::loadController('I18nController');
+Doo::loadHelper('DooFile');
+
+class ParqueController extends I18nController{
+
+
+    public function beforeRun($resource, $action) {
+       if (!isset($_SESSION['login'])) {
+            return Doo::conf()->APP_URL;
+        }
+		
+	/*	
+		if($rs = $this->acl()->process("admin", $resource, $action )){
+			return $rs;
+		}*/
+		
+    }
+    
+    public function index(){
+      
+         // Cargamos el paginador
+		 
+        Doo::loadHelper('DooPager'); 
+        
+        if (!isset($_POST["filtro"])) {
+            if (!isset($this->params['filtro'])) {
+                $filtro = "id";
+            } else {
+                $filtro = $this->params['filtro'];
+            }
+        }else{
+            $filtro = $_POST["filtro"];
+        }
+       
+        if (!isset($_POST["texto"])) {
+           if (!isset($this->params['texto'])) {
+                $texto = "";
+            } else {
+                $texto = $this->params['texto'];
+            } 
+        } else {
+            $texto = $_POST["texto"];
+        }
+               
+        $rs    = Doo::db()->find("Parques", array("select"=>"COUNT(*) AS total", 
+                                                     "where" => "$filtro like ?", 
+                                                     "limit"=>1,
+                                                     "param" => array($texto . '%')
+                                                    ));
+         $total = $rs->total;
+
+         if ($total == 0)
+           $total = 1;
+        // iniciamos el paginador
+
+        $pager = new DooPager(Doo::conf()->APP_URL."admin/tours/parks/$filtro/$texto/page", $total, 10, 5);
+
+        if(isset($this->params['pindex']))
+            $pager->paginate(intval($this->params['pindex']));
+        else
+            $pager->paginate(1);
+        
+        $rs = Doo::db()->query("SELECT  t1.id,t1.nombre,t1.description,t2.nombre as grupo
+												FROM parques t1
+												LEFT JOIN grupo_parques t2 ON (t1.id_grupo = t2.id)
+
+
+                                where t1.$filtro like ?  order by t1.id limit $pager->limit ", 
+                                array($texto.'%'));
+        
+        $parques = $rs->fetchAll();
+
+        $this->data['rootUrl'] = Doo::conf()->APP_URL;
+        $this->data['content'] = 'configuracion/parques.php';
+        $this->data['filtro']  = $filtro;
+        $this->data['texto']   = $texto;
+        $this->data['parques']   = $parques;
+        $this->data['pager']   = $pager->output;
+        $this->renderc('admin/index', $this->data,true);
+
+    }
+    
+public function add(){
+         
+        Doo::loadModel("Parques");
+        $parques = new Parques();
+
+        $this->data['rootUrl']     = Doo::conf()->APP_URL;
+		$this->data['parques']        = Doo::db()->find($parques, array('limit' => 1));
+		$this->data['grupos']       = Doo::db()->find("Grupo_parque", array("asArray" => true));
+        $this->data['parques']        = $parques;
+        $this->data['content'] = 'configuracion/frm_parks.php';
+		$this->data['dato'] = "New";
+        $this->renderc('admin/index', $this->data);
+    }
+    
+    public function save(){
+      
+        Doo::loadModel("Parques");
+        
+        $parques = new Parques($_POST);
+		
+       
+		
+        $new = false;
+      
+        if ($_POST['id'] == "") {
+            $parques->id = Null;
+            $new = true;
+        }
+
+       
+        
+        if ($new){
+		   $df = new DooFile();
+			$file = $df->upload(Doo::conf()->FILE_DIR . '/global/uploads/','image1', 'doc_' . date('Ymdhis'));
+			
+			$parques->image1 = 'global/uploads/'.$file;
+			
+            Doo::db()->insert($parques);
+			
+			}
+        else{
+           Doo::db()->update($parques);
+            }
+
+       
+         return Doo::conf()->APP_URL . "admin/tours/parks";
+                
+    }
+    
+    public function edit() {
+        Doo::loadModel("Parques");
+        $parques = new Parques();
+        $parques->id = $this->params["pindex"];
+        $this->data['rootUrl'] = Doo::conf()->APP_URL;
+        $this->data['parques']        = Doo::db()->find($parques, array('limit' => 1));
+		$this->data['grupos']       = Doo::db()->find("Grupo_parque", array("asArray" => true));
+        $this->data['content'] = 'configuracion/frm_parks.php';
+		$this->data['dato'] = "edit";
+        $this->view()->renderc('admin/index', $this->data);
+    }
+
+    public function delete() {
+        Doo::loadModel("Parques");
+        $parques = new Parques();
+        $parques->id = $_REQUEST['item'];
+        Doo::db()->delete($parques);
+        return Doo::conf()->APP_URL . "admin/tours/parks";
+    }
+	
+	public function parks(){
+		$grupo = $this->params["grupo"];
+		$sql = "SELECT  id, nombre, id_grupo	
+					FROM parques 
+					where  id_grupo	 = ?";
+		$rs = Doo::db()->query($sql,  array($grupo));
+		$parques = $rs->fetchAll();
+		echo '<option value="0">All</option>';
+		foreach($parques as $p){
+			echo '<option value="'.$p['id'].'">'.$p['nombre'].'</option>';
+		}
+	}
+
+    public function add_stock(){
+        $this->data['rootUrl'] = Doo::conf()->APP_URL;
+        $this->data['content'] = 'ticket_stock/add_stock.php';
+        $sql0 = "select p.id,p.nombre,p.stock from parques as p order by p.id_grupo";
+        $q0 = Doo::db()->query($sql0);
+        $parques = $q0->fetchAll();
+
+        $this->data['parques'] = $parques;
+        $this->renderc('admin/index',$this->data,true);
+    }
+
+    public function update_stock(){
+        $amount = $this->params['amount'];
+        $id = $this->params['id'];
+        Doo::db()->loadModel('Parques');
+        $park = new Parques();
+        $park->id = $id;
+        $park = Doo::db()->getOne($park);
+        $park->stock = intval($park->stock) + $amount;
+        $park->update();
+        return Doo::conf()->APP_URL.'admin/tours/parks/stock';
+    }
+     
+}
+
+?>
