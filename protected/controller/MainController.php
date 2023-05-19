@@ -3123,9 +3123,16 @@ class MainController extends DooController {
         $this->renderc('questionsMobile', $this->data, true);
     }
 
+    public function dateFormatMonthDayYear($fecha){
+      list($day, $month, $years) = explode('/', $fecha);
+      $fechaFormateada = $day.'-'.$month.'-'.$years;
+      return date("d-m-Y", strtotime($fechaFormateada));
+    }
+
     /* AGENDA O BOOKING DEL TICKET */
 
     public function booking() {
+      session_start();
       Doo::loadModel("Reservas_trip_puestos");
       $booking = $_SESSION["booking"];
       $iden = $booking['iden'];
@@ -3135,8 +3142,8 @@ class MainController extends DooController {
         "tipo_ticket" => $_POST["tipo_ticket"],
         "from" => $_POST["fromt"],
         "to" => $_POST["tot"],
-        "fecha_salida" => $_POST["fecha_salida"],
-        "fecha_retorno" => $_POST["fecha_retorno"],
+        "fecha_salida" => $this->dateFormatMonthDayYear($_POST["fecha_salida"]),
+        "fecha_retorno" => $this->dateFormatMonthDayYear($_POST["fecha_retorno"]),
         "pax" => $_POST["pax"],
         "chil" => $_POST["pax2"],
         "iden" => $iden
@@ -3144,10 +3151,10 @@ class MainController extends DooController {
       if (isset($_SESSION["booking"])) {
               $booking = $_SESSION["booking"];
               $tipo_ticket = $data["tipo_ticket"];
-              $from = $data["fromt"];
-              $to = $data["tot"];
+              $from = $data["from"];
+              $to = $data["to"];
               $fecha_salida = $data["fecha_salida"];
-              $fecha_retorno = $booking["fecha_retorno"];
+              $fecha_retorno = $data["fecha_retorno"];
               $pax = $data["pax"];
               $chil = $data["chil"];
               $iden = $iden;
@@ -3194,14 +3201,8 @@ class MainController extends DooController {
       $this->data['rootUrl'] = Doo::conf()->APP_URL;
       $this->data['areas'] = Doo::db()->find("Areas", array("select" => "id, nombre", "asArray" => true));
        
-      print_r($booking);
-      exit;
-        $modalT = $this->modalTripPuesto();
-        // print($modalT);
-        //Refrescar, si existe
-        $Refresca = $this->compruebaUsing();
-        print($Refresca);
-        //Fin Refrescar
+      
+        
         Doo::loadModel("Agency");
         if (isset($_SESSION['data_agency'])) {
             $dat = new Agency($_SESSION['data_agency']);
@@ -3213,7 +3214,7 @@ class MainController extends DooController {
         }
 
         
-        if (isset($_SESSION["booking"]) && (isset($_SESSION["booking"]["resident"]) || isset($_SESSION['data_agency']))) {
+        if (isset($_SESSION["booking"])) {
 
             $booking = $_SESSION["booking"];
             $tipo_ticket = $booking["tipo_ticket"];
@@ -16655,7 +16656,7 @@ $this->data['rootUrl'] = Doo::conf()->APP_URL;
             "dateT" => $booking["dateT"],
             "dateT1" => $booking["dateT1"],
             "dateT2" => $booking["dateT2"],
-            "resident"=>$booking["resident"]
+            "resident"=>0
         );
         $_SESSION["booking"] = $booking;
    }
