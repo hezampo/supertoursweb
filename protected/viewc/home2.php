@@ -200,14 +200,14 @@
                                     <form action="<?php echo $data['rootUrl']; ?>booking" method="POST">    
                                         <div class="flight-type">
                                         <div class="form-check form-check-inline">
-                                                <input class="form-check-input" checked type="radio" value="round-way"
+                                                <input class="form-check-input" checked type="radio" value="roundtrip"
                                                     name="tipo_ticket" id="flight-type2">
                                                 <label class="form-check-label" for="flight-type2">
                                                     Round Trip
                                                 </label>
                                             </div>
                                             <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" value="one-way"
+                                                <input class="form-check-input" type="radio" value="oneway"
                                                     name="tipo_ticket" id="flight-type1">
                                                 <label class="form-check-label" for="flight-type1">
                                                     One Way Trip

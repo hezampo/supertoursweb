@@ -3148,6 +3148,7 @@ class MainController extends DooController {
         "chil" => $_POST["pax2"],
         "iden" => $iden
     );
+    
       if (isset($_SESSION["booking"])) {
               $booking = $_SESSION["booking"];
               $tipo_ticket = $data["tipo_ticket"];
@@ -3160,7 +3161,7 @@ class MainController extends DooController {
               $iden = $iden;
           }
           
-          
+         
        if (!isset($tipo_ticket)) {
           return Doo::conf()->APP_URL;
       }
@@ -3186,6 +3187,7 @@ class MainController extends DooController {
           "dateT2" => $dateT2
       );
       $_SESSION["booking"] = $booking;
+      
       $rs = Doo::db()->find("Areas", array("select" => "nombre",
           "where" => "id = ?",
           "param" => array($from),
@@ -3200,7 +3202,7 @@ class MainController extends DooController {
       $this->data['to_name'] = $to_name;
       $this->data['rootUrl'] = Doo::conf()->APP_URL;
       $this->data['areas'] = Doo::db()->find("Areas", array("select" => "id, nombre", "asArray" => true));
-       
+      
       
         
         Doo::loadModel("Agency");
@@ -3212,7 +3214,7 @@ class MainController extends DooController {
             $net_rate = false;
             $dat->type_rate = 0;
         }
-
+        
         
         if (isset($_SESSION["booking"])) {
 
@@ -3232,6 +3234,7 @@ class MainController extends DooController {
         } else {
             return Doo::conf()->APP_URL;
         }
+        
 
         $date = date("Y-m-d");
         list($mes, $dia, $anyo) = explode("-", $fecha_salida);
@@ -3252,7 +3255,7 @@ class MainController extends DooController {
                 $hora2 = "";
             }
         }
-
+       
 
         ///////////////////////////////////////////////// *Ofertas*/ IDA
 
@@ -3297,11 +3300,10 @@ class MainController extends DooController {
             $ofertas = " ";
             $ofertas2 = " ";
         }
-        
-        list($mes22, $dia22, $anno22) = explode("-", $fecha_salida);
+        list($dia22, $mes22, $anno22) = explode("-", $fecha_salida);
         $fecha_retorno1 = $anno22 . "-" . $mes22 . "-" . $dia22;
         
-        list($mes, $dia, $anno) = explode("-", $fecha_salida);        
+        list($mes, $dia, $anno) = explode("-", $fecha_retorno);        
         $fecha_retorno2 = $mes . "-" . $dia . "-" . $anno;
         
         
@@ -3312,7 +3314,7 @@ class MainController extends DooController {
 //        die;
         //////////////////////////////////////////////// /* Cierre de ofertas */    Return
 
-        $sql = "SELECT t1.trip_no, t2.id,t1.fecha,t2.fecha_ini,t4.nombre AS trip_from,t5.nombre AS trip_to,t2.spprc_adult,t2.spprc_child,
+        $sql = "SELECT distinct t2.trip_no, t2.id,t2.fecha_ini,t4.nombre AS trip_from,t5.nombre AS trip_to,t2.spprc_adult,t2.spprc_child,
                 t2.sdprc_adult,t2.sdprc_child,t2.sflexprc_adult,t2.sflexprc_child,t2.seats_remain,t2.univext,t2.wdext,t2.f1t3,t2.f1t4,
                 t2.f1t5,t2.f1t6,t2.f1t7,t2.f1t8,t2.f1t9,t2.f1t10,t2.f1t19,t2.f1t11,t2.f1t12,t2.f1t13,t2.f1t14,t2.f2t3,t2.f2t4,t2.f2t5,
                 t2.f2t6,t2.f2t7,t2.f2t8,t2.f2t9,t2.f2t10,t2.f2t19,t2.f2t11,t2.f2t12,t2.f2t13,t2.f2t14,t2.f3t4,t2.f3t5,t2.f3t6,t2.f3t7,
@@ -3332,10 +3334,7 @@ class MainController extends DooController {
             WHERE t2.type_rate = '0'
               AND t2.trip_from = '$from'
               AND t2.trip_to = '$to'
-              AND t1.fecha = '$fecha_retorno2'
               AND t2.fecha_ini = '$fecha_retorno1'
-              AND t1.estado = '1'
-              AND t2.anno = '$anno'
             ORDER BY t2.trip_departure ASC";
         
         
@@ -3377,14 +3376,16 @@ class MainController extends DooController {
             ms.trip_departure, ms.trip_arrival, ms.equipment, ms.estado
              From ( " . $sql . " )as ms LEFT JOIN ( " . $sql_net . " ) as k ON (ms.trip_no = k.trip_no)";
             $rs = Doo::db()->query($sql, array($from, $to, $fecha_salida, $from, $to, $fecha_salida));
+
         } else {
-            $rs = Doo::db()->query($sql, array($from, $to, $fecha_salida));
+            $rs = Doo::db()->query($sql);
         }
+        
+          
         $salida = $rs->fetchAll();
-//         echo '<pre>';
-//         print_r($salida);
-//         echo '</pre>';
-//         die;
+          
+        
+         
         $row_array = array();
         
 //        echo '<pre>';
@@ -3462,7 +3463,7 @@ class MainController extends DooController {
         $from_name = $rs->nombre;
         $retorno = array();
         
-        list($mes2, $dia2, $anno2) = explode("-", $fecha_retorno);
+        list($dia2, $mes2, $anno2) = explode("-", $fecha_retorno);
         $retorno_fecha = $anno2 . "-" . $mes2 . "-" . $dia2;
         
         list($mes3, $dia3, $anno3) = explode("-", $fecha_retorno);
@@ -3470,7 +3471,7 @@ class MainController extends DooController {
         
         
         if ($tipo_ticket == "roundtrip") {
-            $sql2 = "SELECT t1.trip_no,t2.id,t1.fecha,t2.fecha_ini,t4.nombre AS trip_from,t5.nombre AS trip_to,t2.spprc_adult,t2.spprc_child,
+            $sql2 = "SELECT distinct t2.trip_no,t2.id,t2.fecha_ini,t4.nombre AS trip_from,t5.nombre AS trip_to,t2.spprc_adult,t2.spprc_child,
                           t2.sdprc_adult,t2.sdprc_child,t2.sflexprc_adult,t2.sflexprc_child,t2.seats_remain,t2.univext,t2.wdext,
                           t2.f1t3,t2.f1t4,t2.f1t5,t2.f1t6,t2.f1t7,t2.f1t8,t2.f1t9,t2.f1t10,t2.f1t19,t2.f1t11,t2.f1t12,t2.f1t13,t2.f1t14,
                           t2.f2t3,t2.f2t4,t2.f2t5,t2.f2t6,t2.f2t7,t2.f2t8,t2.f2t9,t2.f2t10,t2.f2t19,t2.f2t11,t2.f2t12, t2.f2t13,t2.f2t14,
@@ -3491,9 +3492,7 @@ class MainController extends DooController {
                           where t2.type_rate = '0'
                           AND t2.trip_from = '$to'
                           AND t2.trip_to = '$from'
-                          AND t1.fecha = '$retorno_fecha2'
                           and t2.fecha_ini = '$retorno_fecha'
-                          and t1.estado = '1'
                           AND t2.anno = '$anno'
                         ORDER BY t2.trip_departure ASC";
 
@@ -3545,13 +3544,10 @@ class MainController extends DooController {
                  From ( " . $sql2 . " )as ms  LEft JOIN ( " . $sql_net1 . " ) as k ON (ms.trip_no = k.trip_no)";
                 $rs = Doo::db()->query($sql2, array($to, $from, $fecha_retorno, $to, $from, $fecha_retorno));
             } else {
-                $rs = Doo::db()->query($sql2, array($to, $from, $fecha_retorno));
+              
+                $rs = Doo::db()->query($sql2);
             }
 
-            /*             * ******************************************************** */
-
-
-            // $rs = Doo::db()->query($sql2, array($to, $from, $fecha_retorno));
             $retorno = $rs->fetchAll();
             $rs = Doo::db()->find("Areas", array("select" => "nombre",
                 "where" => "id = ?",
@@ -3559,6 +3555,8 @@ class MainController extends DooController {
                 "limit" => 1));
             $to_name = $rs->nombre;
         }
+
+        
 
 
         if ($tipo_ticket == "oneway") {
@@ -3568,9 +3566,6 @@ class MainController extends DooController {
                 $rs = Doo::db()->query($sql, array($to, $from, $fecha_retorno));
             }
             $retorno = $rs->fetchAll();
-//            echo '<pre>';
-//            print_r($retorno);
-//            echo '<pre>';
             $rs = Doo::db()->find("Areas", array("select" => "nombre",
                 "where" => "id = ?",
                 "param" => array($to),
@@ -3580,8 +3575,6 @@ class MainController extends DooController {
         $row_array2 = array();
         $lista_trip = array();
         $contador = 0;
-        /////////////////////////////////////////////////// Igualar Ofertas2 */
-        //print_r($ofertas2);
         if (!empty($ofertas2)) {
             foreach ($ofertas2 as $key2 => $value1) {
                 foreach ($retorno as $key => $value) {
@@ -3657,10 +3650,10 @@ class MainController extends DooController {
             "dateT" => $booking["dateT"],
             "dateT1" => $booking["dateT1"],
             "dateT2" => $booking["dateT2"],
-            'trip1' => $booking["trip1"],
-            'trip2' => $booking["trip2"],
-            'idPrecioIda' => $booking["idPrecioIda"],
-            'idPrecioVuelta' => $booking["idPrecioVuelta"]
+            //'trip1' => $booking["trip1"],
+            //'trip2' => $booking["trip2"],
+            //'idPrecioIda' => $booking["idPrecioIda"],
+            //'idPrecioVuelta' => $booking["idPrecioVuelta"]
         );
 
         // Disponibilidad
@@ -3703,12 +3696,7 @@ class MainController extends DooController {
         $this->data['retorno'] = $row_array2;
         $this->data['from_name'] = $from_name;
         $this->data['to_name'] = $to_name;
-        //print_r($disponible);    
-//        echo '<pre>'; 
-//        echo "CHUMI";
-//        print_r($row_array);
-//        die;
-//        echo '<pre>'; 
+        
         $_SESSION["booking"] = $booking;
         $this->data['areas'] = Doo::db()->find("Areas", array("select" => "id, nombre", "asArray" => true));
         
