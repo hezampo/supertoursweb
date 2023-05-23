@@ -16929,6 +16929,47 @@ $this->data['rootUrl'] = Doo::conf()->APP_URL;
         }
   }
 
+  public function cargarTablaDinamica(){
+    $adult = $this->params['adult'];
+    $child = $this->params['child'];
+    $data = $_SESSION['booking'];
+    
+        $html = '<table class="table table-borderless" id="tablaPreciosTarifa">
+        <tr>
+           <th>Fare Summary</th>
+           <th>Base Fare</th>
+           <th>Total Fare</th>
+        </tr>
+        <tr>
+           <td>Adult x '.$data["pax"].'</td>
+           <td>
+              '.number_format($adult, 2, '.', ',').'
+           </td>
+           <td>
+              '.number_format($data["pax"]*$adult, 2, '.', ',').'
+           </td>
+        </tr>
+        <tr>
+           <td>Child x '.$data["chil"].'</td>
+           <td>
+              '.number_format($child, 2, '.', ',').'
+           </td>
+           <td>
+              '.number_format($data["chil"]*$child, 2, '.', ',').'
+           </td>
+        </tr>
+     </table>';
+     echo $html;
+  }
+
+  public function cargarPrecioDinamico(){
+    $adult = $this->params['adult'];
+    $child = $this->params['child'];
+    $data = $_SESSION['booking'];
+        $precioTotal = (number_format($data["pax"]*$adult, 2, '.', ',') + number_format($data["chil"]*$child, 2, '.', ','));
+        echo number_format($precioTotal, 2, ',', '.');
+  }
+
    public function recoverPass() {/* Con esta funcion se recupera la clave del usuario*/
     // if(isset($this->params['mail'])){
       $mailT = $this->params['mail'];
@@ -17039,4 +17080,7 @@ $this->data['rootUrl'] = Doo::conf()->APP_URL;
 		echo 'error';
 		}
     }
+
 }
+
+

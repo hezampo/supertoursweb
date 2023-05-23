@@ -82,6 +82,9 @@ $route['*']['/recover/recoverPass/:mail'] = array('MainController', 'recoverPass
 $route['*']['/timeTH/trip_departure/:time'] = array('MainController', 'pickupDropoff');
 
 $route['*']['/form/round/:to/:from/:departure/:returning/:adult/:child'] = array('MainController', 'formPrincipalRound');
+$route['*']['/cargarTablaDinamica/:adult/:child'] = array('MainController', 'cargarTablaDinamica');
+$route['*']['/cargarPrecioDinamico/:adult/:child'] = array('MainController', 'cargarPrecioDinamico');
+
 $route['*']['/form/oneway/:to/:from/:departure/:adult/:child'] = array('MainController', 'formPrincipalOneway');
 
 //resident
