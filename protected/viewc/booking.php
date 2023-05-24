@@ -359,6 +359,7 @@
                         
                         <div class="row">
                            <div class="col-lg-12">
+                              
                                  <?php  
                                     if(count($data['salida']) > 0){
                                         foreach($data['salida'] as $e){
@@ -627,6 +628,8 @@
                                                                     }else{
                                                                     $sdc_tot = $sdc_tot;
                                                                     }
+                                                                    $wdext = 0;
+                                                                $unvext = 0;
 
                                                             if ($idfrom == 24 or $idto == 24) {
                                                                 $wdext = $e['wdext'];

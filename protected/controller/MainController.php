@@ -3160,9 +3160,8 @@ class MainController extends DooController {
               $chil = $data["chil"];
               $iden = $iden;
           }
-          
          
-       if (!isset($tipo_ticket)) {
+       if (!isset($tipo_ticket)) {;
           return Doo::conf()->APP_URL;
       }
       $bt = "SELECT NOW() as time from reservas_trip_puestos";
@@ -4974,19 +4973,19 @@ class MainController extends DooController {
 //            echo '</pre>';
 //            die;
             
-            
             //Estos dos datos son los que tengo que modificar
-            $_SESSION['booking']['idPrecioIda'] = $_SESSION['booking']['idPrecioIda'];
-            $_SESSION['booking']['idPrecioVuelta'] = $_SESSION['booking']['idPrecioVuelta'];
+            $_SESSION['booking']['priceAdult'] = $datos['priceAdult'];
+            $_SESSION['booking']['priceChild'] = $datos['priceChild'];
+            $_SESSION['booking']['priceAdultR'] = $datos['priceAdult1'];
+            $_SESSION['booking']['priceChildR'] = $datos['priceChild1'];
+            $_SESSION['booking']['idPrecioIda'] = $datos['idPrecioIda'];
+            $_SESSION['booking']['idPrecioVuelta'] = $datos['idPrecioVuelta'];
             $fecha_salida = $booking["fecha_salida"];
             $fecha_retorno = $booking["fecha_retorno"];
         } else {
-            
-        print_r($datos);
-        exit;
             return Doo::conf()->APP_URL;
         }
-
+        
 
         $sql = "SELECT
                 t1.trip_no,
@@ -5006,7 +5005,7 @@ class MainController extends DooController {
                 LEFT JOIN trips  t3 ON (t1.trip_no = t3.trip_no)
                 LEFT JOIN areas  t4 ON (t2.trip_from = t4.id)
                 LEFT JOIN areas  t5 ON  (t2.trip_to  = t5.id)
-                WHERE t2.id = ? AND fecha = ?";
+                WHERE t2.id = ? AND t2.fecha_ini = ?";
 
         if ($net_rate) {
             $sql_net = "SELECT
@@ -5056,25 +5055,16 @@ class MainController extends DooController {
         } else {
             $active_web = 0;
         }
-        $trip1T = $_SESSION['booking']['trip1'];
-        $trip2T = $_SESSION['booking']['trip2'];
-        //idPrecioIda e idPrecioVuelta
-        //echo $trip1T."-".$trip2T;
-        
-        if (isset($_SESSION['booking']['trip1'])) {
+        if (isset($booking['idPrecioIda'])) {
             $fecha = $booking["fecha_salida"];
-            list($mes, $dia, $anio) = explode('-', $fecha);
+            list($dia, $mes, $anio) = explode('-', $fecha);
             $fecha_trip = $anio . '-' . $mes . '-' . $dia;
-            $trip1 = $_SESSION['booking']['trip1'];            
-            $rsb = Doo::db()->query($sql, array($trip1, $booking["fecha_salida"]));
+            $trip1 = $booking['idPrecioIda'];            
+            $rsb = Doo::db()->query($sql, array($trip1, $fecha_trip));
             $salida = $rsb->fetch();
             
-            //print_r($salida);
-            
+           
             $trip = $salida["trip_no"];
-//            echo"****";
-//            echo $trip;
-//            die;
 
 	$sqlavalible = "SELECT  SUM(cantidad) AS cantwebf,
         (SELECT SUM(cantidad) FROM reservas_trip_puestos  WHERE fecha_trip = ? AND trip_to = ?  AND (tipo = '1' OR tipo = '2') AND (estado = 'USING' OR estado = 'RENEWED') AND tarifa = '4') as cantsuperp,
@@ -5084,22 +5074,8 @@ class MainController extends DooController {
         FROM reservas_trip_puestos WHERE fecha_trip = ?  AND trip_to = ?  AND (tipo = '1' OR tipo = '2') AND (estado = 'USING' OR estado = 'RENEWED') AND tarifa = '3'";
         
         $rsp = Doo::db()->query($sqlavalible, array($fecha_trip,$trip,$fecha_trip,$trip,$fecha_trip,$trip,$fecha_trip,$trip,$fecha_trip,$trip));
-        $puestos = $rsp->fetchAll(PDO::FETCH_ASSOC);
+        $puestos = $rsp->fetchAll();
         
-//        print_r($puestos);
-//        die;
-//        echo "trip1:";
-//        echo $trip1; 
-//        echo "     ";   
-//        echo "fecha trip:";
-//        echo $fecha_trip;
-//        echo "     ";
-//        echo "trip:";
-//        echo $trip;
-//        echo "     ";
-//        
-//        print_r($puestos);
-//        die;
         $cantidadwebf = $puestos[0]['cantwebf'] ? $puestos[0]['cantwebf'] : 0;
         $cantidadsuperpro = $puestos[0]['cantsuperp'] ? $puestos[0]['cantsuperp'] : 0;
         $cantidadsuperdisc = $puestos[0]['cantsuperdisc'] ? $puestos[0]['cantsuperdisc'] : 0;
@@ -5109,6 +5085,8 @@ class MainController extends DooController {
 	$sql2 = "SELECT DISTINCT spseats,sdseats,wfseats,sflexseats,stseats,spprcseats,toursseats,vehicles,capacity,capacity2,capacity3,capacity4,capacity5,seats_remain FROM routes WHERE fecha_ini = ? AND trip_no = ?";
         $rs2 = Doo::db()->query($sql2, array($fecha_trip,$trip));
         $routes = $rs2->fetchAll(PDO::FETCH_ASSOC);
+        
+
         $seats = $routes[0]['seats_remain'];
 
         $capacidad100_1 = $routes[0]['capacity'];
@@ -5260,7 +5238,7 @@ class MainController extends DooController {
         $ReservasTotales = $total_spro100 + $total_sdic100 + $total_wfare100  + $total_standr100 + $total_sflex100 + $total_especial100 + $total_tours100;
         $resultsuperflex = $total_sflex100 - $superflex_100;
 
-        $OcupadosTotales =  $ReservasTotales + $p_ocupados100;
+        $OcupadosTotales =  $ReservasTotales;
         $numperson100 = $_SESSION['booking']['pax'] + $_SESSION['booking']['chil'];
 
 
@@ -5298,35 +5276,23 @@ class MainController extends DooController {
                 $disp = $sflx_tot;
 
               }
-              // print_r($disp);
-              // die;
-    			if($disp<0){
+              
+    			/* if($disp<0){
     			$_SESSION['opcnop'] = 'nope1';
     			return Doo::conf()->APP_URL.'booking?op=nope1&trip='.base64_encode($trip);
-    			}
+    			} */
 
             $trip111 = ($trip == NULL) ? NULL : ' AND tripw'.$trip.' = 1 ';
 
             $rs = Doo::db()->query("SELECT id, address, place as nombre,valid from pickup_dropoff where id_area = ? $trip111 AND (SELECT FIND_IN_SET('2', type_pick)) > 0 AND active_web = ?  ORDER BY posicion ASC", array($salida["tf"], $active_web));
 
             $pickup1 = $rs->fetchAll();
-//            echo '<pre>';
-//            print_r($pickup1);
-//            echo '<pre>';
-//            echo "*****";
-//            echo $trip;
-//            die;
 
             $rs2 = Doo::db()->query("SELECT address, valid, place as nombre,id," . $precio_sql . ",valid
 				FROM extension
 			 where id_area = ? ORDER BY id ASC", array($salida["tf"]));
 
             $exten1 = $rs2->fetchAll();
-            
-//            print_r($exten1);
-//            die;
-            //echo 'hola';
-            /////////////////////////////////////////////////////*/ Igualar Extension  pickup 1*/
             $pickupnew = array();
             $contador = 0;
             if (!empty($exten1)) {
@@ -5479,13 +5445,13 @@ class MainController extends DooController {
             $disponible = ($total - $totaldispo);
             
 
-            if (isset($disponible) && isset($demanda)) {
+            /* if (isset($disponible) && isset($demanda)) {
                 if ($demanda > $disponible) {
 
                     $_SESSION['msg'] = array("error" => "error", "disponible" => $disponible, "demanda" => $demanda, "trip" => $row_array['trip_no']);
                     return Doo::conf()->APP_URL . "booking/";
                 }
-            }
+            } */
             ////////////////////////////////////////////////////////////// /* CIERRE CAPACIDAD RUTA */
 
             $this->data['salida'] = $row_array;
@@ -5493,13 +5459,18 @@ class MainController extends DooController {
             $this->data['dropoff1'] = $pickupnew2;
             $e = $salida;
         }
-
-        if (isset($_SESSION['booking']['trip2'])) {
-            $trip2 = $_SESSION['booking']['trip2'];
-            $rs = Doo::db()->query($sql, array($trip2, $booking["fecha_retorno"]));
+        
+        if (isset($datos['idPrecioVuelta'])) {
+            $trip2 = $datos['idPrecioVuelta'];
+            list($dia2, $mes2, $anio2) = explode('-', $booking['fecha_retorno']);
+            $fecha_returnn = $anio2 . '-' . $mes2 . '-' . $dia2;
+            
+            $rs = Doo::db()->query($sql, array($trip2, $fecha_returnn));
             $retorno = $rs->fetch();
+            
+
 			$trip_no = $retorno['trip_no'];
-			list($mes2, $dia2, $anio2) = explode('-', $booking['fecha_retorno']);
+			    list($dia2, $mes2, $anio2) = explode('-', $booking['fecha_retorno']);
           $fecha_returnn = $anio2 . '-' . $mes2 . '-' . $dia2;
 
          $sql = "SELECT
@@ -5702,7 +5673,7 @@ class MainController extends DooController {
          $ReservasTotalesreturn = $total_spro100return + $total_sdic100return + $total_wfare100return  + $total_standr100return + $total_sflex100return + $total_especial100return + $total_tours100return;
          $resultsuperflexreturn = $total_sflex100return - $superflex_100return;
 
-         $OcupadosTotalesreturn =  $ReservasTotalesreturn + $p_ocupados100return;
+         $OcupadosTotalesreturn =  $ReservasTotalesreturn;
 
           // $cantidadwebfreturn = $puestos[0]['cantwebf'] ? $puestos[0]['cantwebf'] : 0;
           // $cantidadsuperproreturn = $puestos[0]['cantsuperp'] ? $puestos[0]['cantsuperp'] : 0;
@@ -5745,9 +5716,9 @@ class MainController extends DooController {
 //             print_r( $disp2);
 //             echo '</pre>';
 //             die;
-			if($disp2<0){
+			/* if($disp2<0){
 			return Doo::conf()->APP_URL.'booking?op=nope1&trip='.base64_encode($trip);
-			}
+			} */
 
           //  echo '<pre>';
           // print_r($disp2);
@@ -5929,20 +5900,20 @@ class MainController extends DooController {
             $disponible = ($total - $totaldispo );
 
 
-            if (isset($disponible) && isset($demanda)) {
+            /* if (isset($disponible) && isset($demanda)) {
                 if ($demanda > $disponible) {
 
                     $_SESSION['msg'] = array("error" => "error", "disponible" => $disponible, "demanda" => $demanda, "trip" => $row_array2['trip_no']);
                     return Doo::conf()->APP_URL . "booking/";
                 }
-            }
+            } */
 
             $this->data['pickup2'] = $pickupnew2;
             $this->data['dropoff2'] = $pickupnew3;
             $this->data['retorno'] = $row_array2;
             $r = $retorno;
         }
-        $departure1T= $this->params["time"];
+        
         if(isset($departure1T)){
             echo "llllll".$departure1T;
         }
@@ -5956,11 +5927,14 @@ class MainController extends DooController {
         $_SESSION['trip_departure'] = $this->data['salida']['trip_departure'];
         $_SESSION['trip_arrival2'] = isset($this->data['retorno']['trip_arrival']) ? $this->data['retorno']['trip_arrival'] : '';
         $_SESSION['trip_departure2'] = isset($this->data['retorno']['trip_departure']) ? $this->data['retorno']['trip_departure'] : '';
-
+        $_SESSION['booking']['trip_no_retorno'] = $this->data['retorno']['trip_no'];
+        $_SESSION['booking']['nombreFrom'] = $this->data['salida']['trip_from'];
+        $_SESSION['booking']['nombreTo'] = $this->data['retorno']['trip_from'];
+       
         $date = date("Y-m-d");
         $hor = date("H:i");
-
-        if (isset($e['trip_departure']) && isset($r['trip_departure'])) {
+       
+       /*  if (isset($e['trip_departure']) && isset($r['trip_departure'])) {
             if (strtotime($date) == strtotime($fecha_salida)) {
 
                 if ($hor > $e['trip_departure'] && $booking["fecha_retorno"] == $date) {
@@ -5970,7 +5944,7 @@ class MainController extends DooController {
                     return Doo::conf()->APP_URL . "booking/";
                 }
             }
-        }
+        } */
         //$this->data['datos'] = $datos;
         $this->data['rootUrl'] = Doo::conf()->APP_URL;
         $this->renderc('pickupdropoff', $this->data, true);
