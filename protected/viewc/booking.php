@@ -346,7 +346,7 @@
                </div>
             </div>
          </div>
-         <form action="#" method="POST">
+         <form action="<?php echo $data['rootUrl'] ?>booking/pickup-dropoff" method="POST">
             <div class="flight-booking flight-list py-120">
                <div class="container">
                   <div class="row">
@@ -728,7 +728,7 @@
                                                                     
                                                                     ?>
                                                       </span>
-                                                      <input type="radio" class="form-check-input" name="price" id="price" <?php echo $disabled;?> onclick="llenarTablaDinamica<?php echo $e['id']?>(<?php echo $webfarer_adult?>,<?php echo $webfarer_child; ?>)" value="">                                                   
+                                                      <input type="radio" class="form-check-input" name="price" id="price" <?php echo $disabled;?> onclick="llenarTablaDinamica<?php echo $e['id']?>(<?php echo $webfarer_adult?>,<?php echo $webfarer_child; ?>)" value="<?php echo $e['id']?>,webfarer">                                                   
                                                     </div>
                                                 </div>
                                                 <div class="">
@@ -747,7 +747,7 @@
                                                         }
                                                         ?>
                                                       </span>
-                                                      <input type="radio" class="form-check-input" name="price" id="price" <?php echo $disabled;?> onclick="llenarTablaDinamica<?php echo $e['id']?>(<?php echo $superdiscount_adult?>,<?php echo $superdiscount_child; ?>)" value="">
+                                                      <input type="radio" class="form-check-input" name="price" id="price" <?php echo $disabled;?> onclick="llenarTablaDinamica<?php echo $e['id']?>(<?php echo $superdiscount_adult?>,<?php echo $superdiscount_child; ?>)" value="<?php echo $e['id']?>,superdiscount">
                                                    </div>
                                                 </div>
                                                 <div class="">
@@ -765,7 +765,7 @@
                                                                     }
                                                                 ?>
                                                       </span>
-                                                      <input type="radio" class="form-check-input" name="price"  <?php echo $disabled;?> id="price<?php echo $e['id']?>" onclick="llenarTablaDinamica<?php echo $e['id']?>(<?php echo $superpromo_adult?>,<?php echo $superpromo_child; ?>)" value="">                                                   
+                                                      <input type="radio" class="form-check-input" name="price"  <?php echo $disabled;?> id="price<?php echo $e['id']?>" onclick="llenarTablaDinamica<?php echo $e['id']?>(<?php echo $superpromo_adult?>,<?php echo $superpromo_child; ?>)" value="<?php echo $e['id']?>,superpromo">                                                   
                                                     </div>
                                                 </div>
                                                 <div class="">
@@ -782,7 +782,7 @@
                                                                     }
                                                             ?>
                                                       </span>
-                                                      <input type="radio" class="form-check-input" name="price" <?php echo $disabled;?> id="price" onclick="llenarTablaDinamica<?php echo $e['id']?>(<?php echo $superfelx_adult?>,<?php echo $superfelx_child; ?>)" value="">                                                  
+                                                      <input type="radio" class="form-check-input" name="price" <?php echo $disabled;?> id="price" onclick="llenarTablaDinamica<?php echo $e['id']?>(<?php echo $superfelx_adult?>,<?php echo $superfelx_child; ?>)" value="<?php echo $e['id']?>,superfelx">                                                  
                                                      </div>
                                                 </div>
                                              </div>
@@ -881,6 +881,7 @@
                            </div>
                         </div>
                      </div>
+                     <?php if($_SESSION['booking']['tipo_ticket'] == 'roundtrip'){?>
                      <div class="col-lg-6 col-xl-6">
                         <div class="col-md-12">
                            <div class="booking-sort">
@@ -890,12 +891,530 @@
                         <div class="row">
                            <div class="col-lg-12">
                               <div class="col-lg-12">
-                                 <div class="flight-booking-item">
+                                 <?php  
+                                     foreach ($data['retorno'] as $e):
+                                                        
+                                        if ($idfrom == 24 or $idto == 24) {
+                                            $wdext = $e['wdext'];
+                                        } elseif ($idfrom == 22 or $idto == 22) {
+                                            $wdext = $e['wdext'];
+                                        } elseif ($idfrom == 23 or $idto == 23) {
+                                            $unvext = $e['univext'];
+                                        } elseif ($idfrom == 21 or $idto == 21) {
+                                            $unvext = $e['univext'];
+                                        } else {
+                                            $wdext = 0;
+                                            $unvext = 0;
+                                        }
+                                        $estado = $e['seats_remain'];
+                                        //echo $e['univext'];
+//                                                        $idfrom = $data['idto'];
+//                                                        $idto = $data['idfrom'];
+                                        
+                                        $idfrom_r = $booking['tot'];
+                                        $idto_r = $booking['fromt'];
+                                        $trip2 = $e['trip_no'];
+                                        $trip_no = $e['trip_no'];
+                                        $fecha_trip = $e['fecha_ini'];
+                                                                                              
+                                        
+                                        
+                                        $sqlpckt_r = "SELECT place, address, instructions FROM pickup_dropoff WHERE id_area ='$idfrom_r' AND tripw$trip2 ='1' AND active_web ='1'";
+
+                                        $rspckt_r = Doo::db()->query($sqlpckt_r);
+                                        $dploct_r = $rspckt_r->fetchAll();
+
+                                        foreach ($dploct_r as $dplt_r){
+                                            $placet_r = $dplt_r['place'];
+                                            $addrt_r = $dplt_r['address'];
+                                            $instt_r = $dplt_r['instructions'];
+                                        }
+                                        
+                                        $sqlpckf_r = "SELECT place, address, instructions FROM pickup_dropoff WHERE id_area ='$idto_r' AND tripw$trip2 ='1' AND active_web ='1'";
+
+                                        $rspckf_r = Doo::db()->query($sqlpckf_r);
+                                        $dplocf_r = $rspckf_r->fetchAll();
+
+                                        foreach ($dplocf_r as $dplf_r){
+                                            $placef_r = $dplf_r['place'];
+                                            $addrf_r = $dplf_r['address'];
+                                            $instf_r = $dplf_r['instructions'];
+                                        }                           
+                                        
+                                        
+                                        $sql = "SELECT
+                                        SUM(cantidad) AS cantwebf,
+                                            (SELECT SUM(cantidad) FROM reservas_trip_puestos
+                                        WHERE fecha_trip = ?
+                                        AND trip_to = ?
+                                        AND (tipo = '1' OR tipo = '2')
+                                        AND ( estado = 'USING' OR estado = 'RENEWED' ) AND tarifa = '4'
+                                        ) as cantsuperp,
+                                        (SELECT SUM(cantidad) FROM reservas_trip_puestos
+                                        WHERE fecha_trip = ?
+                                        AND trip_to = ?
+                                        AND (tipo = '1' OR tipo = '2')
+                                        AND ( estado = 'USING' OR estado = 'RENEWED' ) AND tarifa = '5'
+                                        ) as cantsuperdisc,
+                                        (SELECT SUM(cantidad) FROM reservas_trip_puestos
+                                        WHERE fecha_trip = ?
+                                        AND trip_to = ?
+                                        AND (tipo = '1' OR tipo = '2')
+                                        AND ( estado = 'USING' OR estado = 'RENEWED' ) AND tarifa = '2'
+                                        ) as cantsuperflex,
+                                        (SELECT SUM(cantidad) FROM reservas_trip_puestos
+                                        WHERE fecha_trip = ?
+                                        AND trip_to = ?
+                                        AND (tipo = '1' OR tipo = '2')
+                                        AND ( estado = 'USING' OR estado = 'RENEWED' ) AND tarifa = '1'
+                                        ) as cantstandar
+                                        FROM reservas_trip_puestos WHERE fecha_trip = ?
+                                        AND trip_to = ?
+                                        AND (tipo = '1' OR tipo = '2')
+                                        AND ( estado = 'USING' OR estado = 'RENEWED' ) AND tarifa = '3' ";
+                                        $rs = Doo::db()->query($sql, array($fecha_trip,$trip_no,$fecha_trip,$trip_no,$fecha_trip,$trip_no,$fecha_trip,$trip_no,$fecha_trip,$trip_no));
+                                        $puestos = $rs->fetchAll(PDO::FETCH_ASSOC);
+                                        // $p_ocupadoswf = $puestos[0]['CANTIDAD'];
+
+                                        $cantidadwebfreturn = $puestos[0]['cantwebf'] ? $puestos[0]['cantwebf'] : 0;
+                                        $cantidadsuperproreturn = $puestos[0]['cantsuperp'] ? $puestos[0]['cantsuperp'] : 0;
+                                        $cantidadsuperdiscreturn = $puestos[0]['cantsuperdisc'] ? $puestos[0]['cantsuperdisc'] : 0;
+                                        $cantidadsuperflexreturn = $puestos[0]['cantsuperflex'] ? $puestos[0]['cantsuperflex'] : 0;
+                                        $cantidadsstandarreturn = $puestos[0]['cantstandar'] ? $puestos[0]['cantstandar'] : 0;
+
+                                        // print_r($cantidadsuperdisc);
+                                        $sql2 = "SELECT DISTINCT spseats,sdseats,wfseats,sflexseats,stseats,spprcseats,toursseats,vehicles,capacity,capacity2,capacity3,capacity4,capacity5,seats_remain FROM routes WHERE fecha_ini = ? AND trip_no = ?";
+                                        $rs2 = Doo::db()->query($sql2, array($fecha_trip,$trip_no));
+                                        $routesreturn = $rs2->fetchAll(PDO::FETCH_ASSOC);
+                                        // $seats2 = $routesreturn[0]['seats_remain'];
+
+                                        $capacidad100_1return = $routesreturn[0]['capacity'];
+                                        $capacidad100_2return = $routesreturn[0]['capacity2'];
+                                        $capacidad100_3return = $routesreturn[0]['capacity3'];
+                                        $capacidad100_4return = $routesreturn[0]['capacity4'];
+                                        $capacidad100_5return = $routesreturn[0]['capacity5'];
+                                        $seatstot2 =$capacidad100_1return + $capacidad100_2return + $capacidad100_3return + $capacidad100_4return +$capacidad100_5return;
+                                        $webfare_100return = $routesreturn[0]['wfseats'];
+                                        $superpromo_100return = $routesreturn[0]['spseats'];
+                                        $superdiscount_100return = $routesreturn[0]['sdseats'];
+                                        $superflex_100return = $routesreturn[0]['sflexseats'];
+                                        $standard_100return = $routesreturn[0]['sflexseats'];
+                                        $sppr_100return = $routesreturn[0]['spprcseats'];
+                                        $tour_100return = $routesreturn[0]['toursseats'];
+
+                                        // echo '<pre>';
+                                        // print_r($seatstot2);
+                                        // echo '</pre>';
+
+                                        $sql_spcida100 = "SELECT
+                                        (sum(pax) + sum(pax2)) AS superpromo,
+                                        (SELECT (sum(pax) + sum(pax2)) FROM reservas WHERE trip_no = ? AND fecha_salida = ?
+                                        AND estado != 'QUOTE'
+                                        AND estado != 'CANCELED'
+                                        AND estado != 'NOT SHOW W/ CHARGE'
+                                        AND estado != 'NOT SHOW W/O CHARGE'
+                                        AND estado != 'NO SHOW'
+                                        AND id1 = '5') as superdiscount,
+                                        (SELECT (sum(pax) + sum(pax2)) FROM reservas WHERE trip_no = ? AND fecha_salida = ?
+                                        AND estado != 'QUOTE'
+                                        AND estado != 'CANCELED'
+                                        AND estado != 'NOT SHOW W/ CHARGE'
+                                        AND estado != 'NOT SHOW W/O CHARGE'
+                                        AND estado != 'NO SHOW'
+                                        AND id1 = '3') as webfare,
+                                        (SELECT (sum(pax) + sum(pax2)) FROM reservas WHERE trip_no = ? AND fecha_salida = ?
+                                        AND estado != 'QUOTE'
+                                        AND estado != 'CANCELED'
+                                        AND estado != 'NOT SHOW W/ CHARGE'
+                                        AND estado != 'NOT SHOW W/O CHARGE'
+                                        AND estado != 'NO SHOW'
+                                        AND id1 = '1') as standard,
+                                        (SELECT (sum(pax) + sum(pax2)) FROM reservas  WHERE trip_no = ? AND fecha_salida = ?
+                                        AND estado != 'QUOTE'
+                                        AND estado != 'CANCELED'
+                                        AND estado != 'NOT SHOW W/ CHARGE'
+                                        AND estado != 'NOT SHOW W/O CHARGE'
+                                        AND estado != 'NO SHOW'
+                                        AND id1 = '2') as superflex,
+                                        (SELECT (sum(pax) + sum(pax2)) FROM  reservas Where trip_no = ? AND fecha_salida = ?
+                                        AND (type_tour = 'ONE'
+                                        OR type_tour = 'MULTI')
+                                        AND estado != 'QUOTE'
+                                        AND estado != 'CANCELED'
+                                        AND estado != 'NOT SHOW W/ CHARGE'
+                                        AND estado != 'NOT SHOW W/O CHARGE') AS tours,
+                                        (SELECT (sum(pax) + sum(pax2)) FROM  reservas Where trip_no = ?  AND fecha_salida = ?
+                                        AND id1 = '6'
+                                        AND estado != 'QUOTE'
+                                        AND estado != 'CANCELED'
+                                        AND estado != 'NOT SHOW W/ CHARGE'
+                                        AND estado != 'NOT SHOW W/O CHARGE') AS especial
+
+                                        FROM reservas  WHERE trip_no = ? AND fecha_salida = ?
+                                        AND estado != 'QUOTE'
+                                        AND estado != 'CANCELED'
+                                        AND estado != 'NOT SHOW W/ CHARGE'
+                                        AND estado != 'NOT SHOW W/O CHARGE'
+                                        AND estado != 'NO SHOW'
+                                        AND id1 = '4' ";
+                                        $trips100return = Doo::db()->query($sql_spcida100, array($trip_no,$fecha_trip,$trip_no,$fecha_trip,$trip_no,$fecha_trip,$trip_no,$fecha_trip,$trip_no,$fecha_trip,$trip_no,$fecha_trip,$trip_no,$fecha_trip));
+                                        $r_spcida100return = $trips100return->fetchAll();
+                                        // $seats_ida100 = $r_spcida100[0]['superdiscount'];
+                                        $spro_ida100return = $r_spcida100return[0]['superpromo'] ? $r_spcida100return[0]['superpromo'] : 0;
+                                        $sdic_ida100return = $r_spcida100return[0]['superdiscount'] ? $r_spcida100return[0]['superdiscount'] : 0;
+                                        $wfare_ida100return = $r_spcida100return[0]['webfare'] ? $r_spcida100return[0]['webfare'] : 0;
+                                        $standr_ida100return = $r_spcida100return[0]['standard'] ? $r_spcida100return[0]['standard'] : 0;
+                                        $sflex_ida100return = $r_spcida100return[0]['superflex'] ? $r_spcida100return[0]['superflex'] : 0;
+                                        $special_ida100return = $r_spcida100return[0]['especial'] ? $r_spcida100return[0]['especial'] : 0;
+                                        $tour_ida100return = $r_spcida100return[0]['tours'] ? $r_spcida100return[0]['tours'] : 0;
+
+                                        $sql_spcretorno100 = "SELECT (sum(pax) + sum(pax2)) AS superpromo,
+                                        (SELECT (sum(pax) + sum(pax2)) FROM  reservas WHERE trip_no2 = ? AND fecha_retorno = ?
+                                        AND estado != 'QUOTE'
+                                        AND estado != 'CANCELED'
+                                        AND estado != 'NOT SHOW W/ CHARGE'
+                                        AND estado != 'NOT SHOW W/O CHARGE'
+                                        AND estado != 'NO SHOW'
+                                        AND id2 = '5') as superdiscount,
+                                        (SELECT (sum(pax_r) + sum(pax2_r)) FROM reservas WHERE trip_no2 = ? AND fecha_retorno = ?
+                                        AND estado != 'QUOTE'
+                                        AND estado != 'CANCELED'
+                                        AND estado != 'NOT SHOW W/ CHARGE'
+                                        AND estado != 'NOT SHOW W/O CHARGE'
+                                        AND estado != 'NO SHOW'
+                                        AND id2 = '3') as webfare,
+                                        (SELECT (sum(pax_r) + sum(pax2_r)) FROM reservas WHERE trip_no2 = ? AND fecha_retorno = ?
+                                        AND estado != 'QUOTE'
+                                        AND estado != 'CANCELED'
+                                        AND estado != 'NOT SHOW W/ CHARGE'
+                                        AND estado != 'NOT SHOW W/O CHARGE'
+                                        AND estado != 'NO SHOW'
+                                        AND id2 = '1') as standard,
+                                        (SELECT (sum(pax_r) + sum(pax2_r)) FROM reservas WHERE trip_no2 = ? AND fecha_retorno = ?
+                                        AND estado != 'QUOTE'
+                                        AND estado != 'CANCELED'
+                                        AND estado != 'NOT SHOW W/ CHARGE'
+                                        AND estado != 'NOT SHOW W/O CHARGE'
+                                        AND estado != 'NO SHOW'
+                                        AND id2 = '2') as superflex,
+                                        (SELECT (sum(pax_r) + sum(pax2_r)) FROM  reservas  Where trip_no2 = ? AND fecha_retorno = ?
+                                        AND (type_tour = 'ONE'
+                                        OR type_tour = 'MULTI')
+                                        AND estado != 'QUOTE'
+                                        AND estado != 'CANCELED'
+                                        AND estado != 'NOT SHOW W/ CHARGE'
+                                        AND estado != 'NOT SHOW W/O CHARGE') AS tours,
+                                        (SELECT (sum(pax_r) + sum(pax2_r)) FROM  reservas Where trip_no2 = ? AND fecha_retorno = ?
+                                        AND id2 = '6'
+                                        AND estado != 'QUOTE'
+                                        AND estado != 'CANCELED'
+                                        AND estado != 'NOT SHOW W/ CHARGE'
+                                        AND estado != 'NOT SHOW W/O CHARGE') AS especial
+                                        FROM reservas WHERE trip_no2 = ? AND fecha_retorno = ?
+                                        AND estado != 'QUOTE'
+                                        AND estado != 'CANCELED'
+                                        AND estado != 'NOT SHOW W/ CHARGE'
+                                        AND estado != 'NOT SHOW W/O CHARGE'
+                                        AND estado != 'NO SHOW'
+                                        AND id2 = '4'";
+                                        // $rs_spcretorno100 = Doo::db()->query($sql_spcretorno100, array($trip100, $fecha));
+                                        $rs_spcretorno100return = Doo::db()->query($sql_spcretorno100, array($trip_no,$fecha_trip,$trip_no,$fecha_trip,$trip_no,$fecha_trip,$trip_no,$fecha_trip,$trip_no,$fecha_trip,$trip_no,$fecha_trip,$trip_no,$fecha_trip));
+                                        $r_spcretorno100return = $rs_spcretorno100return->fetchAll();
+
+                                        $spro_retorno100return = $r_spcretorno100return[0]['superpromo'] ? $r_spcretorno100return[0]['superpromo'] : 0;
+                                        $sdic_retorno100return = $r_spcretorno100return[0]['superdiscount'] ? $r_spcretorno100return[0]['superdiscount'] : 0;
+                                        $wfare_retorno100return = $r_spcretorno100return[0]['webfare'] ? $r_spcretorno100return[0]['webfare'] : 0;
+                                        $standr_retorno100return = $r_spcretorno100return[0]['standard'] ? $r_spcretorno100return[0]['standard'] : 0;
+                                        $sflex_retorno100return = $r_spcretorno100return[0]['superflex'] ? $r_spcretorno100return[0]['superflex'] : 0;
+                                        $special_retorno100return = $r_spcretorno100return[0]['especial'] ? $r_spcretorno100return[0]['especial'] : 0;
+                                        $tour_retorno100return = $r_spcretorno100return[0]['tours'] ? $r_spcretorno100return[0]['tours'] : 0;
+
+
+                                        $total_spro100return = $spro_ida100return + $spro_retorno100return ;
+                                        $total_sdic100return = $sdic_ida100return + $sdic_retorno100return ;
+                                        $total_wfare100return = $wfare_ida100return + $wfare_retorno100return ;
+                                        $total_standr100return = $standr_ida100return + $standr_retorno100return ;
+                                        $total_sflex100return = $sflex_ida100return + $sflex_retorno100return ;
+                                        $total_especial100return = $special_ida100return + $special_retorno100return ;
+                                        $total_tours100return = $tour_ida100return + $tour_retorno100return ;
+
+                                        $ReservasTotalesreturn = $total_spro100return + $total_sdic100return + $total_wfare100return  + $total_standr100return + $total_sflex100return + $total_especial100return + $total_tours100return;
+                                        $resultsuperflexreturn = $total_sflex100return - $superflex_100return;
+
+                                        $OcupadosTotalesreturn =  $ReservasTotalesreturn;
+                                        $seats2 = $seatstot2 - $ReservasTotalesreturn;
+                                        // $cantidadwebfreturn = $puestos[0]['cantwebf'] ? $puestos[0]['cantwebf'] : 0;
+                                        // $cantidadsuperproreturn = $puestos[0]['cantsuperp'] ? $puestos[0]['cantsuperp'] : 0;
+                                        // $cantidadsuperdiscreturn = $puestos[0]['cantsuperdisc'] ? $puestos[0]['cantsuperdisc'] : 0;
+                                        // $cantidadsuperflexreturn = $puestos[0]['cantsuperflex'] ? $puestos[0]['cantsuperflex'] : 0;
+
+
+                                            $numperson100return = $_SESSION['booking']['pax'] + $_SESSION['booking']['chil'];
+
+                                            $wf_totreturn = ($webfare_100return - $total_wfare100return)-$total_standr100return-$total_especial100return-$total_tours100return-$total_spro100return-$total_sdic100return-$numperson100return-$cantidadwebfreturn-$cantidadsuperproreturn-$cantidadsuperdiscreturn -  $cantidadsstandarreturn;
+
+                                            $sflx_totreturn = ($superflex_100return - $total_sflex100return)-$numperson100return-$cantidadsuperflexreturn;
+
+                                            $spr_totreturn = ($superpromo_100return - $total_spro100return)-$numperson100return-$cantidadsuperproreturn;
+
+                                            $sdc_totreturn = ($superdiscount_100return - $total_sdic100return)-$numperson100return-$cantidadsuperdiscreturn;
+
+                                            if($wf_totreturn < $spr_totreturn){
+                                                $spr_totreturn = $wf_totreturn;
+                                                }else{
+                                                $spr_totreturn = $spr_totreturn;
+                                                }
+
+                                                if($wf_totreturn < $sdc_totreturn){
+                                                $sdc_totreturn = $wf_totreturn;
+                                                }else{
+                                                $sdc_totreturn = $sdc_totreturn;
+                                                }
+
+
+                                            //   echo '<pre>';
+                                            //   print_r($seats2);
+                                            //   echo '</pre>';
+
+                                        if($booking["resident"] == 1){
+                                            $superpromo_adultR = $unvext + $wdext + $e['spprc_adult'] + $e['f1t3'] + $e['f1t4'] + $e['f1t5'] + $e['f1t6'] + $e['f1t7'] + $e['f1t8'] + $e['f1t9'] + $e['f1t10'] + $e['f1t19'] + $e['f1t11'] + $e['f1t12'] + $e['f1t13'] + $e['f1t14'] + $e['f2t3'] + $e['f2t3'] + $e['f2t4'] + $e['f2t5'] + $e['f2t6'] + $e['f2t7'] + $e['f2t8'] + $e['f2t9'] + $e['f2t10'] + $e['f2t19'] + $e['f2t11'] + $e['f2t12'] + $e['f2t13'] + $e['f2t14'] + $e['f3t4'] + $e['f3t5'] + $e['f3t6'] + $e['f3t7'] + $e['f3t8'] + $e['f3t9'] + $e['f3t10'] + $e['f3t19'] + $e['f3t11'] + $e['f3t12'] + $e['f3t13'] + $e['f3t14'] + $e['f4t5'] + $e['f4t6'] + $e['f4t7'] + $e['f4t8'] + $e['f4t9'] + $e['f4t10'] + $e['f4t19'] + $e['f4t11'] + $e['f4t12'] + $e['f4t13'] + $e['f4t14'] + $e['f5t6'] + $e['f5t7'] + $e['f5t8'] + $e['f5t9'] + $e['f5t10'] + $e['f5t19'] + $e['f5t11'] + $e['f5t12'] + $e['f5t13'] + $e['f5t14'];
+                                            $superpromo_childR = $unvext + $wdext + $e['spprc_child'] + $e['f1t3'] + $e['f1t4'] + $e['f1t5'] + $e['f1t6'] + $e['f1t7'] + $e['f1t8'] + $e['f1t9'] + $e['f1t10'] + $e['f1t19'] + $e['f1t11'] + $e['f1t12'] + $e['f1t13'] + $e['f1t14'] + $e['f2t3'] + $e['f2t3'] + $e['f2t4'] + $e['f2t5'] + $e['f2t6'] + $e['f2t7'] + $e['f2t8'] + $e['f2t9'] + $e['f2t10'] + $e['f2t19'] + $e['f2t11'] + $e['f2t12'] + $e['f2t13'] + $e['f2t14'] + $e['f3t4'] + $e['f3t5'] + $e['f3t6'] + $e['f3t7'] + $e['f3t8'] + $e['f3t9'] + $e['f3t10'] + $e['f3t19'] + $e['f3t11'] + $e['f3t12'] + $e['f3t13'] + $e['f3t14'] + $e['f4t5'] + $e['f4t6'] + $e['f4t7'] + $e['f4t8'] + $e['f4t9'] + $e['f4t10'] + $e['f4t19'] + $e['f4t11'] + $e['f4t12'] + $e['f4t13'] + $e['f4t14'] + $e['f5t6'] + $e['f5t7'] + $e['f5t8'] + $e['f5t9'] + $e['f5t10'] + $e['f5t19'] + $e['f5t11'] + $e['f5t12'] + $e['f5t13'] + $e['f5t14'];
+                                            //descuento
+                                            //echo $e['flresprc_adult'];
+                                            $webfarer_adultR = ($unvext + $wdext +  $e['wfprc_adult'] + $e['flresprc_adult'] + $e['f1t3'] + $e['f1t4'] + $e['f1t5'] + $e['f1t6'] + $e['f1t7'] + $e['f1t8'] + $e['f1t9'] + $e['f1t10'] + $e['f1t19'] + $e['f1t11'] + $e['f1t12'] + $e['f1t13'] + $e['f1t14'] + $e['f2t3'] + $e['f2t3'] + $e['f2t4'] + $e['f2t5'] + $e['f2t6'] + $e['f2t7'] + $e['f2t8'] + $e['f2t9'] + $e['f2t10'] + $e['f2t19'] + $e['f2t11'] + $e['f2t12'] + $e['f2t13'] + $e['f2t14'] + $e['f3t4'] + $e['f3t5'] + $e['f3t6'] + $e['f3t7'] + $e['f3t8'] + $e['f3t9'] + $e['f3t10'] + $e['f3t19'] + $e['f3t11'] + $e['f3t12'] + $e['f3t13'] + $e['f3t14'] + $e['f4t5'] + $e['f4t6'] + $e['f4t7'] + $e['f4t8'] + $e['f4t9'] + $e['f4t10'] + $e['f4t19'] + $e['f4t11'] + $e['f4t12'] + $e['f4t13'] + $e['f4t14'] + $e['f5t6'] + $e['f5t7'] + $e['f5t8'] + $e['f5t9'] + $e['f5t10'] + $e['f5t19'] + $e['f5t11'] + $e['f5t12'] + $e['f5t13'] + $e['f5t14']);
+                                            $webfarer_childR = ($unvext + $wdext +  $e['wfprc_child'] + $e['flresprc_child'] + $e['f1t3'] + $e['f1t4'] + $e['f1t5'] + $e['f1t6'] + $e['f1t7'] + $e['f1t8'] + $e['f1t9'] + $e['f1t10'] + $e['f1t19'] + $e['f1t11'] + $e['f1t12'] + $e['f1t13'] + $e['f1t14'] + $e['f2t3'] + $e['f2t3'] + $e['f2t4'] + $e['f2t5'] + $e['f2t6'] + $e['f2t7'] + $e['f2t8'] + $e['f2t9'] + $e['f2t10'] + $e['f2t19'] + $e['f2t11'] + $e['f2t12'] + $e['f2t13'] + $e['f2t14'] + $e['f3t4'] + $e['f3t5'] + $e['f3t6'] + $e['f3t7'] + $e['f3t8'] + $e['f3t9'] + $e['f3t10'] + $e['f3t19'] + $e['f3t11'] + $e['f3t12'] + $e['f3t13'] + $e['f3t14'] + $e['f4t5'] + $e['f4t6'] + $e['f4t7'] + $e['f4t8'] + $e['f4t9'] + $e['f4t10'] + $e['f4t19'] + $e['f4t11'] + $e['f4t12'] + $e['f4t13'] + $e['f4t14'] + $e['f5t6'] + $e['f5t7'] + $e['f5t8'] + $e['f5t9'] + $e['f5t10'] + $e['f5t19'] + $e['f5t11'] + $e['f5t12'] + $e['f5t13'] + $e['f5t14']);
+                                            $superdiscount_adultR = $unvext + $wdext + $e['sdprc_adult'] + $e['f1t3'] + $e['f1t4'] + $e['f1t5'] + $e['f1t6'] + $e['f1t7'] + $e['f1t8'] + $e['f1t9'] + $e['f1t10'] + $e['f1t19'] + $e['f1t11'] + $e['f1t12'] + $e['f1t13'] + $e['f1t14'] + $e['f2t3'] + $e['f2t3'] + $e['f2t4'] + $e['f2t5'] + $e['f2t6'] + $e['f2t7'] + $e['f2t8'] + $e['f2t9'] + $e['f2t10'] + $e['f2t19'] + $e['f2t11'] + $e['f2t12'] + $e['f2t13'] + $e['f2t14'] + $e['f3t4'] + $e['f3t5'] + $e['f3t6'] + $e['f3t7'] + $e['f3t8'] + $e['f3t9'] + $e['f3t10'] + $e['f3t19'] + $e['f3t11'] + $e['f3t12'] + $e['f3t13'] + $e['f3t14'] + $e['f4t5'] + $e['f4t6'] + $e['f4t7'] + $e['f4t8'] + $e['f4t9'] + $e['f4t10'] + $e['f4t19'] + $e['f4t11'] + $e['f4t12'] + $e['f4t13'] + $e['f4t14'] + $e['f5t6'] + $e['f5t7'] + $e['f5t8'] + $e['f5t9'] + $e['f5t10'] + $e['f5t19'] + $e['f5t11'] + $e['f5t12'] + $e['f5t13'] + $e['f5t14'];
+                                            $superdiscount_childR = $unvext + $wdext + $e['sdprc_child'] + $e['f1t3'] + $e['f1t4'] + $e['f1t5'] + $e['f1t6'] + $e['f1t7'] + $e['f1t8'] + $e['f1t9'] + $e['f1t10'] + $e['f1t19'] + $e['f1t11'] + $e['f1t12'] + $e['f1t13'] + $e['f1t14'] + $e['f2t3'] + $e['f2t3'] + $e['f2t4'] + $e['f2t5'] + $e['f2t6'] + $e['f2t7'] + $e['f2t8'] + $e['f2t9'] + $e['f2t10'] + $e['f2t19'] + $e['f2t11'] + $e['f2t12'] + $e['f2t13'] + $e['f2t14'] + $e['f3t4'] + $e['f3t5'] + $e['f3t6'] + $e['f3t7'] + $e['f3t8'] + $e['f3t9'] + $e['f3t10'] + $e['f3t19'] + $e['f3t11'] + $e['f3t12'] + $e['f3t13'] + $e['f3t14'] + $e['f4t5'] + $e['f4t6'] + $e['f4t7'] + $e['f4t8'] + $e['f4t9'] + $e['f4t10'] + $e['f4t19'] + $e['f4t11'] + $e['f4t12'] + $e['f4t13'] + $e['f4t14'] + $e['f5t6'] + $e['f5t7'] + $e['f5t8'] + $e['f5t9'] + $e['f5t10'] + $e['f5t19'] + $e['f5t11'] + $e['f5t12'] + $e['f5t13'] + $e['f5t14'];
+
+                                            $superfelx_adultR = ($unvext + $wdext + $e['sflexprc_adult'] + $e['flresprc_adult'] + $e['f1t3'] + $e['f1t4'] + $e['f1t5'] + $e['f1t6'] + $e['f1t7'] + $e['f1t8'] + $e['f1t9'] + $e['f1t10'] + $e['f1t19'] + $e['f1t11'] + $e['f1t12'] + $e['f1t13'] + $e['f1t14'] + $e['f2t3'] + $e['f2t3'] + $e['f2t4'] + $e['f2t5'] + $e['f2t6'] + $e['f2t7'] + $e['f2t8'] + $e['f2t9'] + $e['f2t10'] + $e['f2t19'] + $e['f2t11'] + $e['f2t12'] + $e['f2t13'] + $e['f2t14'] + $e['f3t4'] + $e['f3t5'] + $e['f3t6'] + $e['f3t7'] + $e['f3t8'] + $e['f3t9'] + $e['f3t10'] + $e['f3t19'] + $e['f3t11'] + $e['f3t12'] + $e['f3t13'] + $e['f3t14'] + $e['f4t5'] + $e['f4t6'] + $e['f4t7'] + $e['f4t8'] + $e['f4t9'] + $e['f4t10'] + $e['f4t19'] + $e['f4t11'] + $e['f4t12'] + $e['f4t13'] + $e['f4t14'] + $e['f5t6'] + $e['f5t7'] + $e['f5t8'] + $e['f5t9'] + $e['f5t10'] + $e['f5t19'] + $e['f5t11'] + $e['f5t12'] + $e['f5t13'] + $e['f5t14']);
+                                            $superfelx_childR = ($unvext + $wdext + $e['sflexprc_child'] + $e['flresprc_child'] + $e['f1t3'] + $e['f1t4'] + $e['f1t5'] + $e['f1t6'] + $e['f1t7'] + $e['f1t8'] + $e['f1t9'] + $e['f1t10'] + $e['f1t19'] + $e['f1t11'] + $e['f1t12'] + $e['f1t13'] + $e['f1t14'] + $e['f2t3'] + $e['f2t3'] + $e['f2t4'] + $e['f2t5'] + $e['f2t6'] + $e['f2t7'] + $e['f2t8'] + $e['f2t9'] + $e['f2t10'] + $e['f2t19'] + $e['f2t11'] + $e['f2t12'] + $e['f2t13'] + $e['f2t14'] + $e['f3t4'] + $e['f3t5'] + $e['f3t6'] + $e['f3t7'] + $e['f3t8'] + $e['f3t9'] + $e['f3t10'] + $e['f3t19'] + $e['f3t11'] + $e['f3t12'] + $e['f3t13'] + $e['f3t14'] + $e['f4t5'] + $e['f4t6'] + $e['f4t7'] + $e['f4t8'] + $e['f4t9'] + $e['f4t10'] + $e['f4t19'] + $e['f4t11'] + $e['f4t12'] + $e['f4t13'] + $e['f4t14'] + $e['f5t6'] + $e['f5t7'] + $e['f5t8'] + $e['f5t9'] + $e['f5t10'] + $e['f5t19'] + $e['f5t11'] + $e['f5t12'] + $e['f5t13'] + $e['f5t14']);
+
+                                            }else{
+
+                                            $superpromo_adultR = $unvext + $wdext + $e['spprc_adult'] + $e['f1t3'] + $e['f1t4'] + $e['f1t5'] + $e['f1t6'] + $e['f1t7'] + $e['f1t8'] + $e['f1t9'] + $e['f1t10'] + $e['f1t19'] + $e['f1t11'] + $e['f1t12'] + $e['f1t13'] + $e['f1t14'] + $e['f2t3'] + $e['f2t3'] + $e['f2t4'] + $e['f2t5'] + $e['f2t6'] + $e['f2t7'] + $e['f2t8'] + $e['f2t9'] + $e['f2t10'] + $e['f2t19'] + $e['f2t11'] + $e['f2t12'] + $e['f2t13'] + $e['f2t14'] + $e['f3t4'] + $e['f3t5'] + $e['f3t6'] + $e['f3t7'] + $e['f3t8'] + $e['f3t9'] + $e['f3t10'] + $e['f3t19'] + $e['f3t11'] + $e['f3t12'] + $e['f3t13'] + $e['f3t14'] + $e['f4t5'] + $e['f4t6'] + $e['f4t7'] + $e['f4t8'] + $e['f4t9'] + $e['f4t10'] + $e['f4t19'] + $e['f4t11'] + $e['f4t12'] + $e['f4t13'] + $e['f4t14'] + $e['f5t6'] + $e['f5t7'] + $e['f5t8'] + $e['f5t9'] + $e['f5t10'] + $e['f5t19'] + $e['f5t11'] + $e['f5t12'] + $e['f5t13'] + $e['f5t14'];
+                                            $superpromo_childR = $unvext + $wdext + $e['spprc_child'] + $e['f1t3'] + $e['f1t4'] + $e['f1t5'] + $e['f1t6'] + $e['f1t7'] + $e['f1t8'] + $e['f1t9'] + $e['f1t10'] + $e['f1t19'] + $e['f1t11'] + $e['f1t12'] + $e['f1t13'] + $e['f1t14'] + $e['f2t3'] + $e['f2t3'] + $e['f2t4'] + $e['f2t5'] + $e['f2t6'] + $e['f2t7'] + $e['f2t8'] + $e['f2t9'] + $e['f2t10'] + $e['f2t19'] + $e['f2t11'] + $e['f2t12'] + $e['f2t13'] + $e['f2t14'] + $e['f3t4'] + $e['f3t5'] + $e['f3t6'] + $e['f3t7'] + $e['f3t8'] + $e['f3t9'] + $e['f3t10'] + $e['f3t19'] + $e['f3t11'] + $e['f3t12'] + $e['f3t13'] + $e['f3t14'] + $e['f4t5'] + $e['f4t6'] + $e['f4t7'] + $e['f4t8'] + $e['f4t9'] + $e['f4t10'] + $e['f4t19'] + $e['f4t11'] + $e['f4t12'] + $e['f4t13'] + $e['f4t14'] + $e['f5t6'] + $e['f5t7'] + $e['f5t8'] + $e['f5t9'] + $e['f5t10'] + $e['f5t19'] + $e['f5t11'] + $e['f5t12'] + $e['f5t13'] + $e['f5t14'];
+                                            //descuento
+                                            //echo $e['flresprc_adult'];
+                                            $webfarer_adultR = ($unvext + $wdext +  $e['wfprc_adult'] + $e['f1t3'] + $e['f1t4'] + $e['f1t5'] + $e['f1t6'] + $e['f1t7'] + $e['f1t8'] + $e['f1t9'] + $e['f1t10'] + $e['f1t19'] + $e['f1t11'] + $e['f1t12'] + $e['f1t13'] + $e['f1t14'] + $e['f2t3'] + $e['f2t3'] + $e['f2t4'] + $e['f2t5'] + $e['f2t6'] + $e['f2t7'] + $e['f2t8'] + $e['f2t9'] + $e['f2t10'] + $e['f2t19'] + $e['f2t11'] + $e['f2t12'] + $e['f2t13'] + $e['f2t14'] + $e['f3t4'] + $e['f3t5'] + $e['f3t6'] + $e['f3t7'] + $e['f3t8'] + $e['f3t9'] + $e['f3t10'] + $e['f3t19'] + $e['f3t11'] + $e['f3t12'] + $e['f3t13'] + $e['f3t14'] + $e['f4t5'] + $e['f4t6'] + $e['f4t7'] + $e['f4t8'] + $e['f4t9'] + $e['f4t10'] + $e['f4t19'] + $e['f4t11'] + $e['f4t12'] + $e['f4t13'] + $e['f4t14'] + $e['f5t6'] + $e['f5t7'] + $e['f5t8'] + $e['f5t9'] + $e['f5t10'] + $e['f5t19'] + $e['f5t11'] + $e['f5t12'] + $e['f5t13'] + $e['f5t14']);
+                                            $webfarer_childR = ($unvext + $wdext +  $e['wfprc_child'] + $e['f1t3'] + $e['f1t4'] + $e['f1t5'] + $e['f1t6'] + $e['f1t7'] + $e['f1t8'] + $e['f1t9'] + $e['f1t10'] + $e['f1t19'] + $e['f1t11'] + $e['f1t12'] + $e['f1t13'] + $e['f1t14'] + $e['f2t3'] + $e['f2t3'] + $e['f2t4'] + $e['f2t5'] + $e['f2t6'] + $e['f2t7'] + $e['f2t8'] + $e['f2t9'] + $e['f2t10'] + $e['f2t19'] + $e['f2t11'] + $e['f2t12'] + $e['f2t13'] + $e['f2t14'] + $e['f3t4'] + $e['f3t5'] + $e['f3t6'] + $e['f3t7'] + $e['f3t8'] + $e['f3t9'] + $e['f3t10'] + $e['f3t19'] + $e['f3t11'] + $e['f3t12'] + $e['f3t13'] + $e['f3t14'] + $e['f4t5'] + $e['f4t6'] + $e['f4t7'] + $e['f4t8'] + $e['f4t9'] + $e['f4t10'] + $e['f4t19'] + $e['f4t11'] + $e['f4t12'] + $e['f4t13'] + $e['f4t14'] + $e['f5t6'] + $e['f5t7'] + $e['f5t8'] + $e['f5t9'] + $e['f5t10'] + $e['f5t19'] + $e['f5t11'] + $e['f5t12'] + $e['f5t13'] + $e['f5t14']);
+
+                                            $superdiscount_adultR = $unvext + $wdext + $e['sdprc_adult'] + $e['f1t3'] + $e['f1t4'] + $e['f1t5'] + $e['f1t6'] + $e['f1t7'] + $e['f1t8'] + $e['f1t9'] + $e['f1t10'] + $e['f1t19'] + $e['f1t11'] + $e['f1t12'] + $e['f1t13'] + $e['f1t14'] + $e['f2t3'] + $e['f2t3'] + $e['f2t4'] + $e['f2t5'] + $e['f2t6'] + $e['f2t7'] + $e['f2t8'] + $e['f2t9'] + $e['f2t10'] + $e['f2t19'] + $e['f2t11'] + $e['f2t12'] + $e['f2t13'] + $e['f2t14'] + $e['f3t4'] + $e['f3t5'] + $e['f3t6'] + $e['f3t7'] + $e['f3t8'] + $e['f3t9'] + $e['f3t10'] + $e['f3t19'] + $e['f3t11'] + $e['f3t12'] + $e['f3t13'] + $e['f3t14'] + $e['f4t5'] + $e['f4t6'] + $e['f4t7'] + $e['f4t8'] + $e['f4t9'] + $e['f4t10'] + $e['f4t19'] + $e['f4t11'] + $e['f4t12'] + $e['f4t13'] + $e['f4t14'] + $e['f5t6'] + $e['f5t7'] + $e['f5t8'] + $e['f5t9'] + $e['f5t10'] + $e['f5t19'] + $e['f5t11'] + $e['f5t12'] + $e['f5t13'] + $e['f5t14'];
+                                            $superdiscount_childR = $unvext + $wdext + $e['sdprc_child'] + $e['f1t3'] + $e['f1t4'] + $e['f1t5'] + $e['f1t6'] + $e['f1t7'] + $e['f1t8'] + $e['f1t9'] + $e['f1t10'] + $e['f1t19'] + $e['f1t11'] + $e['f1t12'] + $e['f1t13'] + $e['f1t14'] + $e['f2t3'] + $e['f2t3'] + $e['f2t4'] + $e['f2t5'] + $e['f2t6'] + $e['f2t7'] + $e['f2t8'] + $e['f2t9'] + $e['f2t10'] + $e['f2t19'] + $e['f2t11'] + $e['f2t12'] + $e['f2t13'] + $e['f2t14'] + $e['f3t4'] + $e['f3t5'] + $e['f3t6'] + $e['f3t7'] + $e['f3t8'] + $e['f3t9'] + $e['f3t10'] + $e['f3t19'] + $e['f3t11'] + $e['f3t12'] + $e['f3t13'] + $e['f3t14'] + $e['f4t5'] + $e['f4t6'] + $e['f4t7'] + $e['f4t8'] + $e['f4t9'] + $e['f4t10'] + $e['f4t19'] + $e['f4t11'] + $e['f4t12'] + $e['f4t13'] + $e['f4t14'] + $e['f5t6'] + $e['f5t7'] + $e['f5t8'] + $e['f5t9'] + $e['f5t10'] + $e['f5t19'] + $e['f5t11'] + $e['f5t12'] + $e['f5t13'] + $e['f5t14'];
+
+                                            $superfelx_adultR = ($unvext + $wdext + $e['sflexprc_adult'] + $e['f1t3'] + $e['f1t4'] + $e['f1t5'] + $e['f1t6'] + $e['f1t7'] + $e['f1t8'] + $e['f1t9'] + $e['f1t10'] + $e['f1t19'] + $e['f1t11'] + $e['f1t12'] + $e['f1t13'] + $e['f1t14'] + $e['f2t3'] + $e['f2t3'] + $e['f2t4'] + $e['f2t5'] + $e['f2t6'] + $e['f2t7'] + $e['f2t8'] + $e['f2t9'] + $e['f2t10'] + $e['f2t19'] + $e['f2t11'] + $e['f2t12'] + $e['f2t13'] + $e['f2t14'] + $e['f3t4'] + $e['f3t5'] + $e['f3t6'] + $e['f3t7'] + $e['f3t8'] + $e['f3t9'] + $e['f3t10'] + $e['f3t19'] + $e['f3t11'] + $e['f3t12'] + $e['f3t13'] + $e['f3t14'] + $e['f4t5'] + $e['f4t6'] + $e['f4t7'] + $e['f4t8'] + $e['f4t9'] + $e['f4t10'] + $e['f4t19'] + $e['f4t11'] + $e['f4t12'] + $e['f4t13'] + $e['f4t14'] + $e['f5t6'] + $e['f5t7'] + $e['f5t8'] + $e['f5t9'] + $e['f5t10'] + $e['f5t19'] + $e['f5t11'] + $e['f5t12'] + $e['f5t13'] + $e['f5t14']);
+                                            $superfelx_childR = ($unvext + $wdext + $e['sflexprc_child'] + $e['f1t3'] + $e['f1t4'] + $e['f1t5'] + $e['f1t6'] + $e['f1t7'] + $e['f1t8'] + $e['f1t9'] + $e['f1t10'] + $e['f1t19'] + $e['f1t11'] + $e['f1t12'] + $e['f1t13'] + $e['f1t14'] + $e['f2t3'] + $e['f2t3'] + $e['f2t4'] + $e['f2t5'] + $e['f2t6'] + $e['f2t7'] + $e['f2t8'] + $e['f2t9'] + $e['f2t10'] + $e['f2t19'] + $e['f2t11'] + $e['f2t12'] + $e['f2t13'] + $e['f2t14'] + $e['f3t4'] + $e['f3t5'] + $e['f3t6'] + $e['f3t7'] + $e['f3t8'] + $e['f3t9'] + $e['f3t10'] + $e['f3t19'] + $e['f3t11'] + $e['f3t12'] + $e['f3t13'] + $e['f3t14'] + $e['f4t5'] + $e['f4t6'] + $e['f4t7'] + $e['f4t8'] + $e['f4t9'] + $e['f4t10'] + $e['f4t19'] + $e['f4t11'] + $e['f4t12'] + $e['f4t13'] + $e['f4t14'] + $e['f5t6'] + $e['f5t7'] + $e['f5t8'] + $e['f5t9'] + $e['f5t10'] + $e['f5t19'] + $e['f5t11'] + $e['f5t12'] + $e['f5t13'] + $e['f5t14']);
+
+                                        }
+                                        ?>
+                                        <div class="flight-booking-item">
+                                    <div class="flight-booking-wrapper">
+                                       <div class="flight-booking-info">
+                                          <div class="flight-booking-content">
+                                             <div class="flight-booking-airline">
+                                                <h5 class="flight-airline-name">Trip <?php echo $e['trip_no']?></h5>
+                                             </div>
+                                             <div class="flight-booking-time">
+                                                <div class="start-time">
+                                                   <div class="start-time-info">
+                                                      <h6 class="start-time-text"><?php echo $e['trip_departure']?></h6>
+                                                      <span class="flight-destination"><?php echo $this->data['from_name']?></span>
+                                                   </div>
+                                                </div>
+                                                <div class="flight-stop">
+                                                   <span class="flight-stop-number">
+                                                   <?php
+                                                      $hora1 = new DateTime($e['trip_departure']);
+                                                      $hora2 = new DateTime($e['trip_arrival']);
+                                                      $diferencia = $hora1->diff($hora2);
+                                                      echo $diferencia->format('%H:%I');
+                                                      ?>
+                                                   </span>
+                                                   <div class="flight-stop-arrow"></div>
+                                                </div>
+                                                <div class="end-time">
+                                                   <div class="start-time-info">
+                                                      <h6 class="end-time-text"><?php echo $e['trip_arrival']?></h6>
+                                                      <span class="flight-destination"><?php echo $this->data['to_name']?></span>
+                                                   </div>
+                                                </div>
+                                             </div>
+                                          </div>
+                                       </div>
+                                    </div>   
+                                       <div class="flight-booking-detail">
+                                          <div class="flight-booking-info">
+                                             <div class="flight-booking-content">
+                                                <div class="">
+                                                   <span class="flight-destination">Web Farer</span>
+                                                   <div class="price-info">
+                                                      <span class="price-amount">
+                                                      <?php
+                                                      $na = "<b>N/A</b>";
+                                                                    $disponiblewebfarer = $wf_tot;
+                                                                    list($dia, $mes, $anio) = explode("-", $booking["fecha_salida"]);
+                                                                    $fechaS = $anio . '-' . $mes . '-' . $dia;
+                                                                    if($disponiblewebfarer < 0 || $seats <= 0 || ($e['trip_departure'] < date('H:i:s') && $fechaS == date("Y-m-d"))){
+                                                                        echo $na;
+                                                                        $disabled = 'style="display: none;"';
+                                                                    } else {
+                                                                        $disabled = "";
+                                                                        echo number_format($webfarer_adult + $webfarer_child, 2, '.', ',');
+                                                                    }
+                                                                    
+                                                                    ?>
+                                                      </span>
+                                                      <input type="radio" class="form-check-input" name="price1" id="price" <?php echo $disabled;?> onclick="llenarTablaDinamica<?php echo $e['id']?>(<?php echo $webfarer_adult?>,<?php echo $webfarer_child; ?>)" value="<?php echo $e['id']?>,webfarer">                                                   
+                                                    </div>
+                                                </div>
+                                                <div class="">
+                                                   <span class="flight-destination">Super Discount</span>
+                                                   <div class="price-info">
+                                                      <span class="price-amount">
+                                                      <?php
+                                                        $disponibles = $sdc_tot;
+                                                        $na = "<b>N/A</b>";
+                                                        if($disponibles < 0 || $seats <= 0 || ($e['trip_departure'] < $date->format('H:i:s') && $fechaS == date("Y-m-d") )){
+                                                            echo $na;
+                                                            $disabled = 'style="display: none;"';
+                                                        }else{
+                                                            $disabled = "";
+                                                            echo number_format($superdiscount_adult + $superdiscount_child, 2, '.', '.');
+                                                        }
+                                                        ?>
+                                                      </span>
+                                                      <input type="radio" class="form-check-input" name="price1" id="price" <?php echo $disabled;?> onclick="llenarTablaDinamica<?php echo $e['id']?>(<?php echo $superdiscount_adult?>,<?php echo $superdiscount_child; ?>)" value="<?php echo $e['id']?>,superdiscount">
+                                                   </div>
+                                                </div>
+                                                <div class="">
+                                                   <span class="flight-destination">Super Promo</span>
+                                                   <div class="price-info">
+                                                      <span class="price-amount">
+                                                                <?php
+                                                                    $disponiblespromo = $spr_tot;
+                                                                    if( $disponiblespromo < 0 || $seats <= 0 || ($e['trip_departure'] < $date->format('H:i:s') && $fechaS == date("Y-m-d") )){
+                                                                        echo $na;
+                                                                        $disabled = 'style="display: none;"';
+                                                                    }else{
+                                                                        $disabled = "";
+                                                                        echo number_format($superpromo_adult + $superpromo_child, 2, '.', '.');
+                                                                    }
+                                                                ?>
+                                                      </span>
+                                                      <input type="radio" class="form-check-input" name="price1"  <?php echo $disabled;?> id="price<?php echo $e['id']?>" onclick="llenarTablaDinamica<?php echo $e['id']?>(<?php echo $superpromo_adult?>,<?php echo $superpromo_child; ?>)" value="<?php echo $e['id']?>,superpromo">                                                   
+                                                    </div>
+                                                </div>
+                                                <div class="">
+                                                   <span class="flight-destination">Super Flex</span>
+                                                   <div class="price-info">
+                                                      <span class="price-amount">
+                                                            <?php
+                                                                    if( $sflx_tot < 0 || $seats <= 0 || ($e['trip_departure'] < $date->format('H:i:s') && $fechaS == date("Y-m-d") )){
+                                                                        echo $na;
+                                                                        $disabled = 'style="display: none;"';
+                                                                    }else{
+                                                                        $disabled = '';
+                                                                        echo number_format($superfelx_adult + $superfelx_child, 2, '.', ',');
+                                                                    }
+                                                            ?>
+                                                      </span>
+                                                      <input type="radio" class="form-check-input" name="price1" <?php echo $disabled;?> id="price" onclick="llenarTablaDinamica<?php echo $e['id']?>(<?php echo $superfelx_adult?>,<?php echo $superfelx_child; ?>)" value="<?php echo $e['id']?>,superfelx">                                                  
+                                                     </div>
+                                                </div>
+                                             </div>
+                                          </div>
+                                       </div>
+                                    
+                                    <div class="flight-booking-detail">
+                                       <div class="flight-booking-detail-header">
+                                          <a href="#flight-booking-collapse<?php echo $e['id']?>" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="flight-booking-collapse1">Trip
+                                          Details <i class="far fa-angle-down"></i></a>
+                                       </div>
+                                       <div class="collapse" id="flight-booking-collapse<?php echo $e['id']?>">
+                                          <div class="flight-booking-detail-wrapper">
+                                             <div class="row">
+                                                <div class="col-lg-12 col-xl-12">
+                                                   <div class="flight-booking-detail-right">
+                                                      <ul class="nav nav-tabs" id="frTab" role="tablist">
+                                                         <li class="nav-item" role="presentation">
+                                                            <button class="nav-link active" id="fr-tab<?php echo $e['id']?>" data-bs-toggle="tab" data-bs-target="#fr-tab-pane<?php echo $e['id']?>" type="button" role="tab" aria-controls="fr-tab-pane<?php echo $e['id']?>" aria-selected="true">Fare</button>
+                                                         </li>
+                                                         <li class="nav-item" role="presentation">
+                                                            <button class="nav-link" id="fr-tab<?php echo $e['id']?>" data-bs-toggle="tab" data-bs-target="#fr-tab-pane1<?php echo $e['id']?>" type="button" role="tab" aria-controls="fr-tab-pane<?php echo $e['id']?>" aria-selected="false">Policy</button>
+                                                         </li>
+                                                      </ul>
+                                                      <div class="tab-content" id="frTabContent<?php echo $e['id']?>">
+                                                         <div class="tab-pane fade show active" id="fr-tab-pane<?php echo $e['id']?>" role="tabpanel" aria-labelledby="fr-tab<?php echo $e['id']?>" tabindex="0">
+                                                            <div class="flight-booking-detail-info">
+                                                                
+                                                               <table class="table table-borderless" id="tablaPreciosTarifa<?php echo $e['id']?>">
+                                                                  <tr>
+                                                                     <th>Fare Summary</th>
+                                                                     <th>Fare</th>
+                                                                     <th>Total</th>
+                                                                  </tr>
+                                                                  <tr>
+                                                                     <td>Adult x <?php echo $booking['pax']?> </td>
+                                                                     <td colspan="3">
+                                                                           please select a rate
+                                                                     </td>
+                                                                  </tr>
+                                                                  <tr>
+                                                                     <td>Child x <?php echo $booking['chil']?> </td>
+                                                                     <td colspan="3">
+                                                                           please select a rate
+                                                                     </td>
+                                                                  </tr>
+                                                               </table>
+                                                               <script>
+                                                               function llenarTablaDinamica<?php echo $e['id']?>(adult,child){
+                                                                  var url = "<?php echo $data['rootUrl'] ?>cargarTablaDinamica/"+adult+"/"+child;
+                                                                  $("#tablaPreciosTarifa<?php echo $e['id']?>").load(encodeURI(url));
+                                                                  var priceUrl = "<?php echo $data['rootUrl'] ?>cargarPrecioDinamico/"+adult+"/"+child;
+                                                                  $("#precioTotal<?php echo $e['id']?>").load(encodeURI(priceUrl));
+                                                               }
+                                                              </script>
+                                                            </div>
+                                                         </div>
+                                                         <div class="tab-pane fade" id="fr-tab-pane1<?php echo $e['id']?>" role="tabpanel" aria-labelledby="fr-tab<?php echo $e['id']?>" tabindex="0">
+                                                            <div class="flight-booking-detail-info">
+                                                               <div class="flight-booking-policy">
+                                                                  <ul>
+                                                                     <li>
+                                                                        1. The ticket is valid only for the date and time printed on the e-ticket.
+                                                                     </li>
+                                                                     <li>
+                                                                        2. Passengers have to bring a valid ID and a printout of the e-Tickets (confirmation email) at boarding for ID Check.
+                                                                     </li>
+                                                                     <li>
+                                                                        3. Ticket Holder name (s) on e-ticket must match the passenger's name.
+                                                                     </li>
+                                                                     <li>
+                                                                        4. Passenger must arrive 30 minutes prior departure time, otherwise the seat might be sold to others.
+                                                                     </li>
+                                                                  </ul>
+                                                               </div>
+                                                            </div>
+                                                         </div>
+                                                      </div>
+                                                      <div class="flight-booking-detail-price">
+                                                         <h6 class="flight-booking-detail-price-title">Total (2 Traveler)</h6>
+                                                         <div class="flight-detail-price-amount">
+                                                            $ <span id="precioTotal<?php echo $e['id']?>">00.00</span>
+                                                         </div>
+                                                      </div>
+                                                   </div>
+                                                </div>
+                                             </div>
+                                          </div>
+                                       </div>
+                                    </div>
                                  </div>
+                                    <?php endforeach?>
                               </div>
                            </div>
                         </div>
                      </div>
+                     <?php }?>
                      <div class="search-btn">
                         <button type="submit" class="theme-btn"><span
                            class="far fa-arrow-right"></span>Continue</button>

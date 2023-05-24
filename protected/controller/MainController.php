@@ -4872,46 +4872,70 @@ class MainController extends DooController {
     }
 
     /* FUNCION DE PICK UP Y DROP OP */
+    public function getPriceForFareAndIdRuta($idPrecioIda){
+      list($idRuta, $fare) = explode(',', $idPrecioIda);
+      switch ($fare) {
+        case 'webfarer':
+          $select = "wfprc_adult as priceAdult, wfprc_child as priceChild";
+          break;
+        case 'superdiscount':
+          $select = "stprc_adult as priceAdult, stprc_child as priceChild";
+          break;
+        case 'superpromo':
+          $select = "spprc_adult as priceAdult, spprc_child as priceChild";
+          break;
+        case 'superfelx':
+          $select = "sflexprc_adult as priceAdult, sflexprc_child as priceChild";
+          break;
+      }
+      $sql = "SELECT ".$select." FROM routes WHERE id = ?";
+      $rs = Doo::db()->query($sql, array($idRuta));
+      $price = $rs->fetchAll();
+      return $price;
+    }
+
+    public function getIdPrice($idPrecioIda){
+      list($idRuta, $fare) = explode(',', $idPrecioIda);
+      return $idRuta;
+    }
 
     public function pickupDropoff() {
+      $idPrecioIda = $_POST['price'];
+      $idPrecioRetorno = $_POST['price1'];
+      $precioIda = $this->getPriceForFareAndIdRuta($idPrecioIda);
+      foreach($precioIda as $ida){
+        $priceAdult = $ida['priceAdult'];
+        $priceChild = $ida['priceChild'];
+      }
 
+      $precioRetorno = $this->getPriceForFareAndIdRuta($idPrecioRetorno);
+      foreach($precioRetorno as $retorno){
+        $price1Adult = $retorno['priceAdult'];
+        $price1Child = $retorno['priceChild'];
+      }
+
+      $price = $this->getIdPrice($idPrecioIda);
+      $price1 = $this->getIdPrice($idPrecioRetorno);
+      //echo "precioRetorno ".$idPrecioVuelta = $_POST['price1'];
+        $booking = $_SESSION['booking'];
         
-        $modalT = $this->modalTripPuesto();
-        print($modalT);
-        $miraT = $this->miraSesion();
-        print($miraT);
-        global $variable;
-        //Refrescar, si No existe
-        $Refresca = $this->compruebaUsingNop();
-        print($Refresca);
-        
-        //Fin Refrescar
-//        if(isset($_SESSION["booking"])){
-//            $booking = $_SESSION["booking"];
-//            $modalT = $this->naveganteDescaradoT();
-//            print($modalT);
-//        }
         Doo::loadModel("Agency");
 
         $datos = array(
-            'priceAdult' => $_POST['priceAdult'],
-            'priceChild' => $_POST['priceChild'],
-            'priceAdult1' => $_POST['priceAdult1'],
-            'priceChild1' => $_POST['priceChild1'],
-            'fecha_salida' => $_POST['fecha_salida'],
-            'fecha_retorno' => $_POST['fecha_retorno'],
-            'pax' => $_POST['pax'],
-            'child' => $_POST['child'],
-            'from' => $_POST['from'],
-            'to' => $_POST['to'],
-            'idPrecioIda' => $_POST['price'],
-            'idPrecioVuelta' => $_POST['price1']
+            'priceAdult' => $priceAdult,
+            'priceChild' => $priceChild,
+            'priceAdult1' => $price1Adult,
+            'priceChild1' => $price1Child,
+            'fecha_salida' => $booking['fecha_salida'],
+            'fecha_retorno' => $booking['fecha_retorno'],
+            'pax' => $booking['pax'],
+            'child' => $booking['chil'],
+            'from' => $booking['fromt'],
+            'to' => $booking['tot'],
+            'idPrecioIda' => $price,
+            'idPrecioVuelta' => $price1
         );
 
-        
-
-     //   $this->data['idPrecioIda'] = $datos['idPrecioIda'];
-     //   $this->data['idPrecioVenida'] = $datos['idPrecioVuelta'];
 
         if (isset($_SESSION['data_agency'])) {
             $dat = new Agency($_SESSION['data_agency']);
@@ -4957,6 +4981,9 @@ class MainController extends DooController {
             $fecha_salida = $booking["fecha_salida"];
             $fecha_retorno = $booking["fecha_retorno"];
         } else {
+            
+        print_r($datos);
+        exit;
             return Doo::conf()->APP_URL;
         }
 
